@@ -7,24 +7,26 @@ module.exports = {
     res.apiSuccess(u);
   },
   create: (eventInfos) => {
+    console.log(eventInfos);
     const event = new Event({
       _id: new mongoose.Types.ObjectId(),
       ...eventInfos,
     });
     return event.save();
   },
+  findById: (id) => {
+    const event = Event.findById(id);
+    return event;
+  },
   find: (filter) => {
-    const events = Events.find(filter);
+    const events = Event.find(filter);
     return events;
   },
   findOne: (filter) => {
     const content = Contents.findOne(filter);
     return content;
   },
-  findById: (id) => {
-    const content = Contents.findById(id);
-    return content;
-  },
+
   updateMany: (filter, update, options = {}) => {
     const updatedContents = Contents.updateMany(filter, update, options);
     return updatedContents;

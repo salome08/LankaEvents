@@ -1,3 +1,4 @@
 const userRoute = require("./user");
+const eventsRoute = require("./events");
 
-module.exports = [userRoute];
+module.exports = [userRoute, eventsRoute];

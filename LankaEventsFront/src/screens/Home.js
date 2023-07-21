@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -9,70 +9,80 @@ import {
   Pressable,
 } from "react-native";
 import EventCard from "../components/EventCard";
-import { useTheme } from "@react-navigation/native";
-
-const fakeEvents = [
-  {
-    title: "Event1",
-    description: "The First event of the app !",
-    date: Date("23/06/2023"),
-    hour: "10:30",
-    location: "Arugam bay",
-    organizer: "Salome",
-  },
-  {
-    title: "Event2",
-    description: "The Second event of the app !",
-    date: Date("12/08/2023"),
-    hour: "108:30",
-    location: "Weligama",
-    organizer: "Salome",
-  },
-];
-
-const ListEvents = ({ navigation }) => {
-  return (
-    <>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-        }}
-      >
-        <View style={{ paddingTop: 23 }}>
-          {fakeEvents.map((e, key) => (
-            <Pressable
-              onPress={() => navigation.navigate("Event", { eventId: e.title })}
-              rippleColor="rgba(0, 0, 0, .32)"
-              key={key}
-            >
-              <EventCard event={e} />
-            </Pressable>
-          ))}
-        </View>
-      </ScrollView>
-    </>
-  );
-};
+import eventApi from "../../api/eventApi";
+import axios from "axios";
+import { useTheme } from "../contexts/ThemContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BlurView } from "expo-blur";
 
 const HomeScreen = ({ navigation }) => {
-  const colors = useTheme().colors;
+  const { themeColor, isDarkMode } = useTheme();
+  const insets = useSafeAreaInsets();
+  const [events, setEvents] = useState(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const fetchedEvents = await eventApi.getAll();
+      setEvents(fetchedEvents);
+    };
+    if (!events) fetchEvents();
+  }, [events]);
+
+  if (!events) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
-    <SafeAreaView
-      style={{
-        // backgroundColor: colors.card,
-        flexGrow: 1,
-      }}
+    <View
+      style={[
+        { backgroundColor: themeColor.background, paddingTop: insets.top },
+        styles.container,
+      ]}
     >
-      <ListEvents navigation={navigation} />
-    </SafeAreaView>
+      <View style={styles.contentContainer}>
+        <ScrollView>
+          <View style={{ paddingTop: 23 }}>
+            {events.map((e, key) => (
+              <Pressable
+                onPress={() => navigation.navigate("Event", { eventId: e._id })}
+                rippleColor="rgba(0, 0, 0, .32)"
+                key={key}
+              >
+                <EventCard event={e} />
+              </Pressable>
+            ))}
+          </View>
+        </ScrollView>
+        <BlurView
+          intensity={80}
+          tint={isDarkMode ? "dark" : "light"}
+          style={styles.blurView}
+        />
+      </View>
+    </View>
   );
 };
 
 export default HomeScreen;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    flexDirection: "column-reverse",
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  blurView: {
+    ...StyleSheet.absoluteFillObject,
+    height: 82, // Set the height of the BlurView
+    bottom: 0,
+  },
   text: {
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: "600",
   },
 });

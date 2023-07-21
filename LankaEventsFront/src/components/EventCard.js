@@ -1,74 +1,90 @@
-import * as React from "react";
-import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  useColorScheme,
-  Image,
-} from "react-native";
-import { Text } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import React from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // Import Ionicons from expo/vector-icons
+import moment from "moment";
+import { useTheme } from "../contexts/ThemContext";
 
-const EventCard = ({ event }) => {
-  const theme = useColorScheme();
-  const { title, description, date, hour, location, organizer } = event;
-  console.log(title);
+const EventCard = ({ event, onLikePress, onOptionsPress }) => {
+  const { title, date, location } = event;
+  const { themeColor } = useTheme();
+
   return (
-    <View
-      // Card
-      style={{
-        flexDirection: "row",
-        paddingTop: 18,
-        width: "100%",
-        flex: 1,
-      }}
-    >
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
+    <View style={styles.container}>
+      <Image
+        source={{
+          uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/The_Event_2010_Intertitle.svg/800px-The_Event_2010_Intertitle.svg.png",
         }}
-      >
-        <Image
-          style={{ width: 100, height: 100 }}
-          source={{
-            uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/The_Event_2010_Intertitle.svg/800px-The_Event_2010_Intertitle.svg.png",
-          }}
-        />
+        style={styles.image}
+      />
+      <View style={styles.content}>
+        <Text style={[{ color: themeColor.primary }, styles.date]}>
+          {moment(date).format("dddd DD MMMM [at] HH:mm")}
+        </Text>
+        <Text
+          numberOfLines={3}
+          ellipsizeMode="tail"
+          style={[{ color: themeColor.primaryText }, styles.title]}
+        >
+          {title}
+        </Text>
+        <Text style={[{ color: themeColor.secondaryText }, styles.location]}>
+          {location}
+        </Text>
       </View>
-      <View
-        // Title and description
-        style={{
-          paddingTop: 3,
-          paddingLeft: 7,
-          paddingRight: 12,
-          flex: 2,
-        }}
-      >
-        <Text style={styles.date}>{date}</Text>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.author}>{organizer}</Text>
-        <View justifyContent="space-between" flexDirection="row">
-          <Text>ceci est un text d'essay</Text>
-          <Icon name="heart-outline" size={18} />
-        </View>
+      <View style={styles.iconsContainer}>
+        <TouchableOpacity onPress={onLikePress} style={styles.iconContainer}>
+          <Ionicons
+            name="heart-outline"
+            size={23}
+            color={themeColor.primaryText}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onOptionsPress} style={styles.iconContainer}>
+          <Ionicons
+            name="ellipsis-horizontal"
+            size={20}
+            color={themeColor.primaryText}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default EventCard;
-
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    padding: 16,
+    marginBottom: 16,
+  },
+  image: {
+    width: 80,
+    height: 80,
+    marginRight: 16,
+    // borderRadius: 3,
+  },
+  content: {
+    flex: 1,
+    rowGap: 3,
+  },
+  iconsContainer: {
+    justifyContent: "space-between",
+  },
   date: {
     fontSize: 15,
-    color: "#e91e63",
     fontWeight: "500",
   },
   title: {
-    fontSize: 16,
-    marginTop: 5,
-    fontWeight: "600",
+    fontSize: 19,
+    fontWeight: "500",
   },
-  author: { fontSize: 12, marginTop: 5 },
+  location: {
+    fontSize: 13,
+  },
+  iconContainer: {
+    marginLeft: 16,
+    alignItems: "flex-end",
+  },
 });
+
+export default EventCard;

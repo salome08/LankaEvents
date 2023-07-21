@@ -17,12 +17,25 @@ import HelpCenter from "../screens/support/HelpCenter";
 import SuggestImprovements from "../screens/support/SuggestImprovements";
 import SignIn from "../screens/auth/SignIn";
 import Event from "../screens/Event";
+import { Feather } from "@expo/vector-icons";
+import { useTheme } from "../contexts/ThemContext";
+import HeaderBackButton from "../components/HeaderBackButton";
+import HeaderEventActions from "../components/HeaderEventActions";
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigation = () => {
+  const { themeColor } = useTheme();
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerLeft: () => <HeaderBackButton />,
+        headerStyle: {
+          backgroundColor: themeColor.background, // Set your desired header color here
+        },
+      }}
+    >
       {/* Home */}
       <Stack.Screen
         name="Home"
@@ -31,7 +44,14 @@ const StackNavigation = () => {
       />
 
       {/* Event */}
-      <Stack.Screen name="Event" component={Event} />
+      <Stack.Screen
+        name="Event"
+        component={Event}
+        options={{
+          headerRight: () => <HeaderEventActions />,
+          headerTitle: "",
+        }}
+      />
 
       {/* Search */}
       <Stack.Screen name="Date" component={SelectDate} />
@@ -73,7 +93,11 @@ const StackNavigation = () => {
       <Stack.Screen name="TermsOfService" component={TermsOfService} />
 
       {/* Auth */}
-      <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{ presentation: "modal" }}
+      />
     </Stack.Navigator>
   );
 };
