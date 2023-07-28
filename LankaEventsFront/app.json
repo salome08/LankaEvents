@@ -3,6 +3,7 @@
     "name": "LankaEvents",
     "slug": "LankaEvents",
     "version": "1.0.0",
+    "scheme": "com.anonymous.LankaEvents",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -12,11 +13,9 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

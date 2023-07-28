@@ -1,36 +1,30 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  ScrollView,
-  Button,
-  Text,
-  Pressable,
-} from "react-native";
+import { View, StyleSheet, ScrollView, Text } from "react-native";
 import EventCard from "../components/EventCard";
 import eventApi from "../../api/eventApi";
-import axios from "axios";
 import { useTheme } from "../contexts/ThemContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
+import { useAuth } from "../contexts/AuthContext";
+import { useEvent } from "../contexts/EventContext";
 
 const HomeScreen = ({ navigation }) => {
+  const { authenticated, user, loading } = useAuth();
   const { themeColor, isDarkMode } = useTheme();
+  const { events, isLiked, toggleLikeEvent, eventsLoading } = useEvent();
   const insets = useSafeAreaInsets();
-  const [events, setEvents] = useState(null);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const fetchedEvents = await eventApi.getAll();
-      setEvents(fetchedEvents);
-    };
-    if (!events) fetchEvents();
-  }, [events]);
-
-  if (!events) {
+  if (!events || eventsLoading || loading) {
     return <Text>Loading...</Text>;
   }
+
+  const onLikePress = async (eventId) => {
+    if (authenticated) {
+      await eventApi.addLike(eventId);
+      // add the event in the context
+      toggleLikeEvent(eventId);
+    } else navigation.navigate("SignIn");
+  };
 
   return (
     <View
@@ -42,15 +36,16 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.contentContainer}>
         <ScrollView>
           <View style={{ paddingTop: 23 }}>
-            {events.map((e, key) => (
-              <Pressable
-                onPress={() => navigation.navigate("Event", { eventId: e._id })}
-                rippleColor="rgba(0, 0, 0, .32)"
-                key={key}
-              >
-                <EventCard event={e} />
-              </Pressable>
-            ))}
+            {events.map((event, key) => {
+              return (
+                <EventCard
+                  key={key}
+                  event={event}
+                  // liked={liked}
+                  onLikePress={onLikePress}
+                />
+              );
+            })}
           </View>
         </ScrollView>
         <BlurView

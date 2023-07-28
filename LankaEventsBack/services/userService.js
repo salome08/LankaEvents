@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const jwt = require("jwt-simple");
 const secret = process.env.JWT_SECRET;
@@ -8,7 +9,20 @@ module.exports = {
     let u = await User.findOne({ _id: req.user.userId });
     res.apiSuccess(u);
   },
-
+  findById: async (id) => {
+    const user = await User.findById(id);
+    return user;
+  },
+  findOne: (id) => {
+    const user = User.findOne({ id });
+    return user;
+  },
+  create: (userInfos) => {
+    const user = new User({
+      ...userInfos,
+    });
+    return user.save();
+  },
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;
     if (!emailId) return res.apiError("Email Id is required");

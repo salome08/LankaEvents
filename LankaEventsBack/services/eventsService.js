@@ -6,6 +6,7 @@ module.exports = {
     let u = await User.findOne({ _id: req.user.userId });
     res.apiSuccess(u);
   },
+  signIn: async () => {},
   create: (eventInfos) => {
     console.log(eventInfos);
     const event = new Event({
@@ -21,6 +22,17 @@ module.exports = {
   find: (filter) => {
     const events = Event.find(filter);
     return events;
+  },
+  findLiked: async (userId) => {
+    try {
+      const events = await Event.find({
+        likes: { $in: [userId] },
+      }).select("_id");
+      const eventsIds = events.map((el) => el._id);
+      return eventsIds;
+    } catch (error) {
+      console.error(error);
+    }
   },
   findOne: (filter) => {
     const content = Contents.findOne(filter);

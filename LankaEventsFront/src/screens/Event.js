@@ -43,7 +43,6 @@ const Event = ({ route, navigation }) => {
   if (!event) {
     return <Text>Loading...</Text>;
   }
-  console.log(event);
   return (
     <View
       style={[

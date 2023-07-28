@@ -1,28 +1,36 @@
-import React from "react";
-import { TouchableOpacity, StyleSheet, View } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { Feather } from "@expo/vector-icons";
-import { useTheme } from "../contexts/ThemContext";
-import { FontAwesome } from "@expo/vector-icons";
+import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons from expo/vector-icons
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import eventApi from "../../api/eventApi";
+import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemContext";
+import { useEvent } from "../contexts/EventContext";
 
 const HeaderEventActions = () => {
+  console.log("in HeaderEventActions");
   const navigation = useNavigation();
   const route = useRoute();
+  const { authenticated, user } = useAuth();
   const { themeColor } = useTheme();
-  console.log(route.params?.eventId);
+  const { eventId } = route.params;
+  const { isLiked, toggleLikeEvent } = useEvent();
+  const liked = isLiked(eventId);
+
+  const onLikePress = async () => {
+    if (authenticated) {
+      await eventApi.addLike(eventId);
+      toggleLikeEvent(eventId);
+    } else navigation.navigate("SignIn");
+  };
 
   return (
     <View style={styles.iconsContainer}>
-      <TouchableOpacity
-        onPress={() => {
-          console.log("Like the event by the user");
-        }}
-      >
+      <TouchableOpacity onPress={onLikePress}>
         <Ionicons
-          name="heart-outline"
+          name={liked ? "heart" : "heart-outline"}
           size={20}
-          color={themeColor.primaryText}
+          color={liked ? themeColor.primary : themeColor.primaryText}
         />
       </TouchableOpacity>
       <TouchableOpacity

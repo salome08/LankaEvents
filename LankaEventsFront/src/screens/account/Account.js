@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +9,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Button } from "react-native-paper";
+import authApi from "../../../api/authApi";
+import { useAuth } from "../../contexts/AuthContext";
 
 // import { styles } from "./styles";
 
@@ -36,6 +39,8 @@ const linksByCategories = [
 ];
 
 const AccountScreen = ({ navigation }) => {
+  const { logOut, authenticated } = useAuth();
+
   const PressableLink = ({ title, screen }) => {
     return (
       <Pressable
@@ -104,9 +109,18 @@ const AccountScreen = ({ navigation }) => {
           })}
         </View>
         <View>
-          <Button mode="contained" onPress={() => console.log("logout")}>
-            Logout
-          </Button>
+          {authenticated ? (
+            <Button mode="contained" onPress={() => logOut()}>
+              Logout
+            </Button>
+          ) : (
+            <Button
+              mode="contained"
+              onPress={() => navigation.navigate("SignIn")}
+            >
+              Login
+            </Button>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

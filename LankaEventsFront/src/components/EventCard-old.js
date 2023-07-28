@@ -61,7 +61,6 @@ const EventCard = ({ event }) => {
             onPress={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              console.log("like pressed");
               navigation.navigate("SignIn");
               // onLikePress();
               // add this user to the likes of this event

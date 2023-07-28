@@ -1,14 +1,10 @@
-import { BottomTabNavigation } from "./src/navigation/BottomNavigation";
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { useColorScheme, Appearance } from "react-native";
 import StackNavigation from "./src/navigation/StackNavigation";
-import { AuthProvider } from "./src/contexts/AuthContext";
+import AuthProvider from "./src/contexts/AuthContext";
 import config from "./config";
 import ThemeProvider from "./src/contexts/ThemContext";
+import EventProvider from "./src/contexts/EventContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
@@ -19,16 +15,16 @@ export default function App() {
 
   console.log({ environment });
   console.log({ apiBaseUrl });
-  // console.log("1", theme);
-  // console.log("2", colorScheme);
-  // theme={theme === "dark" ? DarkTheme : DefaultTheme}
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>
         <AuthProvider>
-          <NavigationContainer>
-            <StackNavigation />
-          </NavigationContainer>
+          <EventProvider>
+            <NavigationContainer>
+              <StackNavigation />
+            </NavigationContainer>
+          </EventProvider>
         </AuthProvider>
       </ThemeProvider>
     </SafeAreaProvider>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "../config";
+import { getToken } from "../src/utils/functions/storage";
 
 const API_URL = config.API_BASE_URL;
 
@@ -21,6 +22,20 @@ module.exports = {
       return null;
     }
   },
+  getLiked: async () => {
+    const token = await getToken();
+    try {
+      const { data } = await api.get("/events/liked", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return data;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  },
   getById: async (id) => {
     try {
       const { data } = await api.get(`/events/${id}`);
@@ -28,6 +43,38 @@ module.exports = {
     } catch (err) {
       console.error(err);
       return null;
+    }
+  },
+  addLike: async (eventId) => {
+    const token = await getToken();
+    try {
+      const { data } = await api.post(
+        `/events/${eventId}/like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  testProtected: async () => {
+    const token = await getToken();
+    try {
+      const { data } = await api.post(
+        "/events/like",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching protected data:", error);
     }
   },
 };

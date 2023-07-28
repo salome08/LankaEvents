@@ -1,15 +1,35 @@
-import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons from expo/vector-icons
+import { useNavigation, useRoute } from "@react-navigation/native";
 import moment from "moment";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Pressable,
+} from "react-native";
 import { useTheme } from "../contexts/ThemContext";
+import { useEvent } from "../contexts/EventContext";
 
 const EventCard = ({ event, onLikePress, onOptionsPress }) => {
-  const { title, date, location } = event;
+  const navigation = useNavigation();
   const { themeColor } = useTheme();
+  const { isLiked } = useEvent();
+  const { title, date, location } = event;
+  const liked = isLiked(event._id);
 
   return (
-    <View style={styles.container}>
+    <Pressable
+      style={styles.container}
+      onPress={() =>
+        navigation.navigate("Event", {
+          eventId: event._id,
+        })
+      }
+      rippleColor="rgba(0, 0, 0, .32)"
+    >
       <Image
         source={{
           uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/The_Event_2010_Intertitle.svg/800px-The_Event_2010_Intertitle.svg.png",
@@ -32,11 +52,14 @@ const EventCard = ({ event, onLikePress, onOptionsPress }) => {
         </Text>
       </View>
       <View style={styles.iconsContainer}>
-        <TouchableOpacity onPress={onLikePress} style={styles.iconContainer}>
+        <TouchableOpacity
+          onPress={() => onLikePress(event._id)}
+          style={styles.iconContainer}
+        >
           <Ionicons
-            name="heart-outline"
+            name={liked ? "heart" : "heart-outline"}
             size={23}
-            color={themeColor.primaryText}
+            color={liked ? themeColor.primary : themeColor.primaryText}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={onOptionsPress} style={styles.iconContainer}>
@@ -47,7 +70,7 @@ const EventCard = ({ event, onLikePress, onOptionsPress }) => {
           />
         </TouchableOpacity>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

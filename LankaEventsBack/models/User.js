@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: { type: String, default: "" },
-  emailId: { type: String, default: "" },
+  email: { type: String, default: "" },
+  id: { type: String, default: "" },
+  profilePictureUrl: { type: String, default: "" },
+  googleId: { type: String, unique: true },
   password: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
