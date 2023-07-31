@@ -15,7 +15,6 @@ const setStatusBarStyle = (systemTheme) => {
 
 const ThemeProvider = ({ children }) => {
   const systemTheme = useColorScheme(); // 'light' or 'dark' based on the device settings
-  console.log({ systemTheme });
   const [isDarkMode, setIsDarkMode] = useState(systemTheme === "dark");
 
   // Listen to changes in system theme and update dark mode state accordingly

@@ -12,20 +12,36 @@ import {
 } from "react-native";
 import { useTheme } from "../contexts/ThemContext";
 import { useEvent } from "../contexts/EventContext";
+import { useAuth } from "../contexts/AuthContext";
+import eventApi from "../../api/eventApi";
 
-const EventCard = ({ event, onLikePress, onOptionsPress }) => {
+const EventCard = ({ event, onOptionsPress }) => {
   const navigation = useNavigation();
   const { themeColor } = useTheme();
-  const { isLiked } = useEvent();
+  const { isLiked, toggleLikeEvent, eventsLoading } = useEvent();
+  const { authenticated } = useAuth();
   const { title, date, location } = event;
   const liked = isLiked(event._id);
+
+  console.log("----------event card---------");
+  const onLikePress = async () => {
+    if (authenticated) {
+      await eventApi.addLike(event._id);
+      // add the event in the context
+      toggleLikeEvent(event);
+    } else navigation.navigate("SignIn");
+  };
+
+  if (!event || eventsLoading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <Pressable
       style={styles.container}
       onPress={() =>
         navigation.navigate("Event", {
-          eventId: event._id,
+          event,
         })
       }
       rippleColor="rgba(0, 0, 0, .32)"
@@ -48,12 +64,12 @@ const EventCard = ({ event, onLikePress, onOptionsPress }) => {
           {title}
         </Text>
         <Text style={[{ color: themeColor.secondaryText }, styles.location]}>
-          {location}
+          {location.town}
         </Text>
       </View>
       <View style={styles.iconsContainer}>
         <TouchableOpacity
-          onPress={() => onLikePress(event._id)}
+          onPress={() => onLikePress()}
           style={styles.iconContainer}
         >
           <Ionicons

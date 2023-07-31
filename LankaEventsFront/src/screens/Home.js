@@ -14,17 +14,11 @@ const HomeScreen = ({ navigation }) => {
   const { events, isLiked, toggleLikeEvent, eventsLoading } = useEvent();
   const insets = useSafeAreaInsets();
 
+  console.log("---------Home-----------");
+
   if (!events || eventsLoading || loading) {
     return <Text>Loading...</Text>;
   }
-
-  const onLikePress = async (eventId) => {
-    if (authenticated) {
-      await eventApi.addLike(eventId);
-      // add the event in the context
-      toggleLikeEvent(eventId);
-    } else navigation.navigate("SignIn");
-  };
 
   return (
     <View
@@ -35,16 +29,9 @@ const HomeScreen = ({ navigation }) => {
     >
       <View style={styles.contentContainer}>
         <ScrollView>
-          <View style={{ paddingTop: 23 }}>
+          <View style={{ paddingTop: 23, marginBottom: 115 }}>
             {events.map((event, key) => {
-              return (
-                <EventCard
-                  key={key}
-                  event={event}
-                  // liked={liked}
-                  onLikePress={onLikePress}
-                />
-              );
+              return <EventCard key={key} event={event} />;
             })}
           </View>
         </ScrollView>
@@ -67,9 +54,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     flexDirection: "column-reverse",
-  },
-  scrollContainer: {
-    flex: 1,
   },
   blurView: {
     ...StyleSheet.absoluteFillObject,

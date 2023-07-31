@@ -8,9 +8,6 @@ const AccountSettings = () => {
 
   const handleSaveSettings = () => {
     // Save the account settings to your app's storage or send them to the server
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
   };
 
   return (

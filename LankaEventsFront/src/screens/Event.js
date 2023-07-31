@@ -16,8 +16,8 @@ import moment from "moment";
 import ImageSlider from "../components/ImageSlider";
 
 const Event = ({ route, navigation }) => {
-  const { eventId } = route.params;
-  const [event, setEvent] = useState(null);
+  const { event } = route.params;
+  // const [event, setEvent] = useState(null);
   const insets = useSafeAreaInsets();
   const { themeColor, isDarkMode } = useTheme();
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -32,13 +32,13 @@ const Event = ({ route, navigation }) => {
 
   const organizerName = "Career Bliss Academy";
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      const fetchedEvent = await eventApi.getById(eventId);
-      setEvent(fetchedEvent);
-    };
-    if (!event) fetchEvent();
-  }, [event]);
+  // useEffect(() => {
+  //   const fetchEvent = async () => {
+  //     const fetchedEvent = await eventApi.getById(event);
+  //     setEvent(fetchedEvent);
+  //   };
+  //   if (!event) fetchEvent();
+  // }, [event]);
 
   if (!event) {
     return <Text>Loading...</Text>;
@@ -103,7 +103,7 @@ const Event = ({ route, navigation }) => {
               <Icon name="map-marker" size={17} />
             </View>
             <View style={styles.infosContent}>
-              <Text style={styles.infoTitle}>{event.location}</Text>
+              <Text style={styles.infoTitle}>{event.location.town}</Text>
               <Text style={styles.infoDescription}>
                 425 N. Los angeles St, los angeles, CA 90012
               </Text>

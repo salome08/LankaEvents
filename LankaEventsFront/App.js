@@ -5,6 +5,7 @@ import AuthProvider from "./src/contexts/AuthContext";
 import config from "./config";
 import ThemeProvider from "./src/contexts/ThemContext";
 import EventProvider from "./src/contexts/EventContext";
+import SearchProvider from "./src/contexts/SearchContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
@@ -21,9 +22,11 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <EventProvider>
-            <NavigationContainer>
-              <StackNavigation />
-            </NavigationContainer>
+            <SearchProvider>
+              <NavigationContainer>
+                <StackNavigation />
+              </NavigationContainer>
+            </SearchProvider>
           </EventProvider>
         </AuthProvider>
       </ThemeProvider>

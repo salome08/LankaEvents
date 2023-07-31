@@ -9,6 +9,7 @@ import Privacy from "../screens/legal/Privacy";
 import TermsOfService from "../screens/legal/TermsOfService";
 import SelectDate from "../screens/search/SelectDate";
 import SelectFilters from "../screens/search/SelectFilters";
+import SelectLocation from "../screens/search/SelectLocation";
 import AccountSettings from "../screens/settings/AccountSettings";
 import LoginOptions from "../screens/settings/LoginOptions";
 import ManageEvents from "../screens/settings/ManageEvents";
@@ -54,8 +55,17 @@ const StackNavigation = () => {
       />
 
       {/* Search */}
-      <Stack.Screen name="Date" component={SelectDate} />
+      <Stack.Screen
+        name="Date"
+        component={SelectDate}
+        options={{ headerTitle: "When do you want to go out ?" }}
+      />
       <Stack.Screen name="Filters" component={SelectFilters} />
+      <Stack.Screen
+        name="Location"
+        component={SelectLocation}
+        options={{ presentation: "modal", headerShown: false }}
+      />
 
       {/* Favoris */}
 

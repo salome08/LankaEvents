@@ -22,6 +22,17 @@ module.exports = {
       return null;
     }
   },
+  getFiltered: async (filters) => {
+    try {
+      const { data } = await api.get("/events/filter", {
+        params: { filters },
+      });
+      return data;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  },
   getLiked: async () => {
     const token = await getToken();
     try {

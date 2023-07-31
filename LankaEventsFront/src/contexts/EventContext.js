@@ -3,6 +3,7 @@ import React, { createContext, useState, useEffect } from "react";
 import eventApi from "../../api/eventApi";
 import { useAuth } from "../contexts/AuthContext";
 
+// Use Context Selectors to prevent home from rerender
 const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
@@ -10,12 +11,15 @@ const EventProvider = ({ children }) => {
   const [likedEvents, setLikedEvents] = useState([]);
   const [eventsLoading, setLoading] = useState(true);
   const { authenticated, user } = useAuth();
+  // const [locationSearch, setLocationSearch] = useState("Weligama");
+
   // Fetch events from the database when the component is mounted
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         // Call your function to fetch liked events from the database
         const fetchedEvents = await eventApi.getAll();
+        console.log(fetchedEvents);
         setEvents(fetchedEvents); // Set the initial state with the fetched data
         // Get liked events from the api
         setLoading(false);
@@ -41,23 +45,29 @@ const EventProvider = ({ children }) => {
     } else setLikedEvents([]);
   }, [authenticated]);
 
-  const toggleLikeEvent = (eventId) => {
+  const toggleLikeEvent = (event) => {
     // Add/remove eventId from the likedEvents array based on user's actions
     setLikedEvents((prevLikedEvents) =>
-      prevLikedEvents.includes(eventId)
-        ? prevLikedEvents.filter((id) => id !== eventId)
-        : [...prevLikedEvents, eventId]
+      prevLikedEvents.some((e) => e._id === event._id)
+        ? prevLikedEvents.filter((e) => e._id !== event._id)
+        : [...prevLikedEvents, event]
     );
   };
 
   const isLiked = (eventId) => {
-    const ret = likedEvents.includes(eventId);
+    const ret = likedEvents.some((e) => e._id === eventId);
     return ret;
   };
 
   return (
     <EventContext.Provider
-      value={{ events, isLiked, toggleLikeEvent, eventsLoading }}
+      value={{
+        events,
+        isLiked,
+        toggleLikeEvent,
+        eventsLoading,
+        likedEvents,
+      }}
     >
       {children}
     </EventContext.Provider>

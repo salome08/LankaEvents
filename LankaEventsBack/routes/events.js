@@ -33,10 +33,12 @@ router.post(
   asyncHandler(async (req, res, next) => {
     // const event = req.body;
     const event = {
-      title: "Free Career Empowerment & Meditation Class - Colombo",
-      description: "My third event",
-      date: new Date("2022-07-26"),
-      location: "Online via zoom",
+      title: "Event 18h30",
+      description: "My 6th event",
+      date: new Date("2023-08-01 18:30:00"),
+      location: { town: "Weligama" },
+      online: true,
+      price: 0,
     };
     try {
       const createEvent = await EventsService.create(event);
@@ -53,6 +55,25 @@ router.post(
   })
 );
 
+// get filtered events
+router.get("/filter", async (req, res, next) => {
+  try {
+    const { filters } = req.query;
+    const filteredEvents = await EventsService.findFiltered(filters);
+    console.log(filteredEvents);
+
+    res.status(200).json(filteredEvents);
+  } catch (error) {
+    const { name, code, errmsg, message } = error;
+    res.status(400).json({
+      name,
+      code,
+      message: errmsg || message,
+      // message: getMongoError(code, "Event", errmsg || message),
+    });
+  }
+});
+
 router.get(
   "/liked",
   passport.authenticate("jwt", { session: false }),
@@ -62,7 +83,6 @@ router.get(
       console.log(req.user);
       const likedEvents = await EventsService.findLiked(user._id);
       res.status(200).json(likedEvents);
-      res.status(200);
     } catch (error) {
       const { name, code, errmsg, message } = error;
       res.status(400).json({

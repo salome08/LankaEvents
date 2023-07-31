@@ -13,14 +13,14 @@ const HeaderEventActions = () => {
   const route = useRoute();
   const { authenticated, user } = useAuth();
   const { themeColor } = useTheme();
-  const { eventId } = route.params;
+  const { event } = route.params;
   const { isLiked, toggleLikeEvent } = useEvent();
-  const liked = isLiked(eventId);
+  const liked = isLiked(event._id);
 
   const onLikePress = async () => {
     if (authenticated) {
-      await eventApi.addLike(eventId);
-      toggleLikeEvent(eventId);
+      await eventApi.addLike(event._id);
+      toggleLikeEvent(event);
     } else navigation.navigate("SignIn");
   };
 

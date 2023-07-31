@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,160 +7,230 @@ import {
   Modal,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import { styles } from "../styles";
-import { Searchbar, TouchableRipple, Button } from "react-native-paper";
+import { TouchableRipple, Button } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import EventCard from "../../components/EventCard";
+import eventApi from "../../../api/eventApi";
+import { BlurView } from "expo-blur";
+import { useEvent } from "../../contexts/EventContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme } from "../../contexts/ThemContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { useSearch } from "../../contexts/SearchContext";
+import SearchBar from "../../components/SearchBar";
 
-const fakeEvents = [
-  "Event1",
-  "Event2",
-  "Event3",
-  "Event4",
-  "Event5",
-  "Event6",
-  "Event7",
-  "Event8",
-  "Event9",
-  "Event10",
-];
+// TODO:
+// - Sort by relevance / date
+// - Filters
+// - date & location can be null
+// - Search with searchBar
+const SearchScreen = ({ navigation }) => {
+  const { themeColor, isDarkMode } = useTheme();
+  const { events } = useEvent();
+  const { selectedTown, selectedDate } = useSearch();
+  const { loading } = useAuth();
+  const insets = useSafeAreaInsets();
+  const [filterEvents, setFilterEvents] = useState(events);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredEventsLoading, setFilteredEventsLoading] = useState(false);
 
-const ListEvents = () => {
+  const onChangeSearch = (query) => setSearchQuery(query);
+
+  console.log("------------Search-----------");
+  useEffect(() => {
+    console.log("In search useEffect");
+    const getFilteredEvents = async () => {
+      const filters = {
+        town: selectedTown,
+        date: selectedDate.value,
+      };
+
+      setFilteredEventsLoading(true);
+      const filteredEvents = await eventApi.getFiltered(filters);
+      setFilterEvents(filteredEvents);
+      setFilteredEventsLoading(false);
+    };
+
+    if (selectedTown || selectedDate) {
+      if (selectedTown === "Sri Lanka" && selectedDate.value === "anytime")
+        setFilterEvents(events);
+      else getFilteredEvents();
+    }
+  }, [selectedTown, selectedDate]);
+
+  if (loading || filteredEventsLoading) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
-    <>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-        }}
-      >
-        <View style={{ paddingTop: 23 }}>
-          {fakeEvents.map((e) => (
-            <EventCard event={e} key={e} />
-          ))}
+    <View
+      style={[
+        {
+          backgroundColor: themeColor.background,
+          paddingTop: insets.top * 1.5,
+        },
+        styles.container,
+      ]}
+    >
+      <View style={styles.searchBarContainer}>
+        <SearchBar
+          placeholder="Search for..."
+          onChangeSearch={onChangeSearch}
+          searchQuery={searchQuery}
+        />
+        <TouchableOpacity
+          style={styles.locationContainer}
+          onPress={() => navigation.navigate("Location")}
+        >
+          <FontAwesome5
+            name="map-marker-alt"
+            size={14}
+            color={themeColor.primaryText}
+          />
+          <Text
+            style={[{ color: themeColor.primaryText }, styles.locationText]}
+          >
+            {selectedTown ? selectedTown : "Sri Lanka"}
+          </Text>
+          <FontAwesome5
+            name="chevron-down"
+            size={12}
+            color={themeColor.primaryText}
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.filtersContainer}>
+        <Button
+          buttonColor={themeColor.lightBlue}
+          icon="tune"
+          mode="contained-tonal"
+          onPress={() => navigation.navigate("Filters")}
+        >
+          Filters{"  "}
+          <FontAwesome5
+            name="chevron-down"
+            size={12}
+            color={themeColor.primaryText}
+          />
+        </Button>
+        <Button
+          buttonColor={themeColor.lightBlue}
+          icon="calendar-range"
+          mode="contained-tonal"
+          onPress={() => navigation.navigate("Date")}
+        >
+          <Text>
+            {selectedDate.label} {"  "}
+          </Text>
+          <FontAwesome5
+            name="chevron-down"
+            size={12}
+            color={themeColor.primaryText}
+          />
+        </Button>
+      </View>
+      {filterEvents.length ? (
+        <View style={styles.contentContainer}>
+          <ScrollView>
+            <View style={{ marginBottom: 115 }}>
+              {filterEvents.map((event, key) => {
+                return <EventCard key={key} event={event} />;
+              })}
+            </View>
+          </ScrollView>
+          <BlurView
+            intensity={80}
+            tint={isDarkMode ? "dark" : "light"}
+            style={styles.blurView}
+          />
         </View>
-      </ScrollView>
-    </>
+      ) : (
+        <NoResultScreen />
+      )}
+    </View>
   );
 };
 
-const SearchScreen = ({ navigation }) => {
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const onChangeSearch = (query) => setSearchQuery(query);
+const NoResultScreen = () => {
+  const { themeColor, isDarkMode } = useTheme();
 
   return (
-    <SafeAreaView>
-      <View style={{ padding: 15, paddingTop: 25 }}>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-        />
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <SafeAreaView style={styles2.centeredView}>
-            <View style={styles2.modalView}>
-              <Text style={styles2.modalText}>Hello World!</Text>
-              <Pressable
-                style={[styles2.button, styles2.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles2.textStyle}>Hide Modal</Text>
-              </Pressable>
-            </View>
-          </SafeAreaView>
-        </Modal>
-        <Pressable
-          // onPress={() => console.log("Pressed")}
-          onPress={() => setModalVisible(!modalVisible)}
-          rippleColor="rgba(0, 0, 0, .32)"
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Icon name="map-marker" />
-            <Text>Colombo</Text>
-            <Icon name="chevron-down" />
-          </View>
-        </Pressable>
-      </View>
+    <View style={styles.noResultContainer}>
       <View
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="space-around"
-        // style={{ backgroundColor: "red" }}
-        // contentContainerStyle={{
-        //   spacin
-        // }}
+        style={[
+          { backgroundColor: themeColor.veryLightBackground },
+          styles.noResultIcon,
+        ]}
       >
-        <Button
-          icon="camera"
-          mode="contained"
-          onPress={() => navigation.navigate("Date")}
-        >
-          Date
-        </Button>
-        <Button
-          icon="camera"
-          mode="contained"
-          onPress={() => navigation.navigate("Filters")}
-        >
-          Filters
-        </Button>
+        <FontAwesome5
+          name="search"
+          size={30}
+          color={themeColor.veryLightGray}
+        />
       </View>
-      <ListEvents />
-    </SafeAreaView>
+      <Text style={styles.noResultText1}>No results found</Text>
+      <Text style={{ color: themeColor.gray }}>
+        Expand your search and try again
+      </Text>
+    </View>
   );
 };
 
 export default SearchScreen;
 
-const styles2 = StyleSheet.create({
-  centeredView: {
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    flexDirection: "column-reverse",
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  blurView: {
+    ...StyleSheet.absoluteFillObject,
+    height: 82, // Set the height of the BlurView
+    bottom: 0,
+  },
+  searchBarContainer: {
+    paddingHorizontal: 16,
+  },
+  locationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 9,
+    columnGap: 8,
+  },
+  filtersContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  locationText: {
+    fontSize: 15,
+  },
+  noResultContainer: {
+    flex: 0.8,
+    alignItems: "center",
     justifyContent: "center",
+    rowGap: 20,
+  },
+  noResultIcon: {
+    height: 80,
+    width: 80,
+    borderRadius: 50,
     alignItems: "center",
-    marginTop: 22,
+    justifyContent: "center",
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
+  noResultText1: {
+    fontSize: 18,
+    fontWeight: "600",
   },
 });
