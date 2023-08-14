@@ -18,7 +18,7 @@ const eventSchema = new mongoose.Schema({
   address: { type: String, default: "" },
   pictures: [{ type: String, default: "" }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  price: { type: mongoose.Schema.Types.Decimal128, default: "" },
+  price: { type: mongoose.Schema.Types.Decimal128, default: 0 },
   organizer: [{ type: mongoose.Schema.Types.ObjectId, ref: "Organizer" }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

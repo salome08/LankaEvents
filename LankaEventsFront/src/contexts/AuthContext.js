@@ -29,8 +29,8 @@ const AuthProvider = ({ children }) => {
 
     await authApi.logOut();
     await removeToken();
-    setUser(null);
     setAuthenticated(false);
+    setUser(null);
     setLoading(false);
   };
 

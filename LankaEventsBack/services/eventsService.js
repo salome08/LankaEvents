@@ -28,7 +28,7 @@ module.exports = {
     try {
       const events = await Event.find({
         likes: { $in: [userId] },
-      });
+      }).sort({ date: 1 });
       // const eventsIds = events.map((el) => el._id);
       return events;
     } catch (error) {

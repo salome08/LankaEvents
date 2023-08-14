@@ -38,7 +38,7 @@ const EventCard = ({ event, onOptionsPress }) => {
 
   return (
     <Pressable
-      style={styles.container}
+      style={[{ backgroundColor: themeColor.background }, styles.container]}
       onPress={() =>
         navigation.navigate("Event", {
           event,
@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     padding: 16,
-    marginBottom: 16,
   },
   image: {
     width: 80,
