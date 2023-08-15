@@ -123,8 +123,8 @@ const calculateRelevance = (event, filters) => {
 
 const getFilterPipepline = (filters) => {
   const { town, date, categories, types, free } = filters;
-
   const pipeline = [];
+
   if (town && town !== "Sri Lanka") {
     pipeline.push({
       $match: {
@@ -164,7 +164,7 @@ const getFilterPipepline = (filters) => {
   if (date) {
     // Get the start and end of the current week
     let rangeStart, rangeEnd;
-    switch (date) {
+    switch (date.value) {
       case "anytime":
         break;
       case "today":
@@ -203,16 +203,23 @@ const getFilterPipepline = (filters) => {
           rangeEnd = endOfWeekend.toDate();
         }
         break;
-      default:
+      case "picker":
         {
-          const dateToMatch = moment(date).startOf("day");
-          const endOfDay = moment(dateToMatch).endOf("day");
-          rangeStart = dateToMatch.toDate();
-          rangeEnd = endOfDay.toDate();
+          console.log(moment(date.data.from).toDate());
+          rangeStart = moment(date.data.from).startOf("day").toDate();
+          rangeEnd = moment(date.data.to).toDate();
         }
         break;
+      default:
+        // {
+        //   const dateToMatch = moment(date).startOf("day");
+        //   const endOfDay = moment(dateToMatch).endOf("day");
+        //   rangeStart = dateToMatch.toDate();
+        //   rangeEnd = endOfDay.toDate();
+        // }
+        break;
     }
-    if (date !== "anytime") {
+    if (date.value !== "anytime") {
       pipeline.push({
         $match: {
           date: {
