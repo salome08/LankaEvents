@@ -1,7 +1,7 @@
 const express = require("express");
 var passport = require("passport");
 const router = express.Router();
-
+const moment = require("moment");
 // router.get("/", (req, res, next) => {
 //   return res.send({ d: "Working User API" });
 // });
@@ -28,17 +28,22 @@ router.get(
 );
 
 // API to view user detail, required auth in headers  (check auth middleware)
+const momentDate = new moment("2023-08-18T18:00:00.000Z");
+const readyToInsert = momentDate.format("YYYY-MM-DD HH:mm:ss");
+
 router.post(
   "/",
   asyncHandler(async (req, res, next) => {
     // const event = req.body;
     const event = {
-      title: "Event 18h30",
-      description: "My 6th event",
-      date: new Date("2023-08-01 18:30:00"),
+      title: "Event 09",
+      description: "My 9th event",
+      date: readyToInsert,
       location: { town: "Weligama" },
-      online: true,
-      price: 0,
+      online: false,
+      categories: ["Health", "Community"],
+      types: ["Expo"],
+      price: 30,
     };
     try {
       const createEvent = await EventsService.create(event);
@@ -60,8 +65,6 @@ router.get("/filter", async (req, res, next) => {
   try {
     const { filters } = req.query;
     const filteredEvents = await EventsService.findFiltered(filters);
-    console.log(filteredEvents);
-
     res.status(200).json(filteredEvents);
   } catch (error) {
     const { name, code, errmsg, message } = error;

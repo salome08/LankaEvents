@@ -38,10 +38,34 @@ module.exports = {
   findFiltered: async (filters) => {
     try {
       console.log("filters", filters);
+      const { sortBy } = filters;
       const pipeline = getFilterPipepline(filters);
-      const events = await Event.aggregate(pipeline);
+      console.log("pipeline", pipeline);
+      const events = pipeline.length
+        ? await Event.aggregate(pipeline)
+        : await Event.find();
 
-      return events;
+      // console.log("not sorted Events", events);
+      let sortedEvents;
+      if (sortBy === "date") {
+        sortedEvents = events.sort((a, b) =>
+          moment(a.date).isSameOrBefore(moment(b.date)) ? -1 : 1
+        );
+      } else {
+        events.forEach((event) => {
+          event.relevanceScore = calculateRelevance(event, filters);
+        });
+        // Sort events by relevance score in descending order
+        sortedEvents = events.sort(
+          (a, b) => b.relevanceScore - a.relevanceScore
+        );
+      }
+      // console.log("sortedEvents", sortedEvents);
+      // console.sortedEventslog(sortedEvents);
+      sortedEvents.forEach((e) => {
+        console.log(e), console.log(e.relevanceScore);
+      });
+      return sortedEvents;
     } catch (error) {
       console.error(error);
     }
@@ -70,8 +94,35 @@ module.exports = {
   },
 };
 
+// UTILS FUNCTIONS
+
+const calculateRelevance = (event, filters) => {
+  const { town, date, categories, types, free } = filters;
+  // organizer followers + (To implement in the future)
+  // match with the search bar test (To implement in close future)
+
+  let relevance = 0;
+  // Number of occurence with categories searched
+  if (categories) {
+    const setFilters = new Set(categories);
+    const matchCategories = event.categories.filter((category) =>
+      setFilters.has(category)
+    );
+    relevance += matchCategories.length * 2;
+  }
+  // Number of occurence with types searched
+  if (types) {
+    const setTypes = new Set(types);
+    const matchTypes = event.categories.filter((type) => setTypes.has(type));
+    relevance += matchTypes.length * 2;
+  }
+  // Number of like of the event
+  relevance += event.likes.length;
+  return relevance;
+};
+
 const getFilterPipepline = (filters) => {
-  const { town, date } = filters;
+  const { town, date, categories, types, free } = filters;
 
   const pipeline = [];
   if (town && town !== "Sri Lanka") {
@@ -82,8 +133,37 @@ const getFilterPipepline = (filters) => {
     });
   }
 
+  if (free === "true") {
+    pipeline.push({
+      $match: {
+        price: 0, // Filter events by town
+      },
+    });
+  }
+
+  if (categories?.length) {
+    pipeline.push({
+      $match: {
+        categories: {
+          $in: categories,
+        },
+      },
+    });
+  }
+
+  if (types?.length) {
+    pipeline.push({
+      $match: {
+        types: {
+          $in: types,
+        },
+      },
+    });
+  }
+
   if (date) {
     // Get the start and end of the current week
+    let rangeStart, rangeEnd;
     switch (date) {
       case "anytime":
         break;
@@ -91,30 +171,16 @@ const getFilterPipepline = (filters) => {
         {
           const today = moment().startOf("day");
           const endOfToday = moment(today).endOf("day");
-
-          pipeline.push({
-            $match: {
-              date: {
-                $gte: today.toDate(), // Events with dates greater than or equal to the beginning of today
-                $lte: endOfToday.toDate(), // Events with dates less than or equal to the end of today
-              },
-            },
-          });
+          rangeStart = today.toDate();
+          rangeEnd = endOfToday.toDate();
         }
         break;
       case "tomorrow":
         {
           const tomorrow = moment().add(1, "day").startOf("day");
           const endOfTomorrow = moment(tomorrow).endOf("day");
-
-          pipeline.push({
-            $match: {
-              date: {
-                $gte: tomorrow.toDate(), // Events with dates greater than or equal to the beginning of tomorrow
-                $lte: endOfTomorrow.toDate(), // Events with dates less than or equal to the end of tomorrow
-              },
-            },
-          });
+          rangeStart = tomorrow.toDate();
+          rangeEnd = endOfTomorrow.toDate();
         }
         break;
       case "this_week":
@@ -122,14 +188,8 @@ const getFilterPipepline = (filters) => {
           const today = moment();
           const startOfWeek = moment(today).startOf("isoWeek");
           const endOfWeek = moment(startOfWeek).endOf("isoWeek");
-          pipeline.push({
-            $match: {
-              date: {
-                $gte: startOfWeek.toDate(), // Events with dates greater than or equal to the start of the week
-                $lte: endOfWeek.toDate(), // Events with dates less than or equal to the end of the week
-              },
-            },
-          });
+          rangeStart = startOfWeek.toDate();
+          rangeEnd = endOfWeek.toDate();
         }
         break;
       case "this_weekend":
@@ -139,33 +199,28 @@ const getFilterPipepline = (filters) => {
             .startOf("isoWeek")
             .add(4, "days"); // Set to Friday of this weekend
           const endOfWeekend = moment(startOfWeekend).add(3, "day"); // Set to Sunday of this weekend
-
-          console.log({ startOfWeekend });
-          console.log({ endOfWeekend });
-          pipeline.push({
-            $match: {
-              date: {
-                $gte: startOfWeekend.toDate(), // Events with dates greater than or equal to the start of this weekend (Saturday)
-                $lt: endOfWeekend.toDate(), // Events with dates less than or equal to the end of this weekend (Sunday)
-              },
-            },
-          });
+          rangeStart = startOfWeekend.toDate();
+          rangeEnd = endOfWeekend.toDate();
         }
         break;
       default:
         {
           const dateToMatch = moment(date).startOf("day");
           const endOfDay = moment(dateToMatch).endOf("day");
-          pipeline.push({
-            $match: {
-              date: {
-                $gte: dateToMatch.toDate(), // Events with dates greater than or equal to the beginning of today
-                $lte: endOfDay.toDate(), // Events with dates less than or equal to the end of today
-              },
-            },
-          });
+          rangeStart = dateToMatch.toDate();
+          rangeEnd = endOfDay.toDate();
         }
         break;
+    }
+    if (date !== "anytime") {
+      pipeline.push({
+        $match: {
+          date: {
+            $gte: rangeStart,
+            $lte: rangeEnd,
+          },
+        },
+      });
     }
   }
 

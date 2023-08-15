@@ -58,9 +58,33 @@ const StackNavigation = () => {
       <Stack.Screen
         name="Date"
         component={SelectDate}
-        options={{ headerTitle: "When do you want to go out ?" }}
+        options={{
+          headerTitle: "When do you want to go out?",
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTintColor: themeColor.searchText,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: themeColor.searchBackground,
+          },
+        }}
       />
-      <Stack.Screen name="Filters" component={SelectFilters} />
+      <Stack.Screen
+        name="Filters"
+        component={SelectFilters}
+        options={{
+          headerTitle: "Filters",
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTintColor: themeColor.searchText,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: themeColor.searchBackground,
+          },
+        }}
+      />
       <Stack.Screen
         name="Location"
         component={SelectLocation}

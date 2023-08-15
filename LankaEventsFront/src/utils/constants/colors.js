@@ -19,6 +19,15 @@ export default {
     backgroundButton: "#e91e63",
     backgroundButtonLogout: "rgb(255,255,255)",
     buttonLogoutText: "rgb(58, 53, 79)",
+    searchBackground: "rgb(255,255,255)",
+    searchBottomBar: "rgb(217,218,227)",
+    searchBarText: "rgb(138,137,141)",
+    searchText: "rgb(0, 0, 0)",
+    filterButtonBg: "rgb(213, 221, 248)",
+    filterButtonText: "rgb(56, 53, 78)",
+    iconContainer: "rgb(222, 228, 250)",
+    segmentedButtonBg: "rgb(225, 224, 226)",
+    segmentedButtonCheckedBg: "rgb(64, 63, 67)",
 
     // BLUE
     blue: "rgb(54, 89, 227)",
@@ -55,6 +64,15 @@ export default {
     backgroundButton: "rgb(59,32,38)",
     backgroundButtonLogout: "rgb(38,38,39)",
     buttonLogoutText: "rgb(255, 255, 255)",
+    searchBackground: "rgb(0,0,0)",
+    searchBottomBar: "rgb(74,77,98)",
+    searchBarText: "rgb(142,141,148)",
+    searchText: "rgb(255, 255, 255)",
+    filterButtonBg: "rgb(20, 30, 48)",
+    filterButtonText: "rgb(237, 236, 240)",
+    iconContainer: "rgb(38, 48, 65)",
+    segmentedButtonBg: "rgb(19, 18, 20)",
+    segmentedButtonCheckedBg: "rgb(64, 63, 67)",
 
     // BLUE
     blue: "rgb(103, 151, 247)",

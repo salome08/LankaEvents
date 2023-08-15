@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import eventApi from "../../api/eventApi";
 import { useAuth } from "../contexts/AuthContext";
+import moment from "moment";
 
 // Use Context Selectors to prevent home from rerender
 const EventContext = createContext();
@@ -47,11 +48,14 @@ const EventProvider = ({ children }) => {
 
   const toggleLikeEvent = (event) => {
     // Add/remove eventId from the likedEvents array based on user's actions
-    setLikedEvents((prevLikedEvents) =>
-      prevLikedEvents.some((e) => e._id === event._id)
+
+    setLikedEvents((prevLikedEvents) => {
+      return prevLikedEvents.some((e) => e._id === event._id)
         ? prevLikedEvents.filter((e) => e._id !== event._id)
-        : [...prevLikedEvents, event]
-    );
+        : [...prevLikedEvents, event].sort((a, b) =>
+            moment(a.date).isSameOrBefore(moment(b.date)) ? -1 : 1
+          );
+    });
   };
 
   const isLiked = (eventId) => {

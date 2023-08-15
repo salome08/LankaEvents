@@ -15,6 +15,8 @@ const eventSchema = new mongoose.Schema({
     },
   },
   online: { type: Boolean, default: false },
+  categories: { type: Array, default: [] },
+  types: { type: Array, default: [] },
   address: { type: String, default: "" },
   pictures: [{ type: String, default: "" }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

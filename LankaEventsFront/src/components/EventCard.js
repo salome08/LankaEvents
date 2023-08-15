@@ -38,7 +38,7 @@ const EventCard = ({ event, onOptionsPress }) => {
 
   return (
     <Pressable
-      style={[{ backgroundColor: themeColor.background }, styles.container]}
+      style={styles.container}
       onPress={() =>
         navigation.navigate("Event", {
           event,

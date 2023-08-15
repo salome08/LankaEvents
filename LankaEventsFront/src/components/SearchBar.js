@@ -18,7 +18,7 @@ const SearchBar = ({ placeholder, onChangeSearch, searchQuery }) => {
         borderBottomWidth: 2,
         borderTopWidth: 0,
         padding: 0,
-        borderBottomColor: themeColor.veryLightGray,
+        borderBottomColor: themeColor.searchBottomBar,
       }}
       inputContainerStyle={{
         backgroundColor: "transparent",
@@ -26,7 +26,7 @@ const SearchBar = ({ placeholder, onChangeSearch, searchQuery }) => {
       searchIcon={{
         size: 22,
       }}
-      placeholderTextColor={themeColor.lightGray}
+      placeholderTextColor={themeColor.searchBarText}
       inputStyle={{
         color: themeColor.primaryText,
         fontSize: 23,

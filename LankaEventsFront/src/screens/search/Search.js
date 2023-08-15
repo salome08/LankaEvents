@@ -30,7 +30,8 @@ import SearchBar from "../../components/SearchBar";
 const SearchScreen = ({ navigation }) => {
   const { themeColor, isDarkMode } = useTheme();
   const { events } = useEvent();
-  const { selectedTown, selectedDate } = useSearch();
+  const { selectedTown, selectedDate, allFilters, isFilterSelected } =
+    useSearch();
   const { loading } = useAuth();
   const insets = useSafeAreaInsets();
   const [filterEvents, setFilterEvents] = useState(events);
@@ -39,13 +40,17 @@ const SearchScreen = ({ navigation }) => {
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
-  console.log("------------Search-----------");
+  console.log("------------render: Search-----------");
   useEffect(() => {
     console.log("In search useEffect");
     const getFilteredEvents = async () => {
       const filters = {
         town: selectedTown,
         date: selectedDate.value,
+        categories: allFilters.categories,
+        types: allFilters.types,
+        free: allFilters.freeEvents,
+        sortBy: allFilters.sortBy,
       };
 
       setFilteredEventsLoading(true);
@@ -54,12 +59,13 @@ const SearchScreen = ({ navigation }) => {
       setFilteredEventsLoading(false);
     };
 
-    if (selectedTown || selectedDate) {
-      if (selectedTown === "Sri Lanka" && selectedDate.value === "anytime")
-        setFilterEvents(events);
-      else getFilteredEvents();
-    }
-  }, [selectedTown, selectedDate]);
+    // if (selectedTown || selectedDate) {
+    //   if (selectedTown === "Sri Lanka" && selectedDate.value === "anytime")
+    //     setFilterEvents(events);
+    //   else getFilteredEvents();
+    // }
+    getFilteredEvents();
+  }, [selectedTown, selectedDate, allFilters]);
 
   if (loading || filteredEventsLoading) {
     return <Text>Loading...</Text>;
@@ -69,7 +75,7 @@ const SearchScreen = ({ navigation }) => {
     <View
       style={[
         {
-          backgroundColor: themeColor.background,
+          backgroundColor: themeColor.searchBackground,
           paddingTop: insets.top * 1.5,
         },
         styles.container,
@@ -88,47 +94,51 @@ const SearchScreen = ({ navigation }) => {
           <FontAwesome5
             name="map-marker-alt"
             size={14}
-            color={themeColor.primaryText}
+            color={themeColor.searchText}
           />
-          <Text
-            style={[{ color: themeColor.primaryText }, styles.locationText]}
-          >
+          <Text style={[{ color: themeColor.searchText }, styles.locationText]}>
             {selectedTown ? selectedTown : "Sri Lanka"}
           </Text>
           <FontAwesome5
             name="chevron-down"
             size={12}
-            color={themeColor.primaryText}
+            color={themeColor.searchText}
           />
         </TouchableOpacity>
       </View>
       <View style={styles.filtersContainer}>
         <Button
-          buttonColor={themeColor.lightBlue}
+          buttonColor={
+            isFilterSelected() ? themeColor.blue : themeColor.filterButtonBg
+          }
           icon="tune"
           mode="contained-tonal"
+          textColor={themeColor.filterButtonText}
           onPress={() => navigation.navigate("Filters")}
         >
           Filters{"  "}
           <FontAwesome5
             name="chevron-down"
             size={12}
-            color={themeColor.primaryText}
+            color={themeColor.filterButtonText}
           />
         </Button>
         <Button
-          buttonColor={themeColor.lightBlue}
+          buttonColor={
+            selectedDate.value !== "anytime"
+              ? themeColor.blue
+              : themeColor.filterButtonBg
+          }
           icon="calendar-range"
           mode="contained-tonal"
+          textColor={themeColor.filterButtonText}
           onPress={() => navigation.navigate("Date")}
         >
-          <Text>
-            {selectedDate.label} {"  "}
-          </Text>
+          {selectedDate.label} {"  "}
           <FontAwesome5
             name="chevron-down"
             size={12}
-            color={themeColor.primaryText}
+            color={themeColor.filterButtonText}
           />
         </Button>
       </View>

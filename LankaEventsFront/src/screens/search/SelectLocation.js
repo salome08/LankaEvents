@@ -87,7 +87,7 @@ const SelectLocation = () => {
                 <View
                   style={[
                     {
-                      backgroundColor: themeColor.lightBlue,
+                      backgroundColor: themeColor.iconContainer,
                     },
                     styles.iconContainer,
                   ]}
@@ -169,8 +169,9 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   heading: {
-    fontSize: 15,
+    fontSize: 13,
     marginBottom: 10,
+    fontWeight: 600,
   },
   townItem: {
     flexDirection: "row",
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
     columnGap: 12,
   },
   townName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 700,
   },
   otherOptionsName: {

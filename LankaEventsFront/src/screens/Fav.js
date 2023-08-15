@@ -17,8 +17,16 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { useSearch } from "../contexts/SearchContext";
 
 // Handle case not logged, no events liked
+
+const easyDates = [
+  { label: "Today", value: "today" },
+  { label: "Tomorrow", value: "tomorrow" },
+  { label: "This week", value: "this_week" },
+  { label: "This weekend", value: "this_weekend" },
+];
 
 const LoggedOutFavScreen = () => {
   const navigation = useNavigation();
@@ -74,6 +82,7 @@ const NoLikesFavScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { themeColor, isDarkMode } = useTheme();
+  const { selectedDate, setSelectedDate } = useSearch();
 
   return (
     <View style={styles.noLikesContainer}>
@@ -97,21 +106,22 @@ const NoLikesFavScreen = () => {
           flexWrap="wrap"
           style={{ rowGap: 14, columnGap: 14 }}
         >
-          {["Today", "Tomorrow", "This week", "This weekend"].map(
-            (date, key) => (
-              <Button
-                key={key}
-                mode="contained"
-                compact={true}
-                buttonColor={themeColor.veryLightBackground}
-                textColor={themeColor.secondaryText1}
-                contentStyle={{ paddingHorizontal: 9, fontSize: 8 }}
-                onPress={() => navigation.navigate("Search")}
-              >
-                {date}
-              </Button>
-            )
-          )}
+          {easyDates.map((date, key) => (
+            <Button
+              key={key}
+              mode="contained"
+              compact={true}
+              buttonColor={themeColor.veryLightBackground}
+              textColor={themeColor.secondaryText1}
+              contentStyle={{ paddingHorizontal: 9, fontSize: 8 }}
+              onPress={() => {
+                setSelectedDate(date);
+                navigation.navigate("Search");
+              }}
+            >
+              {date.label}
+            </Button>
+          ))}
         </View>
       </View>
     </View>
@@ -127,7 +137,7 @@ const FavScreen = ({ navigation }) => {
   if (!authenticated) return <LoggedOutFavScreen />;
 
   likedEvents.map((event) => {
-    console.log(moment(event.date).format("dddd DD MMMM"));
+    // console.log(moment(event.date).format("dddd DD MMMM"));
   });
   return (
     <View
@@ -147,14 +157,7 @@ const FavScreen = ({ navigation }) => {
           {likedEvents.length === 0 ? (
             <NoLikesFavScreen />
           ) : (
-            <View
-              style={[
-                {
-                  backgroundColor: themeColor.veryLightBackground,
-                },
-                styles.eventCardContainer,
-              ]}
-            >
+            <View style={styles.eventCardContainer}>
               {likedEvents.map((event, key) => {
                 return (
                   <>
@@ -164,7 +167,13 @@ const FavScreen = ({ navigation }) => {
                           moment(event.date),
                           "day"
                         ))) && (
-                      <View key={key + 0.1} style={styles.labelDateContainer}>
+                      <View
+                        key={event.date}
+                        style={[
+                          { backgroundColor: themeColor.veryLightBackground },
+                          styles.labelDateContainer,
+                        ]}
+                      >
                         <Text
                           style={[
                             { color: themeColor.primaryText },

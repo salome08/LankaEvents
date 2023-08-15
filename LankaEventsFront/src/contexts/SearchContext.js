@@ -12,6 +12,21 @@ const SearchProvider = ({ children }) => {
     value: "anytime",
   });
   const [selectedTown, setSelectedTown] = useState("Sri Lanka");
+  const [allFilters, setAllFilters] = useState({
+    categories: [],
+    types: [],
+    freeEvents: false,
+    sortBy: "relevance",
+  });
+
+  const isFilterSelected = () => {
+    return allFilters.categories.length ||
+      allFilters.types.length ||
+      allFilters.freeEvents ||
+      allFilters.sortBy !== "relevance"
+      ? true
+      : false;
+  };
 
   return (
     <SearchContext.Provider
@@ -20,6 +35,9 @@ const SearchProvider = ({ children }) => {
         setSelectedTown,
         selectedDate,
         setSelectedDate,
+        allFilters,
+        setAllFilters,
+        isFilterSelected,
       }}
     >
       {children}
