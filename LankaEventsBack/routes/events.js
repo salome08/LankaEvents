@@ -98,6 +98,23 @@ router.get(
   }
 );
 
+router.get("/query/:query", async (req, res, next) => {
+  try {
+    console.log("/query/:query");
+    const { query } = req.params;
+    const queryEvents = await EventsService.findFromQuery(query);
+    res.status(200).json(queryEvents);
+  } catch (error) {
+    const { name, code, errmsg, message } = error;
+    res.status(400).json({
+      name,
+      code,
+      message: errmsg || message,
+      // message: getMongoError(code, "Event", errmsg || message),
+    });
+  }
+});
+
 router.post(
   "/:eventId/like",
   passport.authenticate("jwt", { session: false }),

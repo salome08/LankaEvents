@@ -35,6 +35,18 @@ module.exports = {
       console.error(error);
     }
   },
+  findFromQuery: async (query) => {
+    try {
+      // Create a regular expression pattern for case-insensitive matching
+      const queryPattern = new RegExp(query, "i");
+      const events = await Event.find({ title: queryPattern });
+      // const eventsIds = events.map((el) => el._id);
+      console.log(events);
+      return events;
+    } catch (error) {
+      console.error(error);
+    }
+  },
   findFiltered: async (filters) => {
     try {
       console.log("filters", filters);
