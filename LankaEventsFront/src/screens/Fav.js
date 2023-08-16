@@ -60,20 +60,22 @@ const LoggedOutFavScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <Button
-        style={[
-          {
-            borderColor: themeColor.primary,
-            backgroundColor: themeColor.backgroundButton,
-          },
-          styles.logButton,
-        ]}
-        labelStyle={{ fontWeight: "600" }}
-        mode="contained"
-        onPress={() => navigation.navigate("SignIn")}
-      >
-        Log in
-      </Button>
+      <View style={styles.buttonContainer}>
+        <Button
+          style={[
+            {
+              borderColor: themeColor.primary,
+              backgroundColor: themeColor.backgroundButton,
+            },
+            styles.logButton,
+          ]}
+          labelStyle={{ fontWeight: "600" }}
+          mode="contained"
+          onPress={() => navigation.navigate("SignIn")}
+        >
+          Log in
+        </Button>
+      </View>
     </View>
   );
 };
@@ -257,6 +259,13 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
     fontWeight: "600",
+  },
+  buttonContainer: {
+    position: "absolute",
+    bottom: 82.1,
+    left: 0,
+    right: 0,
+    padding: 16,
   },
   logButton: {
     borderRadius: 4,

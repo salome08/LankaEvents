@@ -1,6 +1,7 @@
 export default {
   light: {
     primary: "#e91e63",
+    primaryDark: "rgb(150,20,79)",
     secondary: "#6C757D",
     background: "#FFFFFF",
     lightPrimary: "rgb(250, 228, 223)",
@@ -43,6 +44,7 @@ export default {
   // -----------------DARK------------------------------
   dark: {
     primary: "#e91e63",
+    primaryDark: "rgb(150,20,79)",
     secondary: "#81D4FA",
     background: "rgb(28, 28, 30)",
     lightPrimary: "rgb(250, 228, 223)",

@@ -2,83 +2,123 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSearch } from "../contexts/SearchContext";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "../contexts/ThemContext";
 
-const DateRangePicker = () => {
+const DateRangePicker = ({
+  pickedFrom,
+  pickedTo,
+  setPickedFrom,
+  setPickedTo,
+  setShowApplyButton,
+}) => {
   const { selectedDate, setSelectedDate } = useSearch();
   const { themeColor, isDarkMode } = useTheme();
   const [showPickerFrom, setShowPickerFrom] = useState(false);
-  const [pickedDate, setPickedDate] = useState(new Date());
   const [showPickerTo, setShowPickerTo] = useState(false);
-  const [pickedFrom, setPickedFrom] = useState();
-  const [pickedTo, setPickedTo] = useState();
+  const [isFromPicked, setIsFromPicked] = useState(
+    selectedDate?.data?.from ? true : false
+  );
+  const [isToPicked, setIsToPicked] = useState(
+    selectedDate?.data?.to ? true : false
+  );
   console.log("----------Render: DateRangePicker--------------");
-  /* TO DO: 
-  - show the From on click on choose a date
-  - show the To on selected from with the selected from initially
-  - disable past dates ( minimumDate)
-  - show apply range button when the From is selected
-  - on apply range set the dates in the context and lauch request
-  - set the choose date pink with V
-  - go back 
-  - initially get values from the state for the From and To
-  - clear date range on another selected option
-  - set the design
-*/
 
-  console.log("pickedDate", pickedDate);
-  console.log("pickedFrom", pickedDate);
-  console.log("pickedTo", pickedDate);
   // Function to handle the date picker selection
   const handleDateSelectFrom = (event, date) => {
     if (date) {
-      console.log("FROM", date);
-      setPickedFrom(date);
-      // setSelectedDate({
-      //   label: moment(date).format("DD MMM YYYY"),
-      //   value: date,
-      // });
-      // setPickedDate(date);
-      // setShowDatePicker(false);
-      // navigation.goBack();
+      setPickedFrom(new Date(date));
+      if (!isToPicked) setPickedTo(new Date(date));
+      setIsFromPicked(true);
+      setShowPickerFrom(false);
+      if (!isToPicked) setShowPickerTo(true);
+      setShowApplyButton(true);
     }
   };
   const handleDateSelectTo = (event, date) => {
     if (date) {
-      console.log("TO", date);
-      // setPickedFrom(date);
-      // setSelectedDate({
-      //   label: moment(date).format("DD MMM YYYY"),
-      //   value: date,
-      // });
-      // setPickedDate(date);
-      // setShowDatePicker(false);
-      // navigation.goBack();
+      setPickedTo(new Date(date));
+      setIsToPicked(true);
+      setShowPickerTo(false);
+      setShowApplyButton(true);
     }
   };
 
   return (
     <View style={styles.dateRangePickerContainer}>
       <View style={styles.datePickerContainer}>
-        <Text style={{ color: themeColor.searchText }}>From</Text>
-        <DateTimePicker
-          value={pickedDate}
-          mode="date"
-          display="compact"
-          onChange={handleDateSelectFrom}
-          themeVariant={isDarkMode ? "dark" : "light"}
-        />
+        <TouchableOpacity
+          onPress={() => {
+            setShowPickerFrom(!showPickerFrom);
+            setShowPickerTo(false);
+          }}
+        >
+          <Text style={[{ color: themeColor.lightGray }, styles.labelDate]}>
+            From:
+          </Text>
+          <Text
+            style={[
+              {
+                color: showPickerFrom
+                  ? themeColor.primaryDark
+                  : themeColor.searchText,
+              },
+              styles.dateText,
+            ]}
+          >
+            {moment(pickedFrom).format("DD MMM YYYY")}
+          </Text>
+        </TouchableOpacity>
       </View>
-      {pickedFrom && (
+      {isFromPicked && (
         <View style={styles.datePickerContainer}>
-          <Text style={{ color: themeColor.searchText }}>To</Text>
+          <TouchableOpacity
+            onPress={() => {
+              setShowPickerTo(!showPickerTo);
+              setShowPickerFrom(false);
+            }}
+          >
+            <Text style={[{ color: themeColor.lightGray }, styles.labelDate]}>
+              To:
+            </Text>
+            <Text
+              style={[
+                {
+                  color: showPickerTo
+                    ? themeColor.primaryDark
+                    : themeColor.searchText,
+                },
+                styles.dateText,
+              ]}
+            >
+              {isToPicked
+                ? moment(pickedTo).format("DD MMM YYYY")
+                : "Choose a date"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {showPickerFrom && (
+        <View style={styles.calendarContainer}>
           <DateTimePicker
             value={pickedFrom}
-            mode="date"
-            // display="compact"
+            minimumDate={new Date()}
+            display="inline"
+            onChange={handleDateSelectFrom}
+            themeVariant={isDarkMode ? "dark" : "light"}
+            accentColor={themeColor.primaryDark}
+          />
+        </View>
+      )}
+      {showPickerTo && (
+        <View style={styles.calendarContainer}>
+          <DateTimePicker
+            value={pickedTo}
+            minimumDate={pickedFrom}
+            display="inline"
             onChange={handleDateSelectTo}
             themeVariant={isDarkMode ? "dark" : "light"}
+            accentColor={themeColor.primaryDark}
           />
         </View>
       )}
@@ -91,12 +131,21 @@ export default DateRangePicker;
 const styles = StyleSheet.create({
   dateRangePickerContainer: {
     flex: 1,
-    // backgroundColor: "blue",
-    paddingHorizontal: 40,
   },
-  datePickerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  datePickerContainer: {},
+  calendarContainer: {
+    backgroundColor: "rgb(19,19,19)",
+    margin: 8,
+    borderRadius: 12,
+    padding: 3,
+    marginBottom: 80,
+  },
+  dateText: {
+    fontSize: 23,
+    fontWeight: 700,
+  },
+  labelDate: {
+    fontSize: 15,
+    fontWeight: 500,
   },
 });

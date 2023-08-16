@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { TouchableRipple, Button } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import _ from "lodash";
 import { FontAwesome5 } from "@expo/vector-icons";
 import EventCard from "../../components/EventCard";
 import eventApi from "../../../api/eventApi";
@@ -23,10 +24,37 @@ import { useSearch } from "../../contexts/SearchContext";
 import SearchBar from "../../components/SearchBar";
 
 // TODO:
-// - Sort by relevance / date
-// - Filters
 // - date & location can be null
-// - Search with searchBar
+
+// If query show query
+
+const EventsList = ({ events }) => {
+  const { themeColor, isDarkMode } = useTheme();
+
+  return (
+    <>
+      {events?.length ? (
+        <View style={styles.contentContainer}>
+          <ScrollView>
+            <View style={{ marginBottom: 115 }}>
+              {events.map((event, key) => {
+                return <EventCard key={key} event={event} />;
+              })}
+            </View>
+          </ScrollView>
+          <BlurView
+            intensity={80}
+            tint={isDarkMode ? "dark" : "light"}
+            style={styles.blurView}
+          />
+        </View>
+      ) : (
+        <NoResultScreen />
+      )}
+    </>
+  );
+};
+
 const SearchScreen = ({ navigation }) => {
   const { themeColor, isDarkMode } = useTheme();
   const { events } = useEvent();
@@ -35,35 +63,59 @@ const SearchScreen = ({ navigation }) => {
   const { loading } = useAuth();
   const insets = useSafeAreaInsets();
   const [filterEvents, setFilterEvents] = useState(events);
-  const [searchQuery, setSearchQuery] = useState("");
   const [filteredEventsLoading, setFilteredEventsLoading] = useState(false);
-
-  const onChangeSearch = (query) => setSearchQuery(query);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [queryEvents, setQueryEvents] = useState();
+  const [loadingQuery, setLoadingQuery] = useState(false);
 
   console.log("------------render: Search-----------");
+
+  const onChangeSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  useEffect(() => {
+    // console.log("In useEffect searchQuery");
+    if (searchQuery) {
+      setLoadingQuery(true);
+      const getData = setTimeout(async () => {
+        console.log("In setTimeout");
+        console.log("Sending request with query:", searchQuery);
+        const queryEvents = await eventApi.getFromQuery(searchQuery);
+        setQueryEvents(queryEvents);
+        setLoadingQuery(false);
+      }, 900);
+
+      return () => {
+        console.log("before clearTimeout");
+        clearTimeout(getData);
+
+        console.log("after clearTimeout");
+      };
+    } else {
+      setLoadingQuery(false);
+    }
+  }, [searchQuery]);
+
   useEffect(() => {
     console.log("In search useEffect");
+    setFilteredEventsLoading(true);
     const getFilteredEvents = async () => {
       const filters = {
         town: selectedTown,
-        date: selectedDate.value,
+        date: { value: selectedDate.value, data: selectedDate.data },
         categories: allFilters.categories,
         types: allFilters.types,
         free: allFilters.freeEvents,
         sortBy: allFilters.sortBy,
       };
 
-      setFilteredEventsLoading(true);
+      console.log("Request filtered events");
       const filteredEvents = await eventApi.getFiltered(filters);
       setFilterEvents(filteredEvents);
       setFilteredEventsLoading(false);
     };
 
-    // if (selectedTown || selectedDate) {
-    //   if (selectedTown === "Sri Lanka" && selectedDate.value === "anytime")
-    //     setFilterEvents(events);
-    //   else getFilteredEvents();
-    // }
     getFilteredEvents();
   }, [selectedTown, selectedDate, allFilters]);
 
@@ -86,80 +138,70 @@ const SearchScreen = ({ navigation }) => {
           placeholder="Search for..."
           onChangeSearch={onChangeSearch}
           searchQuery={searchQuery}
+          loadingQuery={loadingQuery}
         />
-        <TouchableOpacity
-          style={styles.locationContainer}
-          onPress={() => navigation.navigate("Location")}
-        >
-          <FontAwesome5
-            name="map-marker-alt"
-            size={14}
-            color={themeColor.searchText}
-          />
-          <Text style={[{ color: themeColor.searchText }, styles.locationText]}>
-            {selectedTown ? selectedTown : "Sri Lanka"}
-          </Text>
-          <FontAwesome5
-            name="chevron-down"
-            size={12}
-            color={themeColor.searchText}
-          />
-        </TouchableOpacity>
+        {!searchQuery && (
+          <TouchableOpacity
+            style={styles.locationContainer}
+            onPress={() => navigation.navigate("Location")}
+          >
+            <FontAwesome5
+              name="map-marker-alt"
+              size={14}
+              color={themeColor.searchText}
+            />
+            <Text
+              style={[{ color: themeColor.searchText }, styles.locationText]}
+            >
+              {selectedTown ? selectedTown : "Sri Lanka"}
+            </Text>
+            <FontAwesome5
+              name="chevron-down"
+              size={12}
+              color={themeColor.searchText}
+            />
+          </TouchableOpacity>
+        )}
       </View>
-      <View style={styles.filtersContainer}>
-        <Button
-          buttonColor={
-            isFilterSelected() ? themeColor.blue : themeColor.filterButtonBg
-          }
-          icon="tune"
-          mode="contained-tonal"
-          textColor={themeColor.filterButtonText}
-          onPress={() => navigation.navigate("Filters")}
-        >
-          Filters{"  "}
-          <FontAwesome5
-            name="chevron-down"
-            size={12}
-            color={themeColor.filterButtonText}
-          />
-        </Button>
-        <Button
-          buttonColor={
-            selectedDate.value !== "anytime"
-              ? themeColor.blue
-              : themeColor.filterButtonBg
-          }
-          icon="calendar-range"
-          mode="contained-tonal"
-          textColor={themeColor.filterButtonText}
-          onPress={() => navigation.navigate("Date")}
-        >
-          {selectedDate.label} {"  "}
-          <FontAwesome5
-            name="chevron-down"
-            size={12}
-            color={themeColor.filterButtonText}
-          />
-        </Button>
-      </View>
-      {filterEvents.length ? (
-        <View style={styles.contentContainer}>
-          <ScrollView>
-            <View style={{ marginBottom: 115 }}>
-              {filterEvents.map((event, key) => {
-                return <EventCard key={key} event={event} />;
-              })}
-            </View>
-          </ScrollView>
-          <BlurView
-            intensity={80}
-            tint={isDarkMode ? "dark" : "light"}
-            style={styles.blurView}
-          />
+      {!searchQuery && (
+        <View style={styles.filtersContainer}>
+          <Button
+            buttonColor={
+              isFilterSelected() ? themeColor.blue : themeColor.filterButtonBg
+            }
+            icon="tune"
+            mode="contained-tonal"
+            textColor={themeColor.filterButtonText}
+            onPress={() => navigation.navigate("Filters")}
+          >
+            Filters{"  "}
+            <FontAwesome5
+              name="chevron-down"
+              size={12}
+              color={themeColor.filterButtonText}
+            />
+          </Button>
+          <Button
+            buttonColor={
+              selectedDate.value !== "anytime"
+                ? themeColor.blue
+                : themeColor.filterButtonBg
+            }
+            icon="calendar-range"
+            mode="contained-tonal"
+            textColor={themeColor.filterButtonText}
+            onPress={() => navigation.navigate("Date")}
+          >
+            {selectedDate.label} {"  "}
+            <FontAwesome5
+              name="chevron-down"
+              size={12}
+              color={themeColor.filterButtonText}
+            />
+          </Button>
         </View>
-      ) : (
-        <NoResultScreen />
       )}
+      <EventsList events={searchQuery ? queryEvents : filterEvents} />
     </View>
   );
 };

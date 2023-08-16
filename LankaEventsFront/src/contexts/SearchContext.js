@@ -10,6 +10,7 @@ const SearchProvider = ({ children }) => {
   const [selectedDate, setSelectedDate] = useState({
     label: "Anytime",
     value: "anytime",
+    data: null,
   });
   const [selectedTown, setSelectedTown] = useState("Sri Lanka");
   const [allFilters, setAllFilters] = useState({
@@ -18,6 +19,7 @@ const SearchProvider = ({ children }) => {
     freeEvents: false,
     sortBy: "relevance",
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
   const isFilterSelected = () => {
     return allFilters.categories.length ||
@@ -38,6 +40,8 @@ const SearchProvider = ({ children }) => {
         allFilters,
         setAllFilters,
         isFilterSelected,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       {children}

@@ -33,6 +33,15 @@ module.exports = {
       return null;
     }
   },
+  getFromQuery: async (query) => {
+    try {
+      const { data } = await api.get(`/events/query/${query}`);
+      return data;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  },
   getLiked: async () => {
     const token = await getToken();
     try {

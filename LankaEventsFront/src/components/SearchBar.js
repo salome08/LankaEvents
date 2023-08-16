@@ -2,8 +2,14 @@ import React from "react";
 // import { SearchBar as SearchBarElement } from "react-native-elements";
 import { SearchBar as SearchBarElement } from "@rneui/themed";
 import { useTheme } from "../contexts/ThemContext";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-const SearchBar = ({ placeholder, onChangeSearch, searchQuery }) => {
+const SearchBar = ({
+  placeholder,
+  onChangeSearch,
+  searchQuery,
+  loadingQuery,
+}) => {
   const { themeColor } = useTheme();
 
   return (
@@ -13,6 +19,8 @@ const SearchBar = ({ placeholder, onChangeSearch, searchQuery }) => {
       value={searchQuery}
       showPrompt={false} // Set the showPrompt prop to false to hide the prompt bar
       autoFocus={false}
+      showCancel={true}
+      showLoading={loadingQuery}
       containerStyle={{
         backgroundColor: "transparent",
         borderBottomWidth: 2,
