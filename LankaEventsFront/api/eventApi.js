@@ -22,6 +22,17 @@ module.exports = {
       return null;
     }
   },
+  getHome: async (town) => {
+    try {
+      const { data } = await api.get("/events/home", {
+        params: { town },
+      });
+      return data;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  },
   getFiltered: async (filters) => {
     try {
       const { data } = await api.get("/events/filter", {

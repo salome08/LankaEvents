@@ -10,6 +10,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import eventApi from "../../api/eventApi";
 import { Ionicons } from "@expo/vector-icons";
+import { Chip } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../contexts/ThemContext";
 import moment from "moment";
@@ -64,12 +65,17 @@ const Event = ({ route, navigation }) => {
 
         <View style={styles.content}>
           {/* Titre de l'événement */}
-          <Text style={[{ color: themeColor.primaryText }, styles.title]}>
+          <Text style={[{ color: themeColor.primaryText2 }, styles.title]}>
             {event.title}
           </Text>
 
           {/* Section "Organisateur" */}
-          <View style={styles.organizerSection}>
+          <View
+            style={[
+              { backgroundColor: themeColor.eventSecondaryBg },
+              styles.organizerSection,
+            ]}
+          >
             <View style={styles.organizerInfo}>
               <Image
                 source={{
@@ -77,46 +83,96 @@ const Event = ({ route, navigation }) => {
                 }}
                 style={styles.organizerPhoto}
               />
-              <Text style={styles.organizerName}>{organizerName}</Text>
+              <Text
+                style={[
+                  { color: themeColor.primaryText2 },
+                  styles.organizerName,
+                ]}
+              >
+                {organizerName}
+              </Text>
             </View>
-            <TouchableOpacity style={styles.followButton}>
+            <TouchableOpacity
+              style={[
+                { backgroundColor: themeColor.blue },
+                styles.followButton,
+              ]}
+            >
               <Text style={styles.followButtonText}>Follow</Text>
             </TouchableOpacity>
           </View>
 
           {/* Section "Event infos" */}
           <View style={styles.infosContainer}>
-            <View style={styles.iconContainer}>
-              <Icon name="calendar-blank" size={17} />
+            <View
+              style={[
+                { backgroundColor: themeColor.eventSecondaryBg },
+                styles.iconContainer,
+              ]}
+            >
+              <Icon
+                name="calendar-blank"
+                size={17}
+                color={themeColor.iconWithBg}
+              />
             </View>
             <View style={styles.infosContent}>
-              <Text style={styles.infoTitle}>
+              <Text
+                style={[{ color: themeColor.primaryText2 }, styles.infoTitle]}
+              >
                 {moment(event.date).format("dddd DD MMMM [at] HH:mm")}
               </Text>
-              <Text style={styles.infoDescription}>
+              <Text
+                style={[
+                  { color: themeColor.secondaryText4 },
+                  styles.infoDescription,
+                ]}
+              >
                 10:00-18:00 Los Angeles Time{" "}
               </Text>
             </View>
           </View>
           <View style={styles.infosContainer}>
-            <View style={styles.iconContainer}>
-              <Icon name="map-marker" size={17} />
+            <View
+              style={[
+                { backgroundColor: themeColor.eventSecondaryBg },
+                styles.iconContainer,
+              ]}
+            >
+              <Icon name="map-marker" size={17} color={themeColor.iconWithBg} />
             </View>
             <View style={styles.infosContent}>
-              <Text style={styles.infoTitle}>{event.location.town}</Text>
-              <Text style={styles.infoDescription}>
-                425 N. Los angeles St, los angeles, CA 90012
+              <Text
+                style={[{ color: themeColor.primaryText2 }, styles.infoTitle]}
+              >
+                {event.online ? "Online event" : event.location.town}
               </Text>
+              {!event.online && (
+                <Text
+                  style={[
+                    { color: themeColor.secondaryText4 },
+                    styles.infoDescription,
+                  ]}
+                >
+                  425 N. Los angeles St, los angeles, CA 90012
+                </Text>
+              )}
             </View>
           </View>
 
           {/* Section "About this event" */}
           <View style={styles.descriptionSection}>
-            <Text style={styles.subTitle}>About this event</Text>
+            <Text style={[{ color: themeColor.primaryText2 }, styles.subTitle]}>
+              About this event
+            </Text>
 
             <Text
               numberOfLines={showFullDescription ? undefined : 2}
-              style={[styles.infoDescription, styles.descriptionText]}
+              style={[
+                { color: themeColor.secondaryText4 },
+                styles.infoDescription,
+                styles.descriptionText,
+              ]}
             >
               Sed ut perspiciatis unde omnis iste natus error sit voluptatem
               accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
@@ -135,20 +191,44 @@ const Event = ({ route, navigation }) => {
             </Text>
             {!showFullDescription ? (
               <TouchableOpacity onPress={handleReadMore}>
-                <Text style={styles.readMoreButton}>Read more</Text>
+                <Text
+                  style={[{ color: themeColor.blue }, styles.readMoreButton]}
+                >
+                  Read more
+                </Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={handleReadLess}>
-                <Text style={styles.readMoreButton}>Show less</Text>
+                <Text
+                  style={[{ color: themeColor.blue }, styles.readMoreButton]}
+                >
+                  Show less
+                </Text>
               </TouchableOpacity>
             )}
           </View>
 
-          <Text style={styles.subTitle}>Location</Text>
-          <Text style={styles.infoDescription}>map view</Text>
+          {/* Section "Location" */}
+          {!event.online && (
+            <View>
+              <Text
+                style={[{ color: themeColor.primaryText2 }, styles.subTitle]}
+              >
+                Location
+              </Text>
+              <Text style={styles.infoDescription}>
+                map view if event not online
+              </Text>
+            </View>
+          )}
 
           {/* Section "Organisateur" */}
-          <View style={styles.organizerFinalSection}>
+          <View
+            style={[
+              { borderColor: themeColor.devider },
+              styles.organizerFinalSection,
+            ]}
+          >
             <Image
               source={{
                 uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/The_Event_2010_Intertitle.svg/800px-The_Event_2010_Intertitle.svg.png",
@@ -156,14 +236,62 @@ const Event = ({ route, navigation }) => {
               style={styles.organizerFinalPhoto}
             />
             <View style={styles.organizerFinalInfo}>
-              <Text style={styles.infoDescription}>Organized by</Text>
-              <Text style={styles.organizerFinalName}>{organizerName}</Text>
-              <Text style={styles.organizerFinalDescription}>
-                {event.organizer.description}
+              <Text
+                style={[
+                  { color: themeColor.secondaryText4 },
+                  styles.infoDescription,
+                ]}
+              >
+                Organized by
               </Text>
-              <TouchableOpacity style={styles.followButton}>
+              <Text
+                style={[
+                  { color: themeColor.primaryText2 },
+                  styles.organizerFinalName,
+                ]}
+              >
+                {organizerName}
+              </Text>
+              <Text
+                style={[
+                  { color: themeColor.secondaryText4 },
+                  styles.organizerFinalDescription,
+                ]}
+              >
+                {event.organizer.description} || blablabla organizer desc
+              </Text>
+              <TouchableOpacity
+                style={[
+                  { backgroundColor: themeColor.blue },
+                  styles.followButton,
+                ]}
+              >
                 <Text style={styles.followButtonText}>Follow</Text>
               </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Section "Related to this event" */}
+          <View style={styles.descriptionSection}>
+            <Text style={[{ color: themeColor.primaryText2 }, styles.subTitle]}>
+              Related to this event
+            </Text>
+            <View style={styles.categoriesContainer}>
+              {event.categories.map((category, key) => (
+                <Chip
+                  key={key}
+                  // onPress={() => toggleSelectedCategory(category)}
+                  style={{
+                    backgroundColor: themeColor.eventSecondaryBg,
+                    borderRadius: 30,
+                  }}
+                  textStyle={{ color: themeColor.filterButtonText }}
+                  // selected={selectedCategories.find((e) => e === category)}
+                  // selectedColor={themeColor.blue}
+                >
+                  {category}
+                </Chip>
+              ))}
             </View>
           </View>
         </View>
@@ -189,7 +317,6 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 100,
     marginBottom: 16,
-    backgroundColor: "rgb(240, 240, 245)",
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -210,7 +337,6 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
   },
   followButton: {
-    backgroundColor: "lightblue",
     paddingVertical: 13,
     paddingHorizontal: 29,
     borderRadius: 3,
@@ -238,16 +364,18 @@ export const styles = StyleSheet.create({
   readMoreButton: {
     fontSize: 15,
     fontWeight: "600",
-    color: "blue",
   },
   organizerFinalSection: {
     alignItems: "center",
+    paddingVertical: 60,
     rowGap: 24,
-    marginBottom: 36,
+    marginBottom: 5,
+    borderTopWidth: 0.2,
+    borderBottomWidth: 0.2,
   },
   organizerFinalPhoto: {
-    width: 70,
-    height: 70,
+    width: 80,
+    height: 80,
     borderRadius: 40,
   },
   organizerFinalInfo: {
@@ -257,13 +385,13 @@ export const styles = StyleSheet.create({
   organizerFinalName: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 8,
-    marginTop: 12,
+    // marginBottom: 3,
+    marginTop: 15,
   },
   organizerFinalDescription: {
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 8,
+    marginVertical: 22,
   },
   title: {
     fontSize: 32,
@@ -278,7 +406,6 @@ export const styles = StyleSheet.create({
     fontWeight: "300",
   },
   iconContainer: {
-    backgroundColor: "rgb(240, 240, 245)",
     width: 37,
     height: 37,
     borderRadius: 9,
@@ -292,9 +419,16 @@ export const styles = StyleSheet.create({
   },
   infoDescription: {
     fontSize: 14,
-    color: "gray",
   },
   headerIconContainer: {
     paddingHorizontal: 16,
+  },
+  categoriesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 20,
+    marginBottom: 20,
+    columnGap: 8,
+    rowGap: 10,
   },
 });

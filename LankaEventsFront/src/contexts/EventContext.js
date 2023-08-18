@@ -8,15 +8,17 @@ import moment from "moment";
 const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
+  const { authenticated, user } = useAuth();
   const [events, setEvents] = useState(null);
+  // const [homeEvents, setHomEvents] = useState([]);
   const [likedEvents, setLikedEvents] = useState([]);
   const [eventsLoading, setLoading] = useState(true);
-  const { authenticated, user } = useAuth();
   // const [locationSearch, setLocationSearch] = useState("Weligama");
 
   // Fetch events from the database when the component is mounted
   useEffect(() => {
     const fetchEvents = async () => {
+      // TO DO: infinite scroll for search
       try {
         // Call your function to fetch liked events from the database
         const fetchedEvents = await eventApi.getAll();
@@ -30,6 +32,20 @@ const EventProvider = ({ children }) => {
       }
     };
 
+    // const fetchHomeEvents = async () => {
+    //   try {
+    //     // Call your function to fetch liked events from the database
+    //     const fetchedEvents = await eventApi.getHome();
+    //     console.log(fetchedEvents);
+    //     setHomEvents(fetchedEvents); // Set the initial state with the fetched data
+    //     // Get liked events from the api
+    //     setLoading(false);
+    //   } catch (error) {
+    //     console.error("Error fetching liked events:", error);
+    //     setLoading(false);
+    //   }
+    // };
+    // fetchHomeEvents();
     fetchEvents();
   }, []); // Empty dependency array to run the effect only once
 

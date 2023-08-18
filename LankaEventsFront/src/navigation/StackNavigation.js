@@ -22,7 +22,6 @@ import { Feather } from "@expo/vector-icons";
 import { useTheme } from "../contexts/ThemContext";
 import HeaderBackButton from "../components/HeaderBackButton";
 import HeaderEventActions from "../components/HeaderEventActions";
-import SearchQuery from "../screens/search/SearchQuery";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,24 +55,6 @@ const StackNavigation = () => {
       />
 
       {/* Search */}
-      <Stack.Screen
-        name="SearchQuery"
-        component={SearchQuery}
-        options={{
-          // headerTitle: "When do you want to go out?",
-          // headerTitleStyle: {
-          //   fontSize: 20,
-          // },
-          presentation: "modal",
-          headerShown: false,
-
-          // headerTintColor: themeColor.searchText,
-          // headerShadowVisible: false,
-          // headerStyle: {
-          //   backgroundColor: themeColor.searchBackground,
-          // },
-        }}
-      />
       <Stack.Screen
         name="Date"
         component={SelectDate}

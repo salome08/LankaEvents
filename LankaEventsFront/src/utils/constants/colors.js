@@ -8,10 +8,12 @@ export default {
 
     // TEXT
     primaryText: "rgb(31, 10, 61)",
+    primaryText2: "rgb(29, 10, 58)",
     secondaryText: "rgb(96, 101, 127)",
     secondaryText1: "rgb(58, 53, 79)",
     secondaryText2: "rgb(169,168,179)",
     secondaryText3: "rgb(112,114,135)",
+    secondaryText4: "rgb(110,113,136)",
 
     // COMPONENTS
     bottomTab: "rgba(238, 238, 238, 0.1)",
@@ -29,6 +31,8 @@ export default {
     iconContainer: "rgb(222, 228, 250)",
     segmentedButtonBg: "rgb(225, 224, 226)",
     segmentedButtonCheckedBg: "rgb(64, 63, 67)",
+    eventSecondaryBg: "rgb(247,246,248)",
+    iconWithBg: "rgb(74,77,98)",
 
     // BLUE
     blue: "rgb(54, 89, 227)",
@@ -51,10 +55,12 @@ export default {
 
     // TEXT
     primaryText: "rgb(237, 237, 237)",
+    primaryText2: "rgb(247, 246, 248)",
     secondaryText: "rgb(171, 166, 178)",
     secondaryText1: "rgb(192, 192, 192)",
     secondaryText2: "rgb(119,119,119)",
     secondaryText3: "rgb(119,119,119)",
+    secondaryText4: "rgb(170,167,178)",
 
     // COMPONENTS
     bottomTab: "rgba(50, 50, 52, 0.5)",
@@ -75,6 +81,8 @@ export default {
     iconContainer: "rgb(38, 48, 65)",
     segmentedButtonBg: "rgb(19, 18, 20)",
     segmentedButtonCheckedBg: "rgb(64, 63, 67)",
+    eventSecondaryBg: "rgb(42,37,54)",
+    iconWithBg: "rgb(217,218,227)",
 
     // BLUE
     blue: "rgb(103, 151, 247)",

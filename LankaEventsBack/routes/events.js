@@ -60,6 +60,24 @@ router.post(
   })
 );
 
+// get home events
+router.get("/home", async (req, res, next) => {
+  try {
+    const { town } = req.query;
+    const homeEvents = await EventsService.findHome(town);
+    console.log("homeEvents", homeEvents);
+    res.status(200).json(homeEvents);
+  } catch (error) {
+    const { name, code, errmsg, message } = error;
+    res.status(400).json({
+      name,
+      code,
+      message: errmsg || message,
+      // message: getMongoError(code, "Event", errmsg || message),
+    });
+  }
+});
+
 // get filtered events
 router.get("/filter", async (req, res, next) => {
   try {

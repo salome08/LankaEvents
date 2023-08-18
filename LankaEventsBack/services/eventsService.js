@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Event = require("../models/Event");
 const moment = require("moment");
 
-module.exports = {
+module.exports = thisService = {
   profile: async (req, res) => {
     let u = await User.findOne({ _id: req.user.userId });
     res.apiSuccess(u);
@@ -35,6 +35,94 @@ module.exports = {
       console.error(error);
     }
   },
+  findHome: async (town) => {
+    try {
+      console.log("town", town);
+      const onlineEvents = await thisService.findFiltered({
+        town: "Online events",
+      });
+      const weekendEvents = await thisService.findFiltered({
+        "date.value": "this_weekend",
+        town: town,
+      });
+      const freeEvents = await thisService.findFiltered({
+        free: "true",
+        town: town,
+      });
+      const healthEvents = await thisService.findFiltered({
+        categories: ["Health", "Sports & Fitness", "Spirituality"],
+        town: town,
+      });
+      const businessEvents = await thisService.findFiltered({
+        categories: ["Business"],
+        town: town,
+      });
+      if (town === "Online events") {
+        console.log("request online events");
+        const onlineConferences = await thisService.findFiltered({
+          types: ["Conference"],
+          town: town,
+        });
+        const onlineClasses = await thisService.findFiltered({
+          types: ["Class"],
+          town: town,
+        });
+
+        // ONLINE EVENTS
+        return [
+          { label: "Popular Online events", events: onlineEvents.slice(0, 8) },
+          { label: "This Weekend", events: weekendEvents.slice(0, 8) },
+          {
+            label: "Business & Professional events",
+            events: businessEvents.slice(0, 8),
+          },
+          {
+            label: "Online Conferences",
+            events: onlineConferences.slice(0, 8),
+          },
+          { label: "Onlines Classes", events: onlineClasses.slice(0, 8) },
+          {
+            label: "Health & Wellness events",
+            events: healthEvents.slice(0, 8),
+          },
+          { label: "Free events ", events: freeEvents.slice(0, 8) },
+        ];
+      } else {
+        console.log("request town events");
+        const popularEvents = await thisService.findFiltered({ town: town });
+        const musicEvents = await thisService.findFiltered({
+          categories: ["Music"],
+          town: town,
+        });
+        const foodAndDrinkEvents = await thisService.findFiltered({
+          categories: ["Food & Drink"],
+          town: town,
+        });
+        // TOWN EVENTS
+        return [
+          { label: `Popular in ${town}`, events: popularEvents.slice(0, 8) },
+          { label: "This Weekend", events: weekendEvents.slice(0, 8) },
+          { label: "Online events", events: onlineEvents.slice(0, 8) },
+          { label: "Music events", events: musicEvents.slice(0, 8) },
+          {
+            label: "Food & Drink events",
+            events: foodAndDrinkEvents.slice(0, 8),
+          },
+          {
+            label: "Business & Professional events",
+            events: businessEvents.slice(0, 8),
+          },
+          {
+            label: "Health & Wellness events",
+            events: healthEvents.slice(0, 8),
+          },
+          { label: "Free events ", events: freeEvents.slice(0, 8) },
+        ];
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  },
   findFromQuery: async (query) => {
     try {
       // Create a regular expression pattern for case-insensitive matching
@@ -49,15 +137,17 @@ module.exports = {
   },
   findFiltered: async (filters) => {
     try {
-      console.log("filters", filters);
       const { sortBy } = filters;
+      console.log({ filters });
       const pipeline = getFilterPipepline(filters);
-      console.log("pipeline", pipeline);
       const events = pipeline.length
         ? await Event.aggregate(pipeline)
         : await Event.find();
 
       // console.log("not sorted Events", events);
+      if (filters.date === "this_weekend") {
+        console.log({ events });
+      }
       let sortedEvents;
       if (sortBy === "date") {
         sortedEvents = events.sort((a, b) =>
@@ -72,16 +162,12 @@ module.exports = {
           (a, b) => b.relevanceScore - a.relevanceScore
         );
       }
-      // console.log("sortedEvents", sortedEvents);
-      // console.sortedEventslog(sortedEvents);
-      sortedEvents.forEach((e) => {
-        console.log(e), console.log(e.relevanceScore);
-      });
       return sortedEvents;
     } catch (error) {
       console.error(error);
     }
   },
+
   findOne: (filter) => {
     const content = Contents.findOne(filter);
     return content;
@@ -137,12 +223,20 @@ const getFilterPipepline = (filters) => {
   const { town, date, categories, types, free } = filters;
   const pipeline = [];
 
-  if (town && town !== "Sri Lanka") {
-    pipeline.push({
-      $match: {
-        "location.town": town, // Filter events by town
-      },
-    });
+  if (town) {
+    if (town === "Online events") {
+      pipeline.push({
+        $match: {
+          online: true, // Filter events by town
+        },
+      });
+    } else if (town !== "Sri Lanka") {
+      pipeline.push({
+        $match: {
+          "location.town": town, // Filter events by town
+        },
+      });
+    }
   }
 
   if (free === "true") {
