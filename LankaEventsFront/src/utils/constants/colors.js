@@ -44,6 +44,7 @@ export default {
     veryLightGray: "rgb(220,217,227)",
     veryLightBackground: "rgb(247,246,248)",
     devider: "rgb(198,197,200)",
+    devider2: "rgb(238,236,242)",
   },
   // -----------------DARK------------------------------
   dark: {
@@ -94,5 +95,6 @@ export default {
     veryLightGray: "rgb(42,42,42)",
     veryLightBackground: "rgb(44,43,45)",
     devider: "rgb(56,56,58)",
+    devider2: "rgb(38,38,39)",
   },
 };

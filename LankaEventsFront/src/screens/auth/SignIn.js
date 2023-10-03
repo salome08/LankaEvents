@@ -5,12 +5,14 @@ import { useNavigation } from "@react-navigation/native";
 import * as WebBrowser from "expo-web-browser";
 import { useAuth } from "../../contexts/AuthContext";
 import { storeToken } from "../../utils/functions/storage";
+import { useTheme } from "../../contexts/ThemContext";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const SignInScreen = () => {
   const navigation = useNavigation();
   const { logIn } = useAuth();
+  const { themeColor, isDarkMode } = useTheme();
 
   const handleGoogleSignIn = async () => {
     const response = await WebBrowser.openAuthSessionAsync(
@@ -50,35 +52,46 @@ const SignInScreen = () => {
     // Handle Facebook sign-in logic
   };
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+    <View
+      style={[{ backgroundColor: themeColor.background }, styles.container]}
+    >
+      <View style={styles.textContainer}>
+        <Text style={[{ color: themeColor.primaryText }, styles.title]}>
+          Let's get started
+        </Text>
+        <Text style={[{ color: themeColor.primaryText }, styles.subtitle]}>
+          Sign up or log in to see what's happening near you
+        </Text>
+      </View>
 
-      <Button
-        mode="contained"
-        icon="email"
-        onPress={handleSignIn}
-        style={styles.button}
-      >
-        Sign in with Email
-      </Button>
+      <View style={styles.linksContainer}>
+        <Button
+          mode="contained"
+          icon="email"
+          onPress={handleSignIn}
+          style={styles.button}
+        >
+          Sign in with Email
+        </Button>
 
-      <Button
-        mode="contained"
-        icon="facebook"
-        onPress={handleFacebookSignIn}
-        style={styles.button}
-      >
-        Sign in with Facebook
-      </Button>
+        <Button
+          mode="contained"
+          icon="facebook"
+          onPress={handleFacebookSignIn}
+          style={styles.button}
+        >
+          Sign in with Facebook
+        </Button>
 
-      <Button
-        mode="contained"
-        icon="google"
-        onPress={handleGoogleSignIn}
-        style={styles.button}
-      >
-        Sign in with Google
-      </Button>
+        <Button
+          mode="contained"
+          icon="google"
+          onPress={handleGoogleSignIn}
+          style={styles.button}
+        >
+          Sign in with Google
+        </Button>
+      </View>
     </View>
   );
 };
@@ -86,17 +99,30 @@ const SignInScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-between",
     padding: 20,
   },
+  textContainer: {
+    paddingTop: 50,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  linksContainer: { paddingBottom: 80, rowGap: 8 },
   title: {
-    fontSize: 24,
+    fontSize: 35,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
   },
+  subtitle: {
+    fontSize: 15,
+    marginTop: 20,
+    maxWidth: 300,
+  },
   button: {
     marginBottom: 10,
+    borderRadius: 4,
+    borderWidth: 2,
   },
 });
 

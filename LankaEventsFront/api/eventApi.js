@@ -24,6 +24,7 @@ module.exports = {
   },
   getHome: async (town) => {
     try {
+      console.log(API_URL);
       const { data } = await api.get("/events/home", {
         params: { town },
       });

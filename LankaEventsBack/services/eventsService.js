@@ -70,22 +70,46 @@ module.exports = thisService = {
 
         // ONLINE EVENTS
         return [
-          { label: "Popular Online events", events: onlineEvents.slice(0, 8) },
-          { label: "This Weekend", events: weekendEvents.slice(0, 8) },
+          {
+            label: "Popular Online events",
+            labelType: "popular",
+            events: onlineEvents.slice(0, 8),
+          },
+          {
+            label: "This Weekend",
+            labelType: "date",
+            searchValue: "this_weekend",
+            events: weekendEvents.slice(0, 8),
+          },
           {
             label: "Business & Professional events",
+            labelType: "category",
+            searchValue: ["Business"],
             events: businessEvents.slice(0, 8),
           },
           {
             label: "Online Conferences",
+            labelType: "type",
+            searchValue: ["Conference"],
             events: onlineConferences.slice(0, 8),
           },
-          { label: "Onlines Classes", events: onlineClasses.slice(0, 8) },
+          {
+            label: "Onlines Classes",
+            labelType: "type",
+            searchValue: ["Class"],
+            events: onlineClasses.slice(0, 8),
+          },
           {
             label: "Health & Wellness events",
+            labelType: "category",
+            searchValue: ["Health", "Sports & Fitness", "Spirituality"],
             events: healthEvents.slice(0, 8),
           },
-          { label: "Free events ", events: freeEvents.slice(0, 8) },
+          {
+            label: "Free events ",
+            labelType: "free",
+            events: freeEvents.slice(0, 8),
+          },
         ];
       } else {
         console.log("request town events");
@@ -100,23 +124,52 @@ module.exports = thisService = {
         });
         // TOWN EVENTS
         return [
-          { label: `Popular in ${town}`, events: popularEvents.slice(0, 8) },
-          { label: "This Weekend", events: weekendEvents.slice(0, 8) },
-          { label: "Online events", events: onlineEvents.slice(0, 8) },
-          { label: "Music events", events: musicEvents.slice(0, 8) },
+          {
+            label: `Popular in ${town}`,
+            labelType: "popular",
+            events: popularEvents.slice(0, 8),
+          },
+          {
+            label: "This Weekend",
+            labelType: "date",
+            searchValue: "this_weekend",
+            events: weekendEvents.slice(0, 8),
+          },
+          {
+            label: "Online events",
+            labelType: "online",
+            searchValue: "Online events",
+            events: onlineEvents.slice(0, 8),
+          },
+          {
+            label: "Music events",
+            labelType: "category",
+            searchValue: ["Music"],
+            events: musicEvents.slice(0, 8),
+          },
           {
             label: "Food & Drink events",
+            labelType: "category",
+            searchValue: ["Food & Drink"],
             events: foodAndDrinkEvents.slice(0, 8),
           },
           {
             label: "Business & Professional events",
+            labelType: "category",
+            searchValue: ["Business"],
             events: businessEvents.slice(0, 8),
           },
           {
             label: "Health & Wellness events",
+            labelType: "category",
+            searchValue: ["Health", "Sports & Fitness", "Spirituality"],
             events: healthEvents.slice(0, 8),
           },
-          { label: "Free events ", events: freeEvents.slice(0, 8) },
+          {
+            label: "Free events ",
+            labelType: "free",
+            events: freeEvents.slice(0, 8),
+          },
         ];
       }
     } catch (error) {

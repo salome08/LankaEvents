@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import EventCard from "../components/EventCard";
+import EventCardHome from "../components/EventCardHome";
 import eventApi from "../../api/eventApi";
 import { useTheme } from "../contexts/ThemContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -20,7 +20,8 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { authenticated, user, loading } = useAuth();
   const { themeColor, isDarkMode } = useTheme();
-  const { selectedTown } = useSearch();
+  const { selectedTown, setSelectedDate, setAllFilters, setSelectedTown } =
+    useSearch();
   const { events, isLiked, toggleLikeEvent, eventsLoading } = useEvent();
   const [homeEvents, setHomEvents] = useState([]);
   const insets = useSafeAreaInsets();
@@ -94,31 +95,88 @@ const HomeScreen = () => {
 
   return (
     <View
-      style={[{ backgroundColor: themeColor.background }, styles.container]}
+      style={[
+        {
+          backgroundColor: themeColor.background,
+          paddingTop: insets.top,
+        },
+        styles.container,
+      ]}
     >
       <View style={styles.contentContainer}>
         <ScrollView>
-          <View style={{ paddingTop: 23, marginBottom: 115 }}>
+          <View
+            style={{
+              marginBottom: 84,
+            }}
+          >
             {homeEvents.map((category, key) => {
               return (
+                // Show Label + event by category if the category has at least 1 event
                 category.events.length > 0 && (
-                  <View key={key}>
+                  <View
+                    style={[
+                      { borderBottomColor: themeColor.devider2 },
+                      styles.categoryContainer,
+                    ]}
+                    key={key}
+                  >
                     <Text
                       style={[
                         {
-                          color: themeColor.primaryText,
-                          paddingTop: insets.top,
+                          color: themeColor.secondaryText1,
                         },
                         styles.label,
                       ]}
                     >
                       {category.label}
                     </Text>
-                    {category.events.map((event, key) => (
-                      <EventCard event={event} />
-                    ))}
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate("Search")}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      <View style={styles.eventsContainer}>
+                        {category.events.map((event, key) => (
+                          // Show list of events
+                          <EventCardHome event={event} key={key} />
+                        ))}
+                      </View>
+                    </ScrollView>
+                    {/* <TouchableOpacity
+                      onPress={() => {
+                        if (category.labelType === "date")
+                          setSelectedDate({
+                            label: category.label,
+                            value: category.searchValue,
+                            data: null,
+                          });
+                        else if (category.labelType === "category")
+                          setAllFilters({
+                            categories: category.searchValue,
+                            types: [],
+                            freeEvents: false,
+                            sortBy: "relevance",
+                          });
+                        else if (category.labelType === "type")
+                          setAllFilters({
+                            categories: [],
+                            types: category.searchValue,
+                            freeEvents: false,
+                            sortBy: "relevance",
+                          });
+                        else if (category.labelType === "free")
+                          setAllFilters({
+                            categories: [],
+                            types: [],
+                            freeEvents: true,
+                            sortBy: "relevance",
+                          });
+                        else if (category.labelType === "online") {
+                          console.log(category);
+                          setSelectedTown(category.searchValue);
+                        }
+                        navigation.navigate("Search");
+                      }}
                     >
                       <Text
                         style={{
@@ -129,7 +187,7 @@ const HomeScreen = () => {
                       >
                         View more events
                       </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                 )
               );
@@ -156,6 +214,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column-reverse",
   },
+  categoryContainer: {
+    borderBottomWidth: 17,
+    paddingBottom: 16,
+  },
+  eventsContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    columnGap: 16,
+  },
   blurView: {
     ...StyleSheet.absoluteFillObject,
     height: 82, // Set the height of the BlurView
@@ -166,9 +233,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   label: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 26,
+    fontWeight: "800",
+    paddingTop: 40,
     paddingHorizontal: 16,
-    // marginTop: 25,
+    marginBottom: 17,
   },
 });
