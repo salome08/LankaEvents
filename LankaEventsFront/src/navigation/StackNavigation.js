@@ -112,7 +112,23 @@ const StackNavigation = () => {
       />
       <Stack.Screen name="ManageEvents" component={ManageEvents} />
       <Stack.Screen name="LoginOptions" component={LoginOptions} />
-      <Stack.Screen name="AccountSettings" component={AccountSettings} />
+      <Stack.Screen
+        name="AccountSettings"
+        component={AccountSettings}
+        options={{
+          headerTitle: "Account settings",
+          headerTitleAlign: "left",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "700",
+          },
+          headerTintColor: themeColor.searchText,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: themeColor.background,
+          },
+        }}
+      />
 
       {/* Support */}
       <Stack.Screen name="HelpCenter" component={HelpCenter} />

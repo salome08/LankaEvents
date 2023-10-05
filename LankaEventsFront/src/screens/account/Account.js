@@ -25,7 +25,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { color } from "@rneui/base";
 const settingsLinks = [
   { title: "Primary city", screen: "Location", showAnonymous: true },
-  { title: "Copy events to calendar", screen: "", showAnonymous: true },
+  // { title: "Copy events to calendar", screen: "", showAnonymous: true },
   { title: "Manage events", screen: "ManageEvents", showAnonymous: false },
   {
     title: "Manage log in options",
@@ -140,7 +140,7 @@ const SectionUserInfos = () => {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => navigation.navigate("EditProfile")}
+              onPress={() => navigation.navigate("AccountSettings")}
             >
               <Icon name="pencil-outline" size={20} color={themeColor.blue} />
             </TouchableOpacity>
@@ -216,7 +216,7 @@ const AccountScreen = () => {
                   </Text>
                   {category.links.map(
                     (link, key) =>
-                      link.showAnonymous && (
+                      (authenticated || link.showAnonymous) && (
                         <PressableLink
                           key={key}
                           title={link.title}

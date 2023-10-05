@@ -1,51 +1,99 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import { useAuth } from "../../contexts/AuthContext";
+import { useTheme } from "../../contexts/ThemContext";
+import ActionUpdatePicture from "../../components/ActionUpdatePicture";
+import { Entypo } from "@expo/vector-icons";
 
 const AccountSettings = () => {
+  const { themeColor } = useTheme();
+  const { logOut, authenticated, user } = useAuth();
+
+  const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSaveSettings = () => {
-    // Save the account settings to your app's storage or send them to the server
-  };
+  const settingsList = [
+    { label: "Name", value: user?.name, link: "yes" },
+    { label: "Email", value: user?.email },
+    { label: "Password", value: "Update password", link: "yes" },
+    { label: "Account", value: "Close your account", link: "yes" },
+  ];
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button title="Save" onPress={handleSaveSettings} />
+    <View
+      style={[{ backgroundColor: themeColor.background }, styles.container]}
+    >
+      <View style={styles.imageContainer}>
+        <Image
+          source={{
+            uri: user?.pictureUrl,
+          }}
+          style={styles.profilePicture}
+        />
+        <ActionUpdatePicture />
+      </View>
+      <View style={styles.settingsContainer}>
+        {settingsList.map((setting, key) => (
+          <View key={key} style={styles.settingContainer}>
+            <Text style={{ color: themeColor.primaryText }}>
+              {setting.label}
+            </Text>
+            {setting.link ? (
+              <Pressable style={styles.linkContainer}>
+                <Text style={{ color: themeColor.blue }}>{setting.value}</Text>
+                <Entypo
+                  name="chevron-right"
+                  size={17}
+                  color={themeColor.primaryText}
+                />
+              </Pressable>
+            ) : (
+              <Text style={{ color: themeColor.primaryText }}>
+                {setting.value}
+              </Text>
+            )}
+          </View>
+        ))}
+      </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
   },
-  input: {
-    marginBottom: 10,
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+  imageContainer: {
+    alignItems: "center",
+  },
+  settingsContainer: {
+    marginTop: 70,
+    rowGap: 15,
+  },
+  settingContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  linkContainer: {
+    flexDirection: "row",
+    columnGap: 12,
+  },
+  profilePicture: {
+    width: 100,
+    height: 100,
+    marginTop: 20,
+    borderRadius: 80,
+    marginBottom: 25,
   },
 });
 

@@ -162,7 +162,7 @@ const FavScreen = ({ navigation }) => {
             <View style={styles.eventCardContainer}>
               {likedEvents.map((event, key) => {
                 return (
-                  <>
+                  <View key={key}>
                     {(key === 0 ||
                       (key > 0 &&
                         !moment(likedEvents[key - 1].date).isSame(
@@ -187,7 +187,7 @@ const FavScreen = ({ navigation }) => {
                       </View>
                     )}
                     <EventCard key={key} event={event} />
-                  </>
+                  </View>
                 );
               })}
             </View>
