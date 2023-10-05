@@ -130,7 +130,7 @@ const StackNavigation = () => {
       <Stack.Screen
         name="SignIn"
         component={SignIn}
-        options={{ presentation: "modal" }}
+        options={{ presentation: "modal", headerShown: false }}
       />
     </Stack.Navigator>
   );

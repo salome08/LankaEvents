@@ -9,6 +9,39 @@ import { useTheme } from "../../contexts/ThemContext";
 
 WebBrowser.maybeCompleteAuthSession();
 
+const AuthButton = ({ icon, label, onPress }) => {
+  const { themeColor, isDarkMode } = useTheme();
+
+  return (
+    <Button
+      mode="contained"
+      icon={icon !== "email" && icon}
+      onPress={onPress}
+      labelStyle={{
+        color: "white",
+      }}
+      style={[
+        {
+          borderWidth: isDarkMode ? 2 : 0,
+          borderColor:
+            icon === "email" ? themeColor.primary : themeColor.primaryText2,
+          backgroundColor:
+            icon === "email"
+              ? themeColor.backgroundButton
+              : icon === "google"
+              ? "#0F9D58"
+              : icon === "facebook"
+              ? "#3b5998"
+              : "black",
+        },
+        styles.button,
+      ]}
+    >
+      {label}
+    </Button>
+  );
+};
+
 const SignInScreen = () => {
   const navigation = useNavigation();
   const { logIn } = useAuth();
@@ -51,13 +84,16 @@ const SignInScreen = () => {
   const handleFacebookSignIn = () => {
     // Handle Facebook sign-in logic
   };
+  const handleAppleSignIn = () => {
+    // Handle Facebook sign-in logic
+  };
   return (
     <View
       style={[{ backgroundColor: themeColor.background }, styles.container]}
     >
       <View style={styles.textContainer}>
         <Text style={[{ color: themeColor.primaryText }, styles.title]}>
-          Let's get started
+          Let's Get Started !
         </Text>
         <Text style={[{ color: themeColor.primaryText }, styles.subtitle]}>
           Sign up or log in to see what's happening near you
@@ -65,32 +101,26 @@ const SignInScreen = () => {
       </View>
 
       <View style={styles.linksContainer}>
-        <Button
-          mode="contained"
+        <AuthButton
           icon="email"
+          label="Continue with email address"
           onPress={handleSignIn}
-          style={styles.button}
-        >
-          Sign in with Email
-        </Button>
-
-        <Button
-          mode="contained"
+        />
+        <AuthButton
           icon="facebook"
+          label="Sign in with Facebook"
           onPress={handleFacebookSignIn}
-          style={styles.button}
-        >
-          Sign in with Facebook
-        </Button>
-
-        <Button
-          mode="contained"
+        />
+        <AuthButton
           icon="google"
+          label="Sign in with Google"
           onPress={handleGoogleSignIn}
-          style={styles.button}
-        >
-          Sign in with Google
-        </Button>
+        />
+        <AuthButton
+          icon="apple"
+          label="Sign in with Apple"
+          onPress={handleAppleSignIn}
+        />
       </View>
     </View>
   );
@@ -104,15 +134,13 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     paddingTop: 50,
-    alignItems: "flex-start",
-    justifyContent: "center",
   },
-  linksContainer: { paddingBottom: 80, rowGap: 8 },
+  linksContainer: { paddingBottom: 110, rowGap: 8 },
   title: {
     fontSize: 35,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+    fontWeight: "800",
+    marginBottom: 10,
+    marginTop: 30,
   },
   subtitle: {
     fontSize: 15,
@@ -122,7 +150,6 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 10,
     borderRadius: 4,
-    borderWidth: 2,
   },
 });
 
