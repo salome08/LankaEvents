@@ -54,10 +54,13 @@ const EventProvider = ({ children }) => {
       try {
         const fetchedLikedEvents = await eventApi.getLiked();
         setLikedEvents(fetchedLikedEvents);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching liked events");
+      }
     };
 
     if (authenticated) {
+      console.log("before fetch liked events", authenticated);
       fetchLikedEvents();
     } else setLikedEvents([]);
   }, [authenticated]);
@@ -75,10 +78,11 @@ const EventProvider = ({ children }) => {
   };
 
   const isLiked = (eventId) => {
-    const ret = likedEvents.some((e) => e._id === eventId);
+    const ret = likedEvents?.some((e) => e._id === eventId);
     return ret;
   };
 
+  console.log("likedEvents context", likedEvents);
   return (
     <EventContext.Provider
       value={{

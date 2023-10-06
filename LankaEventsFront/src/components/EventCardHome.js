@@ -42,7 +42,6 @@ const EventCardHome = ({ event, onOptionsPress }) => {
   const { title, date, location, price } = event;
   const liked = isLiked(event._id);
   const priceValue = parseFloat(price["$numberDecimal"]);
-  console.log(event);
   console.log("----------event card---------");
   const onLikePress = async () => {
     if (authenticated) {

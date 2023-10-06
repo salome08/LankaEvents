@@ -23,6 +23,14 @@ module.exports = {
     });
     return user.save();
   },
+  updateProfilePicture: async (userId, newProfilePictureUrl) => {
+    const user = await User.findById(userId);
+    // Update the profilePictureUrl field
+    user.profilePictureUrl = newProfilePictureUrl;
+
+    // Save the updated user
+    await user.save();
+  },
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;
     if (!emailId) return res.apiError("Email Id is required");
@@ -45,7 +53,6 @@ module.exports = {
       return res.apiSuccess(data);
     }
   },
-
   loginUser: async (req, res) => {
     let { emailId, password } = req.body;
     let u = await User.findOne({ emailId: emailId });

@@ -131,7 +131,7 @@ router.get(
 
 router.post("/logout", function (req, res, next) {
   try {
-    console.log(req.isAuthenticated());
+    console.log("isAuthenticated", req.isAuthenticated());
     req.logout(function (err) {
       if (err) {
         console.log("in err");

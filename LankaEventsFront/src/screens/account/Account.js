@@ -122,7 +122,8 @@ const SectionUserInfos = () => {
   const navigation = useNavigation();
   const { likedEvents } = useEvent();
   const { themeColor } = useTheme();
-
+  console.log({ likedEvents });
+  console.log({ user });
   return (
     <>
       {authenticated ? (
@@ -155,9 +156,9 @@ const SectionUserInfos = () => {
           </Text>
           <View style={styles?.userActionsInfo}>
             <Text style={[{ color: themeColor.primaryText }, styles.subTitle]}>
-              {likedEvents.length}
+              {likedEvents?.length}
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Likes")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Favoris")}>
               <Text style={{ color: themeColor.blue, marginTop: 8 }}>
                 Likes
               </Text>
@@ -356,6 +357,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 80,
     marginBottom: 25,
+    backgroundColor: "red",
   },
   titleContainer: {
     flexDirection: "row",

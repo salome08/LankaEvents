@@ -65,7 +65,7 @@ router.get("/home", async (req, res, next) => {
   try {
     const { town } = req.query;
     const homeEvents = await EventsService.findHome(town);
-    console.log("homeEvents", homeEvents);
+    // console.log("homeEvents", homeEvents);
     res.status(200).json(homeEvents);
   } catch (error) {
     const { name, code, errmsg, message } = error;

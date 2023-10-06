@@ -31,15 +31,19 @@ module.exports = (app) => {
           let user = await User.findOne({ googleId: profile.id });
 
           if (!user) {
+            console.log("user not found in db");
             // If the user does not exist, create a new user in the database
-            user = UserService.create({
+            user = await UserService.create({
               googleId: profile.id,
               email: profile.emails[0].value,
-              displayName: profile.displayName,
+              name: profile.displayName,
               profilePictureUrl: profile.photos[0].value,
             });
+
+            console.log("init user", user);
           }
 
+          console.log("user before token sign", user);
           // Create a JWT token with the user data
           const token = jwt.sign(
             {
@@ -64,10 +68,10 @@ module.exports = (app) => {
   passport.use(
     new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
       try {
-        console.log("in jwt strategy");
+        console.log("in jwt strategy", jwt_payload);
 
         const user = await User.findOne({ _id: jwt_payload.id });
-        console.log(user);
+        console.log("user", user);
         if (user) {
           return done(null, user);
         } else {

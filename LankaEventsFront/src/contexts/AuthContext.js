@@ -12,6 +12,11 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // TO MOVE FROM AUTH CONTEXT
+  const updateProfilePicture = (newPicture) => {
+    setUser({ ...user, pictureUrl: newPicture });
+  };
+
   // Function to set the token and update the state in context
   const logIn = (token) => {
     const decodedToken = JWT.decode(token, "YOUR_JWT_SECRET");
@@ -59,7 +64,14 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ authenticated, user, logIn, logOut, loading }}
+      value={{
+        authenticated,
+        user,
+        logIn,
+        logOut,
+        loading,
+        updateProfilePicture,
+      }}
     >
       {children}
     </AuthContext.Provider>
