@@ -8,8 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import eventApi from "../../api/eventApi";
-import { Ionicons } from "@expo/vector-icons";
 import { Chip } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../contexts/ThemContext";
@@ -18,7 +16,6 @@ import ImageSlider from "../components/ImageSlider";
 
 const Event = ({ route, navigation }) => {
   const { event } = route.params;
-  // const [event, setEvent] = useState(null);
   const insets = useSafeAreaInsets();
   const { themeColor, isDarkMode } = useTheme();
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -32,14 +29,6 @@ const Event = ({ route, navigation }) => {
   };
 
   const organizerName = "Career Bliss Academy";
-
-  // useEffect(() => {
-  //   const fetchEvent = async () => {
-  //     const fetchedEvent = await eventApi.getById(event);
-  //     setEvent(fetchedEvent);
-  //   };
-  //   if (!event) fetchEvent();
-  // }, [event]);
 
   if (!event) {
     return <Text>Loading...</Text>;
@@ -272,28 +261,35 @@ const Event = ({ route, navigation }) => {
           </View>
 
           {/* Section "Related to this event" */}
-          <View style={styles.descriptionSection}>
-            <Text style={[{ color: themeColor.primaryText2 }, styles.subTitle]}>
-              Related to this event
-            </Text>
-            <View style={styles.categoriesContainer}>
-              {event.categories.map((category, key) => (
-                <Chip
-                  key={key}
-                  // onPress={() => toggleSelectedCategory(category)}
-                  style={{
-                    backgroundColor: themeColor.eventSecondaryBg,
-                    borderRadius: 30,
-                  }}
-                  textStyle={{ color: themeColor.filterButtonText }}
-                  // selected={selectedCategories.find((e) => e === category)}
-                  // selectedColor={themeColor.blue}
-                >
-                  {category}
-                </Chip>
-              ))}
+          {event.categories.length > 0 && (
+            <View
+              style={[
+                { borderColor: themeColor.devider },
+                styles.descriptionSection,
+                styles.eventRelatedSection,
+              ]}
+            >
+              <Text
+                style={[{ color: themeColor.primaryText2 }, styles.subTitle]}
+              >
+                Related to this event
+              </Text>
+              <View style={styles.categoriesContainer}>
+                {event.categories.map((category, key) => (
+                  <Chip
+                    key={key}
+                    style={{
+                      backgroundColor: themeColor.eventSecondaryBg,
+                      borderRadius: 30,
+                    }}
+                    textStyle={{ color: themeColor.filterButtonText }}
+                  >
+                    <Text>{category}</Text>
+                  </Chip>
+                ))}
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -369,9 +365,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 60,
     rowGap: 24,
-    marginBottom: 5,
     borderTopWidth: 0.2,
-    borderBottomWidth: 0.2,
   },
   organizerFinalPhoto: {
     width: 80,
@@ -392,6 +386,10 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     marginVertical: 22,
+  },
+  eventRelatedSection: {
+    paddingTop: 30,
+    borderTopWidth: 0.2,
   },
   title: {
     fontSize: 32,
