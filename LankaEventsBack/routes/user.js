@@ -32,4 +32,28 @@ router.post(
   }
 );
 
+router.post(
+  "/update-name",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in update-name");
+      const { user } = req;
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const { firstname, lastname } = req.body;
+      await UserService.updateUserName(user._id, firstname, lastname);
+
+      res.status(200).json({ message: "Name updated successfully", user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
 module.exports = { path: "/user", router };

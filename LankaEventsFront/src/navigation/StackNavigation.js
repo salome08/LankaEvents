@@ -22,6 +22,7 @@ import { Feather } from "@expo/vector-icons";
 import { useTheme } from "../contexts/ThemContext";
 import HeaderBackButton from "../components/HeaderBackButton";
 import HeaderEventActions from "../components/HeaderEventActions";
+import UpdateName from "../screens/settings/UpdateName";
 
 const Stack = createNativeStackNavigator();
 
@@ -117,6 +118,24 @@ const StackNavigation = () => {
         component={AccountSettings}
         options={{
           headerTitle: "Account settings",
+          headerTitleAlign: "left",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "700",
+          },
+          headerTintColor: themeColor.searchText,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: themeColor.background,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="UpdateName"
+        component={UpdateName}
+        options={{
+          presentation: "formSheet",
+          headerTitle: "Update your name",
           headerTitleAlign: "left",
           headerTitleStyle: {
             fontSize: 20,

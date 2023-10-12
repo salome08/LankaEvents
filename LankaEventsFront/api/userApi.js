@@ -32,4 +32,24 @@ module.exports = {
       return null;
     }
   },
+  updateUserName: async (firstName, lastName) => {
+    try {
+      const token = await getToken();
+      const { data } = await api.post(
+        "/user/update-name",
+        {
+          firstname: firstName,
+          lastname: lastName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  },
 };

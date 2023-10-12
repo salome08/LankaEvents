@@ -31,6 +31,15 @@ module.exports = {
     // Save the updated user
     await user.save();
   },
+  updateUserName: async (userId, firstname, lastname) => {
+    const user = await User.findById(userId);
+    // Update the profilePictureUrl field
+    user.firstname = firstname;
+    user.lastname = lastname;
+
+    // Save the updated user
+    await user.save();
+  },
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;
     if (!emailId) return res.apiError("Email Id is required");

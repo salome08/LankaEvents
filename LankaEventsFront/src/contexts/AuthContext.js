@@ -16,6 +16,9 @@ const AuthProvider = ({ children }) => {
   const updateProfilePicture = (newPicture) => {
     setUser({ ...user, pictureUrl: newPicture });
   };
+  const updateUserName = (newName) => {
+    setUser({ ...user, name: newName });
+  };
 
   // Function to set the token and update the state in context
   const logIn = (token) => {
@@ -71,6 +74,7 @@ const AuthProvider = ({ children }) => {
         logOut,
         loading,
         updateProfilePicture,
+        updateUserName,
       }}
     >
       {children}

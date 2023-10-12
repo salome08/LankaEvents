@@ -13,9 +13,11 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemContext";
 import ActionUpdatePicture from "../../components/ActionUpdatePicture";
 import { Entypo } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const AccountSettings = () => {
   const { themeColor } = useTheme();
+  const navigation = useNavigation();
   const { logOut, authenticated, user } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
@@ -23,7 +25,7 @@ const AccountSettings = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const settingsList = [
-    { label: "Name", value: user?.name, link: "yes" },
+    { label: "Name", value: user?.name, link: "UpdateName" },
     { label: "Email", value: user?.email },
     { label: "Password", value: "Update password", link: "yes" },
     { label: "Account", value: "Close your account", link: "yes" },
@@ -49,7 +51,12 @@ const AccountSettings = () => {
               {setting.label}
             </Text>
             {setting.link ? (
-              <Pressable style={styles.linkContainer}>
+              <Pressable
+                style={styles.linkContainer}
+                onPress={() => {
+                  navigation.navigate(setting.link);
+                }}
+              >
                 <Text style={{ color: themeColor.blue }}>{setting.value}</Text>
                 <Entypo
                   name="chevron-right"
