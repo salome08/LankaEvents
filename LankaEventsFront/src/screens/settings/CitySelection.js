@@ -11,7 +11,7 @@ const CitySelection = ({ navigation }) => {
   const handleSaveCity = () => {
     if (selectedCity) {
       // Save the selected city to your app's storage or send it to the server
-      console.log("Selected city:", selectedCity);
+      // console.log("Selected city:", selectedCity);
       navigation.goBack(); // Go back to the previous screen
     }
   };

@@ -37,7 +37,7 @@ module.exports = thisService = {
   },
   findHome: async (town) => {
     try {
-      console.log("town", town);
+      // console.log("town", town);
       const onlineEvents = await thisService.findFiltered({
         town: "Online events",
       });
@@ -182,7 +182,7 @@ module.exports = thisService = {
       const queryPattern = new RegExp(query, "i");
       const events = await Event.find({ title: queryPattern });
       // const eventsIds = events.map((el) => el._id);
-      console.log(events);
+      // console.log(events);
       return events;
     } catch (error) {
       console.error(error);
@@ -191,7 +191,7 @@ module.exports = thisService = {
   findFiltered: async (filters) => {
     try {
       const { sortBy } = filters;
-      console.log({ filters });
+      // console.log({ filters });
       const pipeline = getFilterPipepline(filters);
       const events = pipeline.length
         ? await Event.aggregate(pipeline)
@@ -199,7 +199,7 @@ module.exports = thisService = {
 
       // console.log("not sorted Events", events);
       if (filters.date === "this_weekend") {
-        console.log({ events });
+        // console.log({ events });
       }
       let sortedEvents;
       if (sortBy === "date") {

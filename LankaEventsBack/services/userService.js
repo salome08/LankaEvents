@@ -36,6 +36,7 @@ module.exports = {
     // Update the profilePictureUrl field
     user.firstname = firstname;
     user.lastname = lastname;
+    user.name = `${firstname} ${lastname}`;
 
     // Save the updated user
     await user.save();

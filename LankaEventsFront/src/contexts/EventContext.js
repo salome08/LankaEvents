@@ -22,7 +22,7 @@ const EventProvider = ({ children }) => {
       try {
         // Call your function to fetch liked events from the database
         const fetchedEvents = await eventApi.getAll();
-        console.log(fetchedEvents);
+        // console.log(fetchedEvents);
         setEvents(fetchedEvents); // Set the initial state with the fetched data
         // Get liked events from the api
         setLoading(false);

@@ -10,14 +10,15 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemContext";
 import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from "react-native-paper";
+import userApi from "../../../api/userApi";
 
 const UpdateName = () => {
   console.log("---------------Render: UpdateName------------------");
   const navigation = useNavigation();
   const { themeColor } = useTheme();
   const { user, updateUserName } = useAuth();
-  const [firstName, setFirstName] = useState("salome");
-  const [lastName, setLastName] = useState("hazan");
+  const [firstName, setFirstName] = useState(user.firstname);
+  const [lastName, setLastName] = useState(user.lastname);
   const firstnameInputRef = useRef();
   const lastnameInputRef = useRef();
 
@@ -28,11 +29,10 @@ const UpdateName = () => {
 
   const handleUpdateName = () => {
     console.log("update name", firstName, lastName);
-    const newName = `${firstName} ${lastName}`;
     navigation.goBack();
     // Update front after a response from the back
-    updateUserName(newName);
-    // Call api updateUserName()
+    updateUserName(firstName, lastName);
+    userApi.updateUserName(firstName, lastName);
   };
   return (
     <View

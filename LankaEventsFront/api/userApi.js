@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config";
-import { getToken } from "../src/utils/functions/storage";
+import { getToken, storeToken } from "../src/utils/functions/storage";
 
 const API_URL = config.API_BASE_URL;
 
@@ -47,6 +47,8 @@ module.exports = {
           },
         }
       );
+      console.log("updateUserName", data);
+      await storeToken(data.token);
     } catch (err) {
       console.error(err);
       return null;

@@ -75,8 +75,8 @@ const SelectFilters = () => {
     setLoading(false);
   }, [selectedCategories, selectedTypes, sortBy, freeEvents]);
 
-  console.log(selectedCategories);
-  console.log(selectedTypes);
+  // console.log(selectedCategories);
+  // console.log(selectedTypes);
   if (loading) return <Text>Loading...</Text>;
 
   return (

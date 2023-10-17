@@ -32,7 +32,7 @@ const HomeScreen = () => {
       try {
         // Call your function to fetch liked events from the database
         const fetchedEvents = await eventApi.getHome(selectedTown);
-        console.log(fetchedEvents);
+        // console.log(fetchedEvents);
         setHomEvents(fetchedEvents); // Set the initial state with the fetched data
         // Get liked events from the api
         // setLoading(false);
@@ -172,7 +172,6 @@ const HomeScreen = () => {
                             sortBy: "relevance",
                           });
                         else if (category.labelType === "online") {
-                          console.log(category);
                           setSelectedTown(category.searchValue);
                         }
                         navigation.navigate("Search");

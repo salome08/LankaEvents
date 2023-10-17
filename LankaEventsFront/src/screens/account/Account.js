@@ -122,8 +122,8 @@ const SectionUserInfos = () => {
   const navigation = useNavigation();
   const { likedEvents } = useEvent();
   const { themeColor } = useTheme();
-  console.log({ likedEvents });
-  console.log({ user });
+  // console.log({ likedEvents });
+  // console.log({ user });
   return (
     <>
       {authenticated ? (

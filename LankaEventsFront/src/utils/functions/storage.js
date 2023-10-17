@@ -27,4 +27,22 @@ module.exports = {
       console.error("Error removing token from AsyncStorage:", error);
     }
   },
+  updateTokenWithNewName: async (firstname, lastname) => {
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+
+      if (token) {
+        console.log("updatedToken", token);
+        // const updatedToken = {
+        //   ...token,
+        //   name: `${firstname} ${lastname}`,
+        //   firstname,
+        //   lastname,
+        // };
+        // await AsyncStorage.setItem("userToken", updatedToken);
+      }
+    } catch (error) {
+      console.error("Error updating token with new name:", error);
+    }
+  },
 };

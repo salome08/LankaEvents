@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Chip } from "react-native-paper";
@@ -149,6 +150,12 @@ const Event = ({ route, navigation }) => {
             </View>
           </View>
 
+          <View>
+            <Pressable>
+              <Text>Test Link GPS</Text>
+            </Pressable>
+          </View>
+
           {/* Section "About this event" */}
           <View style={styles.descriptionSection}>
             <Text style={[{ color: themeColor.primaryText2 }, styles.subTitle]}>
@@ -196,20 +203,6 @@ const Event = ({ route, navigation }) => {
               </TouchableOpacity>
             )}
           </View>
-
-          {/* Section "Location" */}
-          {!event.online && (
-            <View>
-              <Text
-                style={[{ color: themeColor.primaryText2 }, styles.subTitle]}
-              >
-                Location
-              </Text>
-              <Text style={styles.infoDescription}>
-                map view if event not online
-              </Text>
-            </View>
-          )}
 
           {/* Section "Organisateur" */}
           <View

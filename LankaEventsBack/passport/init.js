@@ -37,6 +37,8 @@ module.exports = (app) => {
               googleId: profile.id,
               email: profile.emails[0].value,
               name: profile.displayName,
+              firstname: profile.name.givenName,
+              lastname: profile.name.familyName,
               profilePictureUrl: profile.photos[0].value,
             });
 
@@ -50,6 +52,8 @@ module.exports = (app) => {
               id: user._id,
               email: user.email,
               name: user.name,
+              firstname: user.firstname,
+              lastname: user.lastname,
               pictureUrl: user.profilePictureUrl,
             },
             JWT_SECRET,

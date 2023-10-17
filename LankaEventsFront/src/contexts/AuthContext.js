@@ -1,7 +1,11 @@
 // AuthContext.js
 import React, { createContext, useState, useEffect } from "react";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getToken, removeToken } from "../utils/functions/storage";
+import {
+  getToken,
+  removeToken,
+  updateTokenWithNewName,
+} from "../utils/functions/storage";
 import JWT from "expo-jwt";
 import authApi from "../../api/authApi";
 
@@ -16,16 +20,31 @@ const AuthProvider = ({ children }) => {
   const updateProfilePicture = (newPicture) => {
     setUser({ ...user, pictureUrl: newPicture });
   };
-  const updateUserName = (newName) => {
-    setUser({ ...user, name: newName });
+  const updateUserName = (newFirstname, newLastname) => {
+    setUser({
+      ...user,
+      name: `${newFirstname} ${newLastname}`,
+      firstname: newFirstname,
+      lastname: newLastname,
+    });
+    updateTokenWithNewName(newFirstname, newLastname);
   };
 
   // Function to set the token and update the state in context
   const logIn = (token) => {
+    console.log("In LogIn");
     const decodedToken = JWT.decode(token, "YOUR_JWT_SECRET");
-    const loggedUser = ({ id, email, displayName, pictureUrl } = decodedToken);
+    const loggedUser = ({
+      id,
+      email,
+      displayName,
+      firstname,
+      lastname,
+      pictureUrl,
+    } = decodedToken);
     setLoading(true);
 
+    console.log("logged user", loggedUser);
     setUser(loggedUser);
 
     setAuthenticated(true);
@@ -46,6 +65,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
+        console.log("auth context checkAuthentication");
         // Check if user is authenticated based on stored token
         setLoading(true);
 

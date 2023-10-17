@@ -34,7 +34,7 @@ const FilterScreen = () => {
   const [pickedTo, setPickedTo] = useState(selectedDate.data?.to || new Date());
 
   const handleEasyDateSelect = (selected) => {
-    console.log(selected);
+    // console.log(selected);
     if (selected.value === "picker") {
       setShowDatePicker(true);
       // setSelectedDate(selected);
