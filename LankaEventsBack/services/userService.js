@@ -3,6 +3,8 @@ const User = require("../models/User");
 const jwt = require("jwt-simple");
 const secret = process.env.JWT_SECRET;
 const sha256 = require("sha256");
+const verificationCode = require("../utils/functions/verificationCode");
+const email = require("../utils/functions/email");
 
 module.exports = {
   profile: async (req, res) => {
@@ -40,6 +42,17 @@ module.exports = {
 
     // Save the updated user
     await user.save();
+  },
+  getVerificationCode: async (userId) => {
+    // const user = await User.findById(userId);
+    // Update the profilePictureUrl field
+    // user.firstname = firstname;
+    const code = verificationCode.generate5digit();
+    // console.log("user email", user.email);
+
+    email.sendVerificationCode("salome.hazan@yahoo.fr", code);
+    // Save the updated user
+    // await user.save();
   },
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;

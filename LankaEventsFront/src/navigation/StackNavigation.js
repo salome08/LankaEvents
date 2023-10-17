@@ -23,6 +23,7 @@ import { useTheme } from "../contexts/ThemContext";
 import HeaderBackButton from "../components/HeaderBackButton";
 import HeaderEventActions from "../components/HeaderEventActions";
 import UpdateName from "../screens/settings/UpdateName";
+import UpdatePassword from "../screens/settings/UpdatePassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -136,6 +137,24 @@ const StackNavigation = () => {
         options={{
           presentation: "formSheet",
           headerTitle: "Update your name",
+          headerTitleAlign: "left",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "700",
+          },
+          headerTintColor: themeColor.searchText,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: themeColor.background,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="UpdatePassword"
+        component={UpdatePassword}
+        options={{
+          presentation: "formSheet",
+          headerTitle: "Update password",
           headerTitleAlign: "left",
           headerTitleStyle: {
             fontSize: 20,

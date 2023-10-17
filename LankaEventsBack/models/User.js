@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   id: { type: String, default: "" },
   profilePictureUrl: { type: String, default: "" },
   googleId: { type: String, unique: true },
-  password: { type: String, default: "" },
+  password: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

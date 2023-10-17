@@ -34,12 +34,10 @@ router.post(
       // Create a new token with the updated and existing claims
       const newToken = jwt.sign(decodedToken, JWT_SECRET);
 
-      res
-        .status(200)
-        .json({
-          message: "Profile picture updated successfully",
-          token: newToken,
-        });
+      res.status(200).json({
+        message: "Profile picture updated successfully",
+        token: newToken,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
@@ -79,6 +77,30 @@ router.post(
       res
         .status(200)
         .json({ message: "Name updated successfully", token: newToken });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+router.get(
+  "/verification-code",
+  // passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in update-password");
+      // const { user } = req;
+
+      // if (!user) {
+      //   return res.status(404).json({ message: "User not found" });
+      // }
+
+      await UserService.getVerificationCode();
+      // await UserService.getVerificationCode(user._id);
+
+      res.status(200).json({ message: "Password created successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
