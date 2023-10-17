@@ -27,6 +27,7 @@ module.exports = {
           },
         }
       );
+      await storeToken(data.token);
     } catch (err) {
       console.error(err);
       return null;

@@ -23,9 +23,23 @@ router.post(
       const newProfilePictureUrl = req.body.profilePictureUrl;
       await UserService.updateProfilePicture(user._id, newProfilePictureUrl);
 
+      // Decode the existing token
+      const JWT_SECRET = "YOUR_JWT_SECRET";
+      const existingToken = req.headers.authorization.split(" ")[1];
+      const decodedToken = jwt.verify(existingToken, JWT_SECRET);
+
+      // Update the necessary claims (in this case, 'name')
+      decodedToken.pictureUrl = newProfilePictureUrl;
+
+      // Create a new token with the updated and existing claims
+      const newToken = jwt.sign(decodedToken, JWT_SECRET);
+
       res
         .status(200)
-        .json({ message: "Profile picture updated successfully", user });
+        .json({
+          message: "Profile picture updated successfully",
+          token: newToken,
+        });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
@@ -54,13 +68,11 @@ router.post(
       const existingToken = req.headers.authorization.split(" ")[1];
       const decodedToken = jwt.verify(existingToken, JWT_SECRET);
 
-      console.log({ existingToken });
       // Update the necessary claims (in this case, 'name')
       decodedToken.name = `${firstname} ${lastname}`;
       decodedToken.firstname = firstname;
       decodedToken.lastname = lastname;
 
-      console.log({ decodedToken });
       // Create a new token with the updated and existing claims
       const newToken = jwt.sign(decodedToken, JWT_SECRET);
 
