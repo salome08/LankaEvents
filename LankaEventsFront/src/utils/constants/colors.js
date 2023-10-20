@@ -34,6 +34,11 @@ export default {
     eventSecondaryBg: "rgb(247,246,248)",
     iconWithBg: "rgb(74,77,98)",
 
+    // PROGRESS BAR
+    myRed: "#bc4b51",
+    yellow: "#f4e285",
+    green: "#8cb369",
+
     // BLUE
     blue: "rgb(54, 89, 227)",
     lightBlue: "rgb(223, 228, 250)",
@@ -84,6 +89,11 @@ export default {
     segmentedButtonCheckedBg: "rgb(64, 63, 67)",
     eventSecondaryBg: "rgb(42,37,54)",
     iconWithBg: "rgb(217,218,227)",
+
+    // PROGRESS BAR
+    red: "#bc4b51",
+    yellow: "#f4e285",
+    green: "#8cb369",
 
     // BLUE
     blue: "rgb(103, 151, 247)",

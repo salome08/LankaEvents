@@ -8,9 +8,8 @@ import {
 } from "react-native";
 import { useTheme } from "../contexts/ThemContext";
 
-const VerificationCodeInput = () => {
+const VerificationCodeInput = ({ code, setCode }) => {
   const { themeColor } = useTheme();
-  const [code, setCode] = useState(["", "", "", "", ""]);
   const inputRefs = useRef([]);
 
   const onChangeValue = (text, index) => {

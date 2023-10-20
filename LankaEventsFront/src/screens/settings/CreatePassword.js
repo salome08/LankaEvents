@@ -12,29 +12,22 @@ import { useTheme } from "../../contexts/ThemContext";
 import { useNavigation } from "@react-navigation/native";
 import { TextInput, Button } from "react-native-paper";
 import userApi from "../../../api/userApi";
+import PasswordStrength from "../../components/PasswordStrength";
 
 const CreatePassword = () => {
   console.log("---------------Render: CreatePassword------------------");
   const navigation = useNavigation();
   const { themeColor } = useTheme();
-  const { user, updateUserName } = useAuth();
-  const [firstName, setFirstName] = useState(user.firstname);
-  const [lastName, setLastName] = useState(user.lastname);
-  const firstnameInputRef = useRef();
-  const lastnameInputRef = useRef();
-
-  // const handleOutsidePress = () => {
-  //   firstnameInputRef.current.blur();
-  //   lastnameInputRef.current.blur();
-  // };
+  const { user } = useAuth();
+  const [password, setPassword] = useState("");
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
 
   const handleCreatePassword = () => {
-    console.log("update name", firstName, lastName);
-    navigation.goBack();
+    console.log("handleCreatePassword", password);
     // Update front after a response from the back
-    updateUserName(firstName, lastName);
-    userApi.updateUserName(firstName, lastName);
+    // userApi.updateUserName(firstName, lastName);
   };
+
   return (
     <ScrollView
       style={[{ backgroundColor: themeColor.background }, styles.container]}
@@ -63,24 +56,39 @@ const CreatePassword = () => {
               {user?.email}
             </Text>
           </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              label="Password"
+              value={password}
+              selectionColor={themeColor.blue}
+              keyboardType="default"
+              inputMode="text"
+              style={{
+                backgroundColor: themeColor.background,
+              }}
+              secureTextEntry={isPasswordSecure}
+              right={
+                <TextInput.Icon
+                  icon={isPasswordSecure ? "eye-off" : "eye"}
+                  iconColor={themeColor.primaryText}
+                  size={18}
+                  underlayColor="transparent"
+                  style={styles.textInputIcon}
+                  onPress={() => {
+                    isPasswordSecure
+                      ? setIsPasswordSecure(false)
+                      : setIsPasswordSecure(true);
+                  }}
+                />
+              }
+              textColor={themeColor.primaryText}
+              underlineColor={themeColor.primaryText}
+              activeUnderlineColor={themeColor.blue}
+              onChangeText={(text) => setPassword(text)}
+            />
+            <PasswordStrength password={password} />
+          </View>
           <View style={styles.centerContainer}>
-            <Text
-              style={[
-                { marginTop: 12, color: themeColor.primaryText },
-                styles.mainText,
-              ]}
-            >
-              We sent you a link to update your password to{"\n"}
-              {user?.email}
-            </Text>
-            <Text
-              style={[
-                { marginTop: 12, color: themeColor.primaryText },
-                styles.mainText,
-              ]}
-            >
-              For your security, the link expores in 2 hours.
-            </Text>
             <View
               style={[
                 {
@@ -102,14 +110,9 @@ const CreatePassword = () => {
                 mode="contained"
                 onPress={() => handleCreatePassword()}
               >
-                Open email app
+                Sign in
               </Button>
             </View>
-          </View>
-          <View style={styles.linkContainer}>
-            <Text style={[{ color: themeColor.blue }, styles.linkText]}>
-              Resend verification email
-            </Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -137,12 +140,8 @@ const styles = StyleSheet.create({
     width: "50%",
     backgroundColor: "red",
   },
-  linkContainer: {
-    alignItems: "center",
-    position: "absolute",
-    bottom: 50,
-    left: 0,
-    right: 0,
+  inputContainer: {
+    marginTop: 50,
   },
   title: {
     fontSize: 18,
@@ -152,17 +151,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "400",
   },
-  mainText: {
-    fontSize: 13,
-    fontWeight: "400",
-    lineHeight: 20,
-    textAlign: "center",
-  },
-  linkText: {
-    fontSize: 12,
-    fontWeight: "500",
-    lineHeight: 20,
-    textAlign: "center",
+  textInputIcon: {
+    position: "absolute",
+    top: 0,
+    left: 0,
   },
   profilePicture: {
     width: 60,

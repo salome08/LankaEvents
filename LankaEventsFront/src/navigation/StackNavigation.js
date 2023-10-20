@@ -24,6 +24,7 @@ import HeaderBackButton from "../components/HeaderBackButton";
 import HeaderEventActions from "../components/HeaderEventActions";
 import UpdateName from "../screens/settings/UpdateName";
 import UpdatePassword from "../screens/settings/UpdatePassword";
+import CreatePassword from "../screens/settings/CreatePassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -155,6 +156,24 @@ const StackNavigation = () => {
         options={{
           presentation: "formSheet",
           headerTitle: "Update password",
+          headerTitleAlign: "left",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "700",
+          },
+          headerTintColor: themeColor.searchText,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: themeColor.background,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="CreatePassword"
+        component={CreatePassword}
+        options={{
+          presentation: "formSheet",
+          headerTitle: "Create password",
           headerTitleAlign: "left",
           headerTitleStyle: {
             fontSize: 20,

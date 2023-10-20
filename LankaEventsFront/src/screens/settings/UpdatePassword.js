@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Image,
@@ -19,21 +19,19 @@ const UpdatePassword = () => {
   const navigation = useNavigation();
   const { themeColor } = useTheme();
   const { user, updateUserName } = useAuth();
-  const [firstName, setFirstName] = useState(user.firstname);
-  const [lastName, setLastName] = useState(user.lastname);
+  const [code, setCode] = useState(["", "", "", "", ""]);
 
-  // const handleOutsidePress = () => {
-  //   firstnameInputRef.current.blur();
-  //   lastnameInputRef.current.blur();
-  // };
+  useEffect(() => {
+    // Send email with code on page loading
+    // userApi.sendEmailOTP();
+  }, []);
 
-  const handleUpdatePassword = () => {
-    console.log("update name", firstName, lastName);
-    navigation.goBack();
-    // Update front after a response from the back
-    updateUserName(firstName, lastName);
-    userApi.updateUserName(firstName, lastName);
-  };
+  useEffect(() => {
+    if (code.every((item) => !isNaN(parseInt(item)))) {
+      navigation.navigate("CreatePassword");
+    }
+  }, [code]);
+
   return (
     <ScrollView
       style={[{ backgroundColor: themeColor.background }, styles.container]}
@@ -78,11 +76,11 @@ const UpdatePassword = () => {
                 styles.mainText,
               ]}
             >
-              For your security, the link expores in 2 hours.
+              For your security, the link expires in 2 hours.
             </Text>
           </View>
           <View style={styles.verificationCodeContainer}>
-            <VerificationCodeInput />
+            <VerificationCodeInput code={code} setCode={setCode} />
           </View>
           <View style={styles.linkContainer}>
             <Text style={[{ color: themeColor.blue }, styles.linkText]}>
@@ -97,7 +95,7 @@ const UpdatePassword = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 16,
   },
   imageContainer: {
     alignItems: "center",

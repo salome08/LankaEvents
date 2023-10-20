@@ -55,4 +55,18 @@ module.exports = {
       return null;
     }
   },
+  sendEmailOTP: async () => {
+    try {
+      const token = await getToken();
+      const { data } = await api.get("/user/verification-code", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("sendEmailOTP");
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  },
 };
