@@ -21,15 +21,22 @@ const CreatePassword = () => {
   const { user } = useAuth();
   const [password, setPassword] = useState("");
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const [errorEmptyField, setErrorEmptyField] = useState(false);
 
-  const handleCreatePassword = () => {
+  const handleCreatePassword = async () => {
     console.log("handleCreatePassword", password);
-    // Update front after a response from the back
-    // userApi.updateUserName(firstName, lastName);
+    if (password.length === 0) {
+      setErrorEmptyField(true);
+      // Update front after a response from the back
+    } else {
+      const response = await userApi.createPassword(password);
+      if (response.ok) navigation.navigate("AccountSettings");
+      console.log("change password resp", response);
+    }
   };
 
   return (
-    <ScrollView
+    <View
       style={[{ backgroundColor: themeColor.background }, styles.container]}
     >
       <TouchableWithoutFeedback accessible={false}>
@@ -66,6 +73,7 @@ const CreatePassword = () => {
               style={{
                 backgroundColor: themeColor.background,
               }}
+              error={errorEmptyField}
               secureTextEntry={isPasswordSecure}
               right={
                 <TextInput.Icon
@@ -84,9 +92,23 @@ const CreatePassword = () => {
               textColor={themeColor.primaryText}
               underlineColor={themeColor.primaryText}
               activeUnderlineColor={themeColor.blue}
-              onChangeText={(text) => setPassword(text)}
+              onChangeText={(text) => {
+                setErrorEmptyField(false);
+                setPassword(text);
+              }}
             />
-            <PasswordStrength password={password} />
+            {errorEmptyField ? (
+              <Text
+                style={[
+                  { color: themeColor.red, marginTop: 5 },
+                  styles.secondaryText,
+                ]}
+              >
+                This field is required
+              </Text>
+            ) : (
+              <PasswordStrength password={password} />
+            )}
           </View>
           <View style={styles.centerContainer}>
             <View
@@ -116,7 +138,7 @@ const CreatePassword = () => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-    </ScrollView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -138,7 +160,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 30,
     width: "50%",
-    backgroundColor: "red",
   },
   inputContainer: {
     marginTop: 50,

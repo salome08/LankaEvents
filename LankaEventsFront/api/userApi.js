@@ -58,7 +58,7 @@ module.exports = {
   sendEmailOTP: async () => {
     try {
       const token = await getToken();
-      const { data } = await api.get("/user/verification-code", {
+      const { data } = await api.get("/user/send-OTP-email", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,6 +67,131 @@ module.exports = {
     } catch (err) {
       console.error(err);
       return null;
+    }
+  },
+  verifyOTP: async (code) => {
+    try {
+      const token = await getToken();
+      const { data } = await api.post(
+        "/user/verify-OTP",
+        {
+          code: code,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("verifyOTP");
+      return { ok: true };
+    } catch (err) {
+      if (err.response) {
+        // The client was given an error response (5xx, 4xx)
+        // console.error(1);
+        console.error(err.response.data.message);
+        return { ok: false, message: err.response.data.message };
+      } else if (err.request) {
+        // The client never received a response, and the request was never left
+        console.error(2);
+      } else {
+        // Anything else
+        console.error(3);
+      }
+    }
+  },
+  userHasPassword: async () => {
+    try {
+      const token = await getToken();
+      const { data } = await api.get("/user/has-password", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  createPassword: async (password) => {
+    try {
+      const token = await getToken();
+      const { data } = await api.post(
+        "/user/create-password",
+        { password: password },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return { ok: true, message: data.message };
+    } catch (err) {
+      if (err.response) {
+        // The client was given an error response (5xx, 4xx)
+        // console.error(1);
+        return { ok: false, message: err.response.data.message };
+      } else if (err.request) {
+        // The client never received a response, and the request was never left
+        console.error(2);
+      } else {
+        // Anything else
+        console.error(3);
+      }
+    }
+  },
+  updatePassword: async (currentPassword, newPassword) => {
+    try {
+      const token = await getToken();
+      const { data } = await api.post(
+        "/user/update-password",
+        { currentPassword: currentPassword, newPassword: newPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return { ok: true, message: data.message };
+    } catch (err) {
+      if (err.response) {
+        // The client was given an error response (5xx, 4xx)
+        // console.error(1);
+        return { ok: false, message: err.response.data.message };
+      } else if (err.request) {
+        // The client never received a response, and the request was never left
+        console.error(2);
+      } else {
+        // Anything else
+        console.error(3);
+      }
+    }
+  },
+  closeAccount: async (password) => {
+    try {
+      const token = await getToken();
+      const { data } = await api.get(
+        "/user/close-account",
+        { password: password },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return { ok: true, message: data.message };
+    } catch (err) {
+      if (err.response) {
+        // The client was given an error response (5xx, 4xx)
+        // console.error(1);
+        return { ok: false, message: err.response.data.message };
+      } else if (err.request) {
+        // The client never received a response, and the request was never left
+        console.error(2);
+      } else {
+        // Anything else
+        console.error(3);
+      }
     }
   },
 };

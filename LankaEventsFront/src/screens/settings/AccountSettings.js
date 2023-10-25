@@ -28,7 +28,7 @@ const AccountSettings = () => {
     { label: "Name", value: user?.name, link: "UpdateName" },
     { label: "Email", value: user?.email },
     { label: "Password", value: "Update password", link: "UpdatePassword" },
-    { label: "Account", value: "Close your account", link: "yes" },
+    { label: "Account", value: "Close your account", link: "CloseAccount" },
   ];
 
   return (

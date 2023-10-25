@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { useAuth } from "../contexts/AuthContext";
 import { useEvent } from "../contexts/EventContext";
+import moment from "moment";
 import { useSearch } from "../contexts/SearchContext";
 
 const HomeScreen = () => {
@@ -26,6 +27,10 @@ const HomeScreen = () => {
   const [homeEvents, setHomEvents] = useState([]);
   const insets = useSafeAreaInsets();
   console.log("---------Home-----------");
+  let nowMoment = moment.utc();
+  // console.log(moment().toDate());
+  // console.log(moment());
+  // console.log(new Date());
 
   useEffect(() => {
     const fetchHomeEvents = async () => {

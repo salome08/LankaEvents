@@ -1,10 +1,14 @@
 const mongoose = require("mongoose");
 const User = require("../models/User");
+const OTP = require("../models/Otp");
 const jwt = require("jwt-simple");
 const secret = process.env.JWT_SECRET;
 const sha256 = require("sha256");
 const verificationCode = require("../utils/functions/verificationCode");
 const email = require("../utils/functions/email");
+const OTPexpiredError = require("../errors/OTPexpiredError");
+const WrongPasswordError = require("../errors/WrongPasswordError");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   profile: async (req, res) => {
@@ -43,16 +47,64 @@ module.exports = {
     // Save the updated user
     await user.save();
   },
-  getVerificationCode: async (userId) => {
+  sendOTPEmail: async (userId) => {
     // const user = await User.findById(userId);
     // Update the profilePictureUrl field
     // user.firstname = firstname;
     const code = verificationCode.generate5digit();
     // console.log("user email", user.email);
+    let otp = await OTP.findOne({ user: userId });
 
+    if (!otp) {
+      otp = new OTP({
+        user: userId,
+        code: code,
+      });
+    } else {
+      otp.code = code;
+    }
+    console.log(otp);
+    await otp.save();
     email.sendVerificationCode("salome.hazan@yahoo.fr", code);
     // Save the updated user
-    // await user.save();
+  },
+  verifyOTP: async (userId, code) => {
+    // const user = await User.findById(userId);
+    const otp = await OTP.findOne({ user: userId });
+    console.log("otp code", otp.code);
+
+    if (!otp || otp.code !== code) {
+      console.log("otp db", otp.code);
+      console.log("otp received", code);
+
+      throw new OTPexpiredError("Code is wrong or expired");
+    }
+  },
+  createPassword: async (userId, hash) => {
+    const user = await User.findById(userId);
+    console.log("password", hash);
+
+    user.password = hash;
+    await user.save();
+  },
+  updatePassword: async (userId, currentPassword, newPassword) => {
+    const user = await User.findById(userId);
+
+    const match = await bcrypt.compare(currentPassword, user.password);
+
+    if (match) {
+      const hash = await bcrypt.hash(newPassword, 10);
+      user.password = hash;
+      await user.save();
+    } else {
+      throw new WrongPasswordError("We don't recognize this password");
+    }
+
+    // console.log("password", hash);
+  },
+  userHasPassword: async (userId) => {
+    const user = await User.findById(userId);
+    return user.password.length > 0;
   },
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;
@@ -60,7 +112,7 @@ module.exports = {
     if (!name) return res.apiError("Name is required");
     if (!password || password.trim().length == 0)
       return res.apiError("Password is required");
-    let u = await await User.findOne({ emailId: emailId });
+    let u = await User.findOne({ emailId: emailId });
     if (u) {
       return res.apiError("This Email Id is already registered!");
     } else {

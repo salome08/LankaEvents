@@ -3,10 +3,30 @@ var passport = require("passport");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const UserService = require("../services/userService");
+const bcrypt = require("bcrypt");
+const PasswordLengthError = require("../errors/PasswordLengthError");
+const OTPexpiredError = require("../errors/OTPexpiredError");
+const WrongPasswordError = require("../errors/WrongPasswordError");
+
 // const User = require("../"); // Assuming your model is in a separate file
 
 // API to login and register new user, dont required any auth in headers (check auth middleware)
-// Route to update the profilePictureUrl
+// // Route to update the profilePictureUrl
+// class PasswordLengthError extends Error {
+//   constructor(message) {
+//     super(message);
+//     this.name = "PasswordLengthError";
+//   }
+// }
+
+function validatePassword(password) {
+  if (password.length < 8) {
+    throw new PasswordLengthError("Password needs to be at least 8 characters");
+  }
+  // Additional password validation logic
+  // ...
+}
+
 router.post(
   "/profile-picture",
   passport.authenticate("jwt", { session: false }),
@@ -85,25 +105,181 @@ router.post(
 );
 
 router.get(
-  "/verification-code",
-  // passport.authenticate("jwt", { session: false }),
+  "/has-password",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { user } = req;
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      console.log("laa");
+      const userHasPssword = await UserService.userHasPassword(user._id);
+
+      res.status(200).json({
+        userHasPassword: userHasPssword,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "An unexpected error occurred" });
+    }
+  }
+);
+
+router.get(
+  "/send-OTP-email",
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       // Find the user by ID
-      console.log("in update-password");
-      // const { user } = req;
+      console.log("in send-OTP-email");
+      const { user } = req;
 
-      // if (!user) {
-      //   return res.status(404).json({ message: "User not found" });
-      // }
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-      await UserService.getVerificationCode();
+      await UserService.sendOTPEmail(user._id);
       // await UserService.getVerificationCode(user._id);
 
       res.status(200).json({ message: "Password created successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+router.post(
+  "/verify-OTP",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in verify-OTP");
+      const { user } = req;
+      const { code } = req.body;
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      await UserService.verifyOTP(user._id, code);
+      // await .getVerificationCode(user._id);
+
+      res.status(200).json({ message: "Password created successfully" });
+    } catch (error) {
+      console.error(error.stack);
+      if (error instanceof OTPexpiredError) {
+        console.log("here");
+        res.status(400).json({ message: error.message });
+      } else {
+        console.log("la");
+        res.status(500).json({ message: "An unexpected error occurred" });
+      }
+    }
+  }
+);
+
+router.post(
+  "/create-password",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in create-password");
+      const { user } = req;
+      const { password } = req.body;
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      validatePassword(password);
+
+      const saltRounds = 10;
+
+      bcrypt.hash(password, saltRounds, function (err, hash) {
+        if (err) {
+          throw new Error("Error hashing password");
+        }
+        // Store hash in your password DB.
+        UserService.createPassword(user._id, hash);
+      });
+
+      res
+        .status(200)
+        .json({ message: "Your password was successfully changed" });
+    } catch (error) {
+      console.error(error.stack);
+      if (error instanceof PasswordLengthError) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "An unexpected error occurred" });
+      }
+    }
+  }
+);
+
+router.post(
+  "/update-password",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in update-password");
+      const { user } = req;
+      const { currentPassword, newPassword } = req.body;
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check password length or throw error
+      validatePassword(newPassword);
+
+      await UserService.updatePassword(user._id, currentPassword, newPassword);
+
+      res
+        .status(200)
+        .json({ message: "Your password was successfully changed" });
+    } catch (error) {
+      console.error(error.stack);
+      if (
+        error instanceof PasswordLengthError ||
+        error instanceof WrongPasswordError
+      ) {
+        console.log("here");
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "An unexpected error occurred" });
+      }
+    }
+  }
+);
+
+router.get(
+  "/close-account",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in close-account");
+      const { user } = req;
+      const { password } = req.body;
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Log out user
+      // Check password if password same as user password
+      // Delete user from db
+
+      res
+        .status(200)
+        .json({ message: "Your account has been successfully closed" });
+    } catch (error) {
+      console.error(error.stack);
+      res.status(500).json({ message: "An unexpected error occurred" });
     }
   }
 );
