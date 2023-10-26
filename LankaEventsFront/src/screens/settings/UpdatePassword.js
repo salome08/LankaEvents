@@ -225,16 +225,15 @@ const UpdatePassword = () => {
     // check if user has password
     const checkUserHasPassword = async () => {
       setLoading(true);
-      const res = await userApi.userHasPassword();
-      console.log(res.userHasPassword);
-      setUserHasPassword(res.userHasPassword);
+      const { userHasPassword } = await userApi.userHasPassword();
+      setUserHasPassword(userHasPassword);
       setLoading(false);
     };
 
     checkUserHasPassword();
   }, []);
 
-  if (loading || !userHasPassword) return <Text>Loading...</Text>;
+  if (loading || userHasPassword === null) return <Text>Loading...</Text>;
 
   return (
     <ScrollView

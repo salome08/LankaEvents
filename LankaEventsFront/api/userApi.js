@@ -1,6 +1,10 @@
 import axios from "axios";
 import config from "../config";
-import { getToken, storeToken } from "../src/utils/functions/storage";
+import {
+  getToken,
+  storeToken,
+  storeEmail,
+} from "../src/utils/functions/storage";
 
 const API_URL = config.API_BASE_URL;
 
@@ -64,6 +68,7 @@ module.exports = {
         },
       });
       console.log("sendEmailOTP");
+      // popup info 'Verificaton email sent'
     } catch (err) {
       console.error(err);
       return null;
@@ -167,24 +172,19 @@ module.exports = {
       }
     }
   },
-  closeAccount: async (password) => {
+  closeAccount: async (email, password) => {
     try {
-      const token = await getToken();
-      const { data } = await api.get(
-        "/user/close-account",
-        { password: password },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await api.post("/user/close-account", {
+        email: email,
+        password: password,
+      });
       return { ok: true, message: data.message };
     } catch (err) {
       if (err.response) {
         // The client was given an error response (5xx, 4xx)
         // console.error(1);
-        return { ok: false, message: err.response.data.message };
+        console.log(err.response.data);
+        return { ok: false, email: err.response.data.email };
       } else if (err.request) {
         // The client never received a response, and the request was never left
         console.error(2);

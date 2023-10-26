@@ -19,8 +19,12 @@ module.exports = {
     const user = await User.findById(id);
     return user;
   },
-  findOne: (id) => {
-    const user = User.findOne({ id });
+  findOne: async (filter) => {
+    const user = await User.findOne(filter);
+    return user;
+  },
+  findByEmail: async (email) => {
+    const user = await User.findOne({ email: email });
     return user;
   },
   create: (userInfos) => {
@@ -104,7 +108,19 @@ module.exports = {
   },
   userHasPassword: async (userId) => {
     const user = await User.findById(userId);
-    return user.password.length > 0;
+    return !!user.password;
+  },
+  closeAccount: async (user, password) => {
+    // Verify password
+    const match = await bcrypt.compare(password, user.password);
+    if (match) {
+      console.log("match");
+      // Delete user from db
+      await User.deleteOne({ _id: user._id });
+    } else {
+      console.log("not match");
+      throw new WrongPasswordError(user.email);
+    }
   },
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;

@@ -14,6 +14,7 @@ import { useTheme } from "../../contexts/ThemContext";
 import ActionUpdatePicture from "../../components/ActionUpdatePicture";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import userApi from "../../../api/userApi";
 
 const AccountSettings = () => {
   const { themeColor } = useTheme();
@@ -30,6 +31,13 @@ const AccountSettings = () => {
     { label: "Password", value: "Update password", link: "UpdatePassword" },
     { label: "Account", value: "Close your account", link: "CloseAccount" },
   ];
+
+  const onPressLink = async (link) => {
+    if (link === "CloseAccount") {
+      const { userHasPassword } = await userApi.userHasPassword();
+      userHasPassword ? navigation.navigate(link) : console.log("NOTIFICATION");
+    } else navigation.navigate(link);
+  };
 
   return (
     <View
@@ -53,9 +61,12 @@ const AccountSettings = () => {
             {setting.link ? (
               <Pressable
                 style={styles.linkContainer}
-                onPress={() => {
-                  navigation.navigate(setting.link);
-                }}
+                onPress={
+                  () => onPressLink(setting.link)
+                  //   () => {
+                  //   navigation.navigate(setting.link);
+                  // }
+                }
               >
                 <Text style={{ color: themeColor.blue }}>{setting.value}</Text>
                 <Entypo

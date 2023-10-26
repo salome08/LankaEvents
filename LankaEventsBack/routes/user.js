@@ -256,32 +256,32 @@ router.post(
   }
 );
 
-router.get(
-  "/close-account",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      // Find the user by ID
-      console.log("in close-account");
-      const { user } = req;
-      const { password } = req.body;
+router.post("/close-account", async (req, res) => {
+  try {
+    // Find the user by ID
+    console.log("in close-account");
+    const { email, password } = req.body;
 
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+    const user = await UserService.findByEmail(email);
 
-      // Log out user
-      // Check password if password same as user password
-      // Delete user from db
-
-      res
-        .status(200)
-        .json({ message: "Your account has been successfully closed" });
-    } catch (error) {
-      console.error(error.stack);
-      res.status(500).json({ message: "An unexpected error occurred" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // Log out user
+    // Check password if password same as user password
+    // Delete user from db
+    await UserService.closeAccount(user, password);
+
+    res
+      .status(200)
+      .json({ message: "Your account has been successfully closed" });
+  } catch (error) {
+    console.error(error.stack);
+    if (error instanceof WrongPasswordError) {
+      res.status(400).json({ email: error.message });
+    } else res.status(500).json({ message: "An unexpected error occurred" });
   }
-);
+});
 
 module.exports = { path: "/user", router };
