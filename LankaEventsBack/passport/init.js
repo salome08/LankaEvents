@@ -4,6 +4,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const UserService = require("../services/userService");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Organizer = require("../models/Organizer");
 const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
 
 const JWT_SECRET = "YOUR_JWT_SECRET";
@@ -18,6 +19,7 @@ module.exports = (app) => {
 
   // Google OAuth2.0 strategy
   passport.use(
+    "google",
     new GoogleStrategy(
       {
         clientID: process.env["GOOGLE_CLIENT_ID"],
@@ -26,7 +28,7 @@ module.exports = (app) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log(profile);
+          console.log("Google strategy");
           // Check if the user already exists in the database based on their Google ID
           let user = await User.findOne({ googleId: profile.id });
 
@@ -63,6 +65,54 @@ module.exports = (app) => {
           // Return the token to be used by the client
           return done(null, token);
         } catch (error) {
+          return done(error, false);
+        }
+      }
+    )
+  );
+
+  // Google-organizer OAuth2.0 strategy
+  passport.use(
+    "google-organizer",
+    new GoogleStrategy(
+      {
+        clientID: process.env["GOOGLE_CLIENT_ID"],
+        clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
+        callbackURL: "/auth/oauth2/redirect/google-organizer", // Replace with your callback URL
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          console.log("Google organizer strategy");
+          // Check if the user already exists in the database based on their Google ID
+          // const user = await User.findOne({
+          //   googleId: "113750437949294234892",
+          // });
+          let user = await User.findOne({ googleId: profile.id });
+
+          // Return null if user not found
+          if (!user) return done(null, null);
+
+          const organizerId = await Organizer.findOne({ userId: user._id });
+          console.log(organizerId);
+          // Create a JWT token with the user data + organizerId
+          const token = jwt.sign(
+            {
+              id: user._id,
+              email: user.email,
+              name: user.name,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              pictureUrl: user.profilePictureUrl,
+              organizerId: organizerId,
+            },
+            JWT_SECRET,
+            { expiresIn: "1h" }
+          );
+
+          // Return null if user not found, user token with organizerId if user
+          return done(null, token);
+        } catch (error) {
+          console.log(error);
           return done(error, false);
         }
       }

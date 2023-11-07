@@ -45,4 +45,21 @@ module.exports = {
       console.error("Error updating token with new name:", error);
     }
   },
+  storeOrganizerToken: async (token) => {
+    try {
+      await AsyncStorage.setItem("organizerToken", token);
+      console.log("Token stored successfully in AsyncStorage.");
+    } catch (error) {
+      console.error("Error storing token in AsyncStorage:", error);
+    }
+  },
+  getOrganizerToken: async () => {
+    try {
+      const token = await AsyncStorage.getItem("organizerToken");
+      return token;
+    } catch (error) {
+      console.error("Error getting token from AsyncStorage:", error);
+      return null;
+    }
+  },
 };

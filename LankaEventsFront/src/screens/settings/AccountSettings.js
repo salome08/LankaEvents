@@ -17,6 +17,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import userApi from "../../../api/userApi";
 
 const AccountSettings = () => {
+  console.log("------------------- AccountSettings ------------------");
   const { themeColor } = useTheme();
   const navigation = useNavigation();
   const { logOut, authenticated, user } = useAuth();
@@ -61,12 +62,7 @@ const AccountSettings = () => {
             {setting.link ? (
               <Pressable
                 style={styles.linkContainer}
-                onPress={
-                  () => onPressLink(setting.link)
-                  //   () => {
-                  //   navigation.navigate(setting.link);
-                  // }
-                }
+                onPress={() => onPressLink(setting.link)}
               >
                 <Text style={{ color: themeColor.blue }}>{setting.value}</Text>
                 <Entypo

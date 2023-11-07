@@ -26,6 +26,10 @@ import UpdateName from "../screens/settings/UpdateName";
 import UpdatePassword from "../screens/settings/UpdatePassword";
 import CreatePassword from "../screens/settings/CreatePassword";
 import CloseAccount from "../screens/settings/CloseAccount";
+import SimpleEventsPreview from "../screens/organizer/SimpleEventsPreview";
+import VerifyPhoneOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
+import NewOrganizerSteps from "../screens/organizer/SignIn/NewOrganizerSteps";
+import CreateEvent from "../screens/organizer/CreateEvent";
 
 const Stack = createNativeStackNavigator();
 
@@ -114,7 +118,7 @@ const StackNavigation = () => {
         component={CitySelection}
         options={{ presentation: "modal" }}
       />
-      <Stack.Screen name="ManageEvents" component={ManageEvents} />
+
       <Stack.Screen name="LoginOptions" component={LoginOptions} />
       <Stack.Screen
         name="AccountSettings"
@@ -222,6 +226,46 @@ const StackNavigation = () => {
       <Stack.Screen
         name="SignIn"
         component={SignIn}
+        options={{ presentation: "modal", headerShown: false }}
+      />
+
+      {/* Organizer */}
+      <Stack.Screen
+        name="ManageEvents"
+        component={ManageEvents}
+        options={{
+          presentation: "modal",
+          headerShown: false,
+          // headerTitle: "Manage events",
+          // headerTitleStyle: {
+          //   fontSize: 20,
+          //   fontWeight: "700",
+          // },
+          // headerTintColor: themeColor.searchText,
+          // headerShadowVisible: false,
+          // headerStyle: {
+          //   backgroundColor: themeColor.searchBackground,
+          // },
+        }}
+      />
+      <Stack.Screen
+        name="SimpleEventsPreview"
+        component={SimpleEventsPreview}
+        options={{ presentation: "modal", headerShown: false }}
+      />
+      <Stack.Screen
+        name="VerifyPhoneOtp"
+        component={VerifyPhoneOtp}
+        options={{ presentation: "modal", headerShown: false }}
+      />
+      <Stack.Screen
+        name="NewOrganizerSteps"
+        component={NewOrganizerSteps}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CreateEvent"
+        component={CreateEvent}
         options={{ presentation: "modal", headerShown: false }}
       />
     </Stack.Navigator>

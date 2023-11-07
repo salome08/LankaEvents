@@ -1,17 +1,76 @@
 import React from "react";
 import { View, StyleSheet, StatusBar } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import FavScreen from "../screens/Fav";
 import HomeScreen from "../screens/Home";
 import AccountScreen from "../screens/account/Account";
 import SearchScreen from "../screens/search/Search";
 import { useTheme } from "../contexts/ThemContext";
+import { useOrganizer } from "../contexts/OrganizerContext";
+import HomeOrganizer from "../screens/organizer/HomeOrganizer";
+import VerifyPhoneOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
+import TestScreen from "../screens/TestScreen";
+// import { createDrawerNavigator } from "@react-navigation/drawer";
+import NewOrganizerSteps from "../screens/organizer/SignIn/NewOrganizerSteps";
+import CreateEvent from "../screens/organizer/CreateEvent";
 
+// const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
+const OrganizerStack = createNativeStackNavigator();
+
+const OrganizerStackNavigation = () => {
+  return (
+    <OrganizerStack.Navigator
+    // screenOptions={{
+    //   headerLeft: () => <HeaderBackButton />,
+    //   headerStyle: {
+    //     backgroundColor: themeColor.background, // Set your desired header color here
+    //   },
+    // }}
+    >
+      {/* Test */}
+      <OrganizerStack.Screen
+        name="HomeOrganizer"
+        component={HomeOrganizer}
+        options={{ headerShown: false }}
+      />
+      <OrganizerStack.Screen
+        name="NewOrganizerSteps"
+        component={NewOrganizerSteps}
+        options={{ headerShown: false }}
+      />
+      {/* <OrganizerStack.Screen
+        name="CreateEvent"
+        component={CreateEvent}
+        options={{ presentation: "modal", headerShown: false }}
+      /> */}
+    </OrganizerStack.Navigator>
+  );
+};
+
+// const OrganizerRoot = () => {
+//   return (
+//     <Drawer.Navigator useLegacyImplementation>
+//       <Stack.Screen
+//         name="NewOrganizerSteps"
+//         component={NewOrganizerSteps}
+//         options={{ headerShown: false }}
+//       />
+//       <Stack.Screen
+//         name="CreateEvent"
+//         component={CreateEvent}
+//         options={{ presentation: "modal", headerShown: false }}
+//       />
+//     </Drawer.Navigator>
+//   );
+// };
 
 export const BottomTabNavigation = () => {
   const { themeColor } = useTheme();
+  const { authenticatedO } = useOrganizer();
 
   return (
     <View style={{ flex: 1 }}>
@@ -32,7 +91,8 @@ export const BottomTabNavigation = () => {
       >
         <Tab.Screen
           name="HomeScreen"
-          component={HomeScreen}
+          component={TestScreen}
+          // component={HomeScreen}
           options={{
             tabBarIcon: ({ color, size }) => {
               return <Icon name="home-outline" size={size} color={color} />;
@@ -67,6 +127,18 @@ export const BottomTabNavigation = () => {
             },
           }}
         />
+
+        {authenticatedO && (
+          <Tab.Screen
+            name="Organizer"
+            component={HomeOrganizer}
+            options={{
+              tabBarIcon: ({ color, size }) => {
+                return <Icon name="creation" size={size} color={color} />;
+              },
+            }}
+          />
+        )}
       </Tab.Navigator>
     </View>
   );

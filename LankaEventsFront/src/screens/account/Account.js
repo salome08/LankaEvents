@@ -22,7 +22,7 @@ import { useSearch } from "../../contexts/SearchContext";
 import { BlurView } from "expo-blur";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { color } from "@rneui/base";
+
 const settingsLinks = [
   { title: "Primary city", screen: "Location", showAnonymous: true },
   // { title: "Copy events to calendar", screen: "", showAnonymous: true },

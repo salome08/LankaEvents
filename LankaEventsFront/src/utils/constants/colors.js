@@ -35,9 +35,11 @@ export default {
     iconWithBg: "rgb(74,77,98)",
 
     // PROGRESS BAR
-    myRed: "#bc4b51",
+    red: "#bc4b51",
     yellow: "#f4e285",
     green: "#8cb369",
+    lightRed: "rgb(251, 237, 240)",
+    flashRed: "rgb(221, 0, 48)",
 
     // BLUE
     blue: "rgb(54, 89, 227)",
@@ -94,6 +96,8 @@ export default {
     red: "#bc4b51",
     yellow: "#f4e285",
     green: "#8cb369",
+    lightRed: "rgb(251, 237, 240)",
+    flashRed: "rgb(221, 0, 48)",
 
     // BLUE
     blue: "rgb(103, 151, 247)",

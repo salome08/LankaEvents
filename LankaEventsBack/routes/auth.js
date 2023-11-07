@@ -98,6 +98,8 @@ router.get(
 // Google OAuth2.0 callback
 router.get("/oauth2/redirect/google", (req, res, next) => {
   // Perform authentication with the Google strategy
+  console.log("Google callback");
+
   passport.authenticate("google", (err, token) => {
     if (err) {
       return next(err);
@@ -105,6 +107,29 @@ router.get("/oauth2/redirect/google", (req, res, next) => {
 
     // Successful authentication, send the token to the client
     res.redirect(`exp://app&access_token=${token}`);
+  })(req, res, next);
+});
+
+// Google OAuth2.0 authentication Organizer
+router.get(
+  "/login/federated/google-organizer",
+  passport.authenticate("google-organizer", {
+    scope: ["profile", "email"],
+    prompt: "select_account",
+  })
+);
+
+// Google Organizer OAuth2.0 callback
+router.get("/oauth2/redirect/google-organizer", (req, res, next) => {
+  console.log("Google organizer callback");
+  // Perform authentication with the Google strategy
+  passport.authenticate("google-organizer", (err, result) => {
+    if (err) {
+      return next(err);
+    }
+    console.log("result", result);
+    // Successful authentication, send the token to the client
+    res.redirect(`exp://app&organizerToken=${result}`);
   })(req, res, next);
 });
 

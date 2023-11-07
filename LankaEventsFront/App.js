@@ -6,6 +6,7 @@ import config from "./config";
 import ThemeProvider from "./src/contexts/ThemContext";
 import EventProvider from "./src/contexts/EventContext";
 import SearchProvider from "./src/contexts/SearchContext";
+import OrganizerProvider from "./src/contexts/OrganizerContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
@@ -25,9 +26,11 @@ export default function App() {
           <AuthProvider>
             <EventProvider>
               <SearchProvider>
-                <NavigationContainer>
-                  <StackNavigation />
-                </NavigationContainer>
+                <OrganizerProvider>
+                  <NavigationContainer>
+                    <StackNavigation />
+                  </NavigationContainer>
+                </OrganizerProvider>
               </SearchProvider>
             </EventProvider>
           </AuthProvider>

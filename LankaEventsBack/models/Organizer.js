@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const organizerSchema = new mongoose.Schema({
+  userId: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   name: { type: String, default: "" },
   emailId: { type: String, default: "" },
   password: { type: String, default: "" },

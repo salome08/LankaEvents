@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 30,
+    // paddingHorizontal: 30,
     paddingVertical: 10,
   },
   input: {

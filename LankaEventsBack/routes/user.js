@@ -284,4 +284,40 @@ router.post("/close-account", async (req, res) => {
   }
 });
 
+router.post(
+  "/verify-OTP-organizer-account",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in verify-OTP");
+      const { user } = req;
+      const { code } = req.body;
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      await UserService.verifyOTP(user._id, code);
+      // await .getVerificationCode(user._id);
+
+      // Verify OTP
+      // If good:
+      // - create Organizer with userId
+      // If not:
+      // - Send error
+
+      res.status(200).json({ message: "Password created successfully" });
+    } catch (error) {
+      console.error(error.stack);
+      if (error instanceof OTPexpiredError) {
+        console.log("here");
+        res.status(400).json({ message: error.message });
+      } else {
+        console.log("la");
+        res.status(500).json({ message: "An unexpected error occurred" });
+      }
+    }
+  }
+);
+
 module.exports = { path: "/user", router };
