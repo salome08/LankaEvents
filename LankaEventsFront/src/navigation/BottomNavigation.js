@@ -10,7 +10,7 @@ import AccountScreen from "../screens/account/Account";
 import SearchScreen from "../screens/search/Search";
 import { useTheme } from "../contexts/ThemContext";
 import { useOrganizer } from "../contexts/OrganizerContext";
-import HomeOrganizer from "../screens/organizer/HomeOrganizer";
+import RootOrganizer from "../screens/organizer/RootOrganizer";
 import VerifyPhoneOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
 import TestScreen from "../screens/TestScreen";
 // import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -131,7 +131,7 @@ export const BottomTabNavigation = () => {
         {authenticatedO && (
           <Tab.Screen
             name="Organizer"
-            component={HomeOrganizer}
+            component={RootOrganizer}
             options={{
               tabBarIcon: ({ color, size }) => {
                 return <Icon name="creation" size={size} color={color} />;

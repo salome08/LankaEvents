@@ -30,6 +30,7 @@ import SimpleEventsPreview from "../screens/organizer/SimpleEventsPreview";
 import VerifyPhoneOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
 import NewOrganizerSteps from "../screens/organizer/SignIn/NewOrganizerSteps";
 import CreateEvent from "../screens/organizer/CreateEvent";
+import CreateProfile from "../screens/organizer/CreateProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -266,6 +267,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name="CreateEvent"
         component={CreateEvent}
+        options={{ presentation: "modal", headerShown: false }}
+      />
+      <Stack.Screen
+        name="CreateProfile"
+        component={CreateProfile}
         options={{ presentation: "modal", headerShown: false }}
       />
     </Stack.Navigator>

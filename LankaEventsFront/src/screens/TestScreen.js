@@ -64,7 +64,7 @@ const TestScreen = () => {
         style={[{ backgroundColor: themeColor.primary }, styles.button]}
         mode="contained"
         onPress={() => {
-          navigation.navigate("Organizer", { screen: "CreateEvent" });
+          navigation.navigate("Organizer");
         }}
       >
         Go to Home Organizer
