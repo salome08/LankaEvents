@@ -7,7 +7,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { Button, Menu, Divider, PaperProvider } from "react-native-paper";
+import {
+  Button,
+  Menu,
+  Divider,
+  PaperProvider,
+  IconButton,
+} from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTheme } from "../../contexts/ThemContext";
 import { useOrganizer } from "../../contexts/OrganizerContext";
@@ -17,23 +23,43 @@ import { Feather } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 
+const AccountMenu = () => {
+  const { themeColor, isDarkMode } = useTheme();
+  const { setAuthenticatedO } = useOrganizer();
+
+  const [visible, setVisible] = React.useState(false);
+
+  const openMenu = () => setVisible(true);
+
+  const closeMenu = () => setVisible(false);
+
+  return (
+    <View>
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={<IconButton icon="account-circle" onPress={openMenu} />}
+        anchorPosition="bottom"
+      >
+        <Menu.Item
+          trailingIcon="logout"
+          onPress={() => {
+            setAuthenticatedO(false);
+          }}
+          title="Log out"
+        />
+      </Menu>
+    </View>
+  );
+};
+
 const Navbar = ({ currentPage, setCurrentPage }) => {
   const navigation = useNavigation();
   const { themeColor, isDarkMode } = useTheme();
   const { setAuthenticatedO } = useOrganizer();
   const route = useRoute();
   const insets = useSafeAreaInsets();
-  const [visible, setVisible] = React.useState(true);
   const menu = ["Home", "Events"];
-  const [showUserMenu, setShowUserMenu] = useState(false);
-
-  const openMenu = () => setVisible(true);
-
-  const closeMenu = () => setVisible(false);
-
-  useEffect(() => {
-    setShowUserMenu(false);
-  }, [currentPage]);
 
   const MenuItem = ({ label, icon }) => {
     const color =
@@ -63,9 +89,9 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
         <View
           style={{
             flexDirection: "row",
-            // backgroundColor: "red",
             flex: 1,
             justifyContent: "space-around",
+            alignItems: "center",
           }}
         >
           {menu.map((label, index) => (
@@ -76,37 +102,7 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
             />
           ))}
         </View>
-        <View
-          style={{
-            paddingHorizontal: 16,
-            justifyContent: "flex-end",
-          }}
-        >
-          <TouchableOpacity
-            style={styles.linkContainer}
-            onPress={() => setShowUserMenu(!showUserMenu)}
-          >
-            <FontAwesome5
-              name="user-circle"
-              size={22}
-              color={themeColor.primaryText}
-            />
-          </TouchableOpacity>
-          {showUserMenu && (
-            <TouchableOpacity
-              style={[
-                { backgroundColor: themeColor.primaryText },
-                styles.userMenu,
-              ]}
-              onPress={() => {
-                setAuthenticatedO(false);
-              }}
-            >
-              <SimpleLineIcons name="logout" size={18} color="black" />
-              <Text style={{ fontWeight: 500 }}>Log out</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+        <AccountMenu />
       </View>
     </View>
   );
@@ -120,7 +116,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: "gray",
     borderBottomWidth: 0.3,
-    justifyContent: "center",
+    justifyContent: "flex-end",
     zIndex: 1,
   },
   linksContainer: {
@@ -142,7 +138,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     columnGap: 10,
-    paddingVertical: 16,
+    // paddingVertical: 16,
     borderRadius: 4,
     // paddingHorizontal: 22,
   },

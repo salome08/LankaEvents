@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { Button, ActivityIndicator } from "react-native-paper";
+import { Button, ActivityIndicator, Card } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTheme } from "../../contexts/ThemContext";
 import VerifyPhoneOtp from "./SignIn/NewOrganizerOtp";
@@ -134,27 +134,29 @@ const EventsCard = ({ setCurrentPage }) => {
       date: "Dec 06, 2023 07:00 PM",
     };
     return (
-      <View
-        style={[
-          { backgroundColor: themeColor.veryLightBackground },
-          styles.nextEventContainer,
-        ]}
-      >
-        <Text style={[{ color: themeColor.primaryText }, styles.title2]}>
-          {event.name}
-        </Text>
-        <Text style={[{ color: themeColor.primaryText }, styles.subtitle]}>
-          <Text style={{ fontWeight: 700 }}>{event.type}</Text> {event.date}
-        </Text>
-        <Button
-          // mode="outlined"
-          labelStyle={{ color: themeColor.primaryText, fontSize: 15 }}
-          style={[{ backgroundColor: themeColor.primary }, styles.button]}
-          onPress={() => navigation.navigate("CreateEvent")}
-        >
-          Continue editing
-        </Button>
-      </View>
+      <Card style={{ padding: 10, elevation: 0 }} elevation={1}>
+        <Card.Title
+          title={event.name}
+          subtitle={
+            <>
+              <Text style={{ fontWeight: 700 }}>{event.type}</Text> {event.date}
+            </>
+          }
+        />
+        <Card.Content>
+          <Button
+            mode="contained"
+            labelStyle={{ color: themeColor.white, fontSize: 15 }}
+            style={[
+              { backgroundColor: themeColor.primary, marginTop: 10 },
+              styles.button,
+            ]}
+            onPress={() => navigation.navigate("CreateEvent")}
+          >
+            Continue editing
+          </Button>
+        </Card.Content>
+      </Card>
     );
   };
 
@@ -191,6 +193,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     rowGap: 30,
+    paddingHorizontal: 16,
     // backgroundColor: "blue",
   },
   cardContainerOrganizer: {

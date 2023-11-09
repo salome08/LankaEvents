@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { Button, ActivityIndicator } from "react-native-paper";
+import { Button, ActivityIndicator, PaperProvider } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTheme } from "../../contexts/ThemContext";
 import VerifyPhoneOtp from "./SignIn/NewOrganizerOtp";
@@ -34,17 +34,19 @@ const RootOrganizer = () => {
     }
   }, [route.params]);
   return (
-    <View
-      style={[{ backgroundColor: themeColor.background }, styles.container]}
-    >
-      {/* Top bar menu */}
-      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <View style={styles.contentContainer}>
-        {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
-        {currentPage === "Events" && <Events />}
-        {/* {currentPage === "Logout" && console.log("log out organizer")} */}
+    <PaperProvider>
+      <View
+        style={[{ backgroundColor: themeColor.background }, styles.container]}
+      >
+        {/* Top bar menu */}
+        <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <View style={styles.contentContainer}>
+          {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
+          {currentPage === "Events" && <Events />}
+          {/* {currentPage === "Logout" && console.log("log out organizer")} */}
+        </View>
       </View>
-    </View>
+    </PaperProvider>
   );
 };
 
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     paddingVertical: 30,
     // backgroundColor: "blue",
   },

@@ -40,6 +40,7 @@ export default {
     green: "#8cb369",
     lightRed: "rgb(251, 237, 240)",
     flashRed: "rgb(221, 0, 48)",
+    white: "rgb(255, 255, 255)",
 
     // BLUE
     blue: "rgb(54, 89, 227)",
@@ -98,6 +99,7 @@ export default {
     green: "#8cb369",
     lightRed: "rgb(251, 237, 240)",
     flashRed: "rgb(221, 0, 48)",
+    white: "rgb(255, 255, 255)",
 
     // BLUE
     blue: "rgb(103, 151, 247)",
