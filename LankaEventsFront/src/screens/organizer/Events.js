@@ -101,18 +101,17 @@ const EventActionMenu = ({ event }) => {
         onDismiss={closeMenu}
         anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
         anchorPosition="top"
-        style={{
-          marginBottom: 60,
-          paddingBottom: 60,
-          // backgroundColor: "red",
-        }}
       >
-        <Menu.Item onPress={() => {}} title="View" />
-        <Menu.Item onPress={() => {}} title="Edit" />
+        <Menu.Item leadingIcon="eye" onPress={() => {}} title="View" />
+        <Menu.Item
+          leadingIcon="square-edit-outline"
+          onPress={() => {}}
+          title="Edit"
+        />
         {/* <Divider />
         <Menu.Item onPress={() => {}} title="Publish" /> */}
         <Divider />
-        <Menu.Item onPress={() => {}} title="Delete" />
+        <Menu.Item leadingIcon="delete" onPress={() => {}} title="Delete" />
       </Menu>
     </View>
   );
@@ -225,30 +224,30 @@ const Events = () => {
       location: "Online event",
       status: "Draft",
     },
-    // {
-    //   name: "Party in L.A",
-    //   date: "February 12, 2023 at 16:00 PM",
-    //   location: "California, L.A",
-    //   status: "Ongoing",
-    // },
-    // {
-    //   name: "Yoga class",
-    //   date: "December 16, 2023 at 18:00 PM",
-    //   location: "Weligama, Hangtime hostel",
-    //   status: "Past",
-    // },
-    // {
-    //   name: "Yoga class",
-    //   date: "December 16, 2023 at 18:00 PM",
-    //   location: "Weligama, Hangtime hostel",
-    //   status: "Past",
-    // },
-    // {
-    //   name: "Yoga class",
-    //   date: "December 16, 2023 at 18:00 PM",
-    //   location: "Weligama, Hangtime hostel",
-    //   status: "Past",
-    // },
+    {
+      name: "Party in L.A",
+      date: "February 12, 2023 at 16:00 PM",
+      location: "California, L.A",
+      status: "Ongoing",
+    },
+    {
+      name: "Yoga class",
+      date: "December 16, 2023 at 18:00 PM",
+      location: "Weligama, Hangtime hostel",
+      status: "Past",
+    },
+    {
+      name: "Yoga class",
+      date: "December 16, 2023 at 18:00 PM",
+      location: "Weligama, Hangtime hostel",
+      status: "Past",
+    },
+    {
+      name: "Yoga class",
+      date: "December 16, 2023 at 18:00 PM",
+      location: "Weligama, Hangtime hostel",
+      status: "Past",
+    },
   ];
 
   return (
@@ -274,7 +273,7 @@ const Events = () => {
       >
         {events.length ? (
           <View
-            style={{ rowGap: 10, paddingHorizontal: 10, paddingBottom: 10 }}
+            style={{ rowGap: 10, paddingHorizontal: 10, paddingBottom: 20 }}
           >
             {events.map((event, index) => (
               <EventCard key={index} event={event} />

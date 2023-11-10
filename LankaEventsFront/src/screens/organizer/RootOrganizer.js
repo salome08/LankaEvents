@@ -34,19 +34,17 @@ const RootOrganizer = () => {
     }
   }, [route.params]);
   return (
-    <PaperProvider>
-      <View
-        style={[{ backgroundColor: themeColor.background }, styles.container]}
-      >
-        {/* Top bar menu */}
-        <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-        <View style={styles.contentContainer}>
-          {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
-          {currentPage === "Events" && <Events />}
-          {/* {currentPage === "Logout" && console.log("log out organizer")} */}
-        </View>
+    <View
+      style={[{ backgroundColor: themeColor.background }, styles.container]}
+    >
+      {/* Top bar menu */}
+      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <View style={styles.contentContainer}>
+        {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
+        {currentPage === "Events" && <Events />}
+        {/* {currentPage === "Logout" && console.log("log out organizer")} */}
       </View>
-    </PaperProvider>
+    </View>
   );
 };
 
