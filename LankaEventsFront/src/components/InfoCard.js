@@ -9,7 +9,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "../contexts/ThemContext";
 
-const NewOrganizerOtp = ({ icon, subtitle, title, color }) => {
+const InfoCard = ({ icon, subtitle, title, color }) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { themeColor, isDarkMode } = useTheme();
@@ -52,7 +52,7 @@ const NewOrganizerOtp = ({ icon, subtitle, title, color }) => {
   );
 };
 
-export default NewOrganizerOtp;
+export default InfoCard;
 
 const styles = StyleSheet.create({
   container: {

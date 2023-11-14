@@ -284,20 +284,37 @@ router.post("/close-account", async (req, res) => {
   }
 });
 
-router.post(
-  "/verify-OTP-organizer-account",
+router.get(
+  "/create-organizer-account",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       // Find the user by ID
-      console.log("in verify-OTP");
+      console.log("in create-organizer-account");
       const { user } = req;
       const { code } = req.body;
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      await UserService.verifyOTP(user._id, code);
+      const organizer = await UserService.createOrganizer(user._id);
+
+      // const token = jwt.sign(
+      //   {
+      //     id: user._id,
+      //     // email: user.email,
+      //     // name: user.name,
+      //     // firstname: user.firstname,
+      //     // lastname: user.lastname,
+      //     // pictureUrl: user.profilePictureUrl,
+      //     organizerId: organizerId,
+      //   },
+      //   JWT_SECRET,
+      //   { expiresIn: "1h" }
+      // );
+
+      console.log("code", code);
+      console.log("organizer", organizer);
       // await .getVerificationCode(user._id);
 
       // Verify OTP
@@ -306,7 +323,7 @@ router.post(
       // If not:
       // - Send error
 
-      res.status(200).json({ message: "Password created successfully" });
+      res.status(200).json(organizer);
     } catch (error) {
       console.error(error.stack);
       if (error instanceof OTPexpiredError) {

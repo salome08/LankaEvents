@@ -6,6 +6,7 @@ import config from "./config";
 import ThemeProvider from "./src/contexts/ThemContext";
 import EventProvider from "./src/contexts/EventContext";
 import SearchProvider from "./src/contexts/SearchContext";
+import AlertProvider from "./src/contexts/AlertContext";
 import OrganizerProvider from "./src/contexts/OrganizerContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
@@ -20,22 +21,24 @@ export default function App() {
   console.log({ apiBaseUrl });
 
   return (
-    <ActionSheetProvider>
-      <SafeAreaProvider>
-        <ThemeProvider>
+    <ThemeProvider>
+      <ActionSheetProvider>
+        <SafeAreaProvider>
           <AuthProvider>
             <EventProvider>
               <SearchProvider>
                 <OrganizerProvider>
                   <NavigationContainer>
-                    <StackNavigation />
+                    <AlertProvider>
+                      <StackNavigation />
+                    </AlertProvider>
                   </NavigationContainer>
                 </OrganizerProvider>
               </SearchProvider>
             </EventProvider>
           </AuthProvider>
-        </ThemeProvider>
-      </SafeAreaProvider>
-    </ActionSheetProvider>
+        </SafeAreaProvider>
+      </ActionSheetProvider>
+    </ThemeProvider>
   );
 }

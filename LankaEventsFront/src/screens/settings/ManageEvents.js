@@ -1,3 +1,5 @@
+import React, { createContext, useState, useEffect } from "react";
+
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
 import { useTheme } from "../../contexts/ThemContext";
@@ -76,7 +78,7 @@ const ManageEvents = () => {
             // Display notif error
           } else {
             // Store the token in async storage
-            await storeOrganizerToken(token);
+            await storeOrganizerToken("organizerToken", token);
             setAuthenticatedU(true);
             // navigation.navigate("SimpleEventsPreview");
           }

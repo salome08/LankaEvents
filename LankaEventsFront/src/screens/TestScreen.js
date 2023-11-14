@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import InformationPopup from "../components/InformationPopup";
+import ErrorDialog from "../components/ErrorDialog";
+import NewOrganizerOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
+
 import {
   View,
   Text,
@@ -20,6 +24,7 @@ import {
   IconButton,
 } from "react-native-paper";
 import { useTheme } from "../contexts/ThemContext";
+import { useAlert } from "../contexts/AlertContext";
 import { useOrganizer } from "../contexts/OrganizerContext";
 
 const TestNav = () => {
@@ -211,6 +216,24 @@ const TestCard = () => {
   );
 };
 
+const TestPopupInfo = () => {
+  const [show, setShow] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
+  const { showError, showInfo } = useAlert();
+
+  return (
+    <View style={styles.container}>
+      {/* <InformationPopup /> */}
+      {/* <ErrorDialog /> */}
+      {/* <InformationPopup /> */}
+
+      <Button mode="contained" onPress={() => showError()}>
+        Test Top Popup
+      </Button>
+    </View>
+  );
+};
+
 const TestScreen = () => {
   return (
     // <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -221,7 +244,7 @@ const TestScreen = () => {
     //   </View>
     //   <View style={{ backgroundColor: "red", height: 50 }} />
     // </>
-    <TestNav />
+    <NewOrganizerOtp />
     // {/* <TestZindex /> */}
     // </View>
   );
@@ -230,6 +253,11 @@ const TestScreen = () => {
 export default TestScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   button: {
     marginBottom: 10,
     borderRadius: 4,

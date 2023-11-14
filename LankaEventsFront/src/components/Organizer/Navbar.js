@@ -94,13 +94,14 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
             alignItems: "center",
           }}
         >
-          {menu.map((label, index) => (
-            <MenuItem
-              key={index}
-              label={label}
-              icon={label === "Home" ? "home" : "calendar"}
-            />
-          ))}
+          {currentPage !== "NewOrganizerSteps" &&
+            menu.map((label, index) => (
+              <MenuItem
+                key={index}
+                label={label}
+                icon={label === "Home" ? "home" : "calendar"}
+              />
+            ))}
         </View>
         <AccountMenu />
       </View>

@@ -5,7 +5,7 @@ const OrganizerContext = createContext();
 
 const OrganizerProvider = ({ children }) => {
   const [authenticatedO, setAuthenticatedO] = useState(false);
-  const [authenticatedU, setAuthenticatedU] = useState(true);
+  const [authenticatedU, setAuthenticatedU] = useState(false);
 
   return (
     <OrganizerContext.Provider

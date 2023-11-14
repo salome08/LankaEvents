@@ -30,20 +30,35 @@ const RootOrganizer = () => {
       const { screen } = route.params;
       if (screen === "CreateEvent") navigation.navigate("CreateEvent");
       else if (screen === "NewOrganizerSteps")
-        navigation.navigate("NewOrganizerSteps");
+        setCurrentPage("NewOrganizerSteps");
+      // navigation.navigate("NewOrganizerSteps");
     }
   }, [route.params]);
+
+  useEffect(() => {
+    const getOrganizer = async () => {
+      // Call api to get organizer
+      // Set currentPage to steps if not validated
+      // Set events
+      // Set profile
+    };
+
+    getOrganizer();
+  }, []);
   return (
     <View
       style={[{ backgroundColor: themeColor.background }, styles.container]}
     >
       {/* Top bar menu */}
       <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <View style={styles.contentContainer}>
-        {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
-        {currentPage === "Events" && <Events />}
-        {/* {currentPage === "Logout" && console.log("log out organizer")} */}
-      </View>
+      {currentPage === "NewOrganizerSteps" ? (
+        <NewOrganizerSteps setCurrentPage={setCurrentPage} />
+      ) : (
+        <View style={styles.contentContainer}>
+          {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
+          {currentPage === "Events" && <Events />}
+        </View>
+      )}
     </View>
   );
 };

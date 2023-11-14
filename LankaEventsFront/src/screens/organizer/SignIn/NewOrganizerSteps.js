@@ -127,7 +127,7 @@ const Step3 = () => {
   );
 };
 
-const NewOrganizerOtp = () => {
+const NewOrganizerSteps = ({ setCurrentPage }) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { themeColor, isDarkMode } = useTheme();
@@ -151,6 +151,7 @@ const NewOrganizerOtp = () => {
       // Redirect create event page
       setTimeout(() => {
         console.log("hello");
+        setCurrentPage("Home");
         navigation.navigate("Organizer", { screen: "CreateEvent" });
       }, 2000);
     }
@@ -161,9 +162,9 @@ const NewOrganizerOtp = () => {
     <View
       style={[
         {
-          // paddingTop: insets.top * 2,
-          paddingBottom: insets.bottom,
-          backgroundColor: "rgb(252, 252, 252)",
+          // paddingTop: insets.top,
+          paddingBottom: 90,
+          backgroundColor: themeColor.background,
         },
         styles.container,
       ]}
@@ -237,7 +238,7 @@ const NewOrganizerOtp = () => {
   );
 };
 
-export default NewOrganizerOtp;
+export default NewOrganizerSteps;
 
 const styles = StyleSheet.create({
   container: {
@@ -254,7 +255,7 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     position: "absolute",
-    bottom: 60,
+    bottom: 90,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",

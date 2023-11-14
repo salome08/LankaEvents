@@ -91,18 +91,19 @@ module.exports = {
       console.log("verifyOTP");
       return { ok: true };
     } catch (err) {
-      if (err.response) {
-        // The client was given an error response (5xx, 4xx)
-        // console.error(1);
-        console.error(err.response.data.message);
-        return { ok: false, message: err.response.data.message };
-      } else if (err.request) {
-        // The client never received a response, and the request was never left
-        console.error(2);
-      } else {
-        // Anything else
-        console.error(3);
-      }
+      throw err;
+      // if (err.response) {
+      //   // The client was given an error response (5xx, 4xx)
+      //   // console.error(1);
+      //   console.error(err.response.data.message);
+      //   return { ok: false, message: err.response.data.message };
+      // } else if (err.request) {
+      //   // The client never received a response, and the request was never left
+      //   console.error(2);
+      // } else {
+      //   // Anything else
+      //   console.error(3);
+      // }
     }
   },
   userHasPassword: async () => {
@@ -185,6 +186,37 @@ module.exports = {
         // console.error(1);
         console.log(err.response.data);
         return { ok: false, email: err.response.data.email };
+      } else if (err.request) {
+        // The client never received a response, and the request was never left
+        console.error(2);
+      } else {
+        // Anything else
+        console.error(3);
+      }
+    }
+  },
+  createOrganizerAccount: async (code) => {
+    try {
+      const token = await getToken();
+      const { data } = await api.get("/user/create-organizer-account", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("organizer account created", data);
+
+      // error code
+      // error create account
+
+      // set OrganizerToken
+      // set authOrganizerToken
+      return null;
+    } catch (err) {
+      if (err.response) {
+        // The client was given an error response (5xx, 4xx)
+        // console.error(1);
+        console.error(err.response.data.message);
+        return { ok: false, message: err.response.data.message };
       } else if (err.request) {
         // The client never received a response, and the request was never left
         console.error(2);

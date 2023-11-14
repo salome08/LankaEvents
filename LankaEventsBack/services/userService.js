@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../models/User");
+const Organizer = require("../models/Organizer");
 const OTP = require("../models/Otp");
 const jwt = require("jwt-simple");
 const secret = process.env.JWT_SECRET;
@@ -121,6 +122,12 @@ module.exports = {
       console.log("not match");
       throw new WrongPasswordError(user.email);
     }
+  },
+  createOrganizer: (userId) => {
+    const organizer = new Organizer({
+      userId: userId,
+    });
+    return organizer.save();
   },
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;

@@ -1,54 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useTheme } from "../../../contexts/ThemContext";
+import { useAlert } from "../../../contexts/AlertContext";
 import { useOrganizer } from "../../../contexts/OrganizerContext";
 import { Button, ActivityIndicator } from "react-native-paper";
 import VerificationCodeInput from "../../../components/VerificationCodeInput";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-
-const ErrorMessage = () => {
-  const { themeColor, isDarkMode } = useTheme();
-
-  return (
-    <View
-      style={[
-        {
-          backgroundColor: themeColor.lightRed,
-          borderColor: themeColor.flashRed,
-        },
-        styles.errorContainer,
-      ]}
-    >
-      <View
-        style={{
-          paddingTop: 10,
-          alignItems: "flex-end",
-        }}
-      >
-        <View
-          style={[
-            { backgroundColor: themeColor.flashRed },
-            styles.errorIconContainer,
-          ]}
-        >
-          <MaterialIcons name="error-outline" size={24} color="white" />
-        </View>
-      </View>
-      <View flex={1} style={styles.errorTextContainer}>
-        <Text style={[{ fontWeight: 600 }, styles.errorText]}>
-          Invalid verification code
-        </Text>
-        <Text style={styles.errorText}>
-          Try submitting the code again or request a new one.
-        </Text>
-      </View>
-      <Entypo name="cross" size={24} color="black" />
-    </View>
-  );
-};
+import userApi from "../../../../api/userApi";
+import ErrorDialog from "../../../components/ErrorDialog";
 
 const Step0 = ({ setStep }) => {
   const {
@@ -58,6 +20,8 @@ const Step0 = ({ setStep }) => {
     authenticatedU,
   } = useOrganizer();
   const { themeColor, isDarkMode } = useTheme();
+  const { showError } = useAlert();
+  const navigation = useNavigation();
 
   return (
     <View>
@@ -76,6 +40,17 @@ const Step0 = ({ setStep }) => {
       >
         Send code
       </Button>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+        style={{ alignItems: "center", marginTop: 10 }}
+      >
+        <Text style={[{ color: themeColor.blue }, styles.mainText]}>
+          Cancel
+        </Text>
+      </TouchableOpacity>
+
       {/* <Text>
         logged user: {authenticatedU ? "YES" : "NO"}
         {"\n"}
@@ -114,9 +89,9 @@ const Step0 = ({ setStep }) => {
 
 const Step1 = ({ setStep }) => {
   const { themeColor, isDarkMode } = useTheme();
+  const { showError, test } = useAlert();
   const navigation = useNavigation();
   const [code, setCode] = useState(["", "", "", "", ""]);
-  const [errorOtp, setErrorOtp] = useState(false);
   const fullCodeTyped = code.every((item) => !isNaN(parseInt(item)));
   const {
     setAuthenticatedO,
@@ -128,34 +103,38 @@ const Step1 = ({ setStep }) => {
   const onPressBack = () => {
     setStep(0);
     setCode(["", "", "", "", ""]);
-    setErrorOtp(false);
   };
 
   const onPressSubmit = async () => {
-    // Verify OTP
-    // res = await userApi.verifyOTP(code);
-    // if ok:
-    // Show confirmation Screen
-    setStep(2);
-    setAuthenticatedO(true);
-    // create organizer
-    // Show confirmation page
-    // redirect Organizer tab + steps
-    setTimeout(() => {
+    // showError("test");
+    try {
+      // Verify OTP
+      // const res = await userApi.verifyOTP(code);
+      // // console.log("res", res);
+      // if ok:
+      // Show confirmation Screen
+      setStep(2);
+      // create organizer
+      // Show confirmation page
+      await userApi.createOrganizerAccount();
       setAuthenticatedO(true);
-      console.log("Organizer Created");
-      navigation.navigate("Organizer", { screen: "NewOrganizerSteps" });
-    }, 2000);
-    // else:
-    // Show error message
-    // else console.log(res.message);
-    setErrorOtp(false); // error a ameliorer + scroll view
+      // redirect Organizer tab + steps
+      setTimeout(() => {
+        // console.log("Organizer Created");
+        navigation.navigate("Organizer", { screen: "NewOrganizerSteps" });
+      }, 2000);
+      // else:
+      // Show error message
+      // else console.log(res.message);
+    } catch (error) {
+      showError(error);
+      setCode(["", "", "", "", ""]);
+    }
   };
 
   return (
     <View>
       <Text style={styles.title}>Enter the verification code</Text>
-      {errorOtp && <ErrorMessage />}
       <Text style={styles.mainText}>
         We sent a 5-digit verification code to the email address you provided.
       </Text>

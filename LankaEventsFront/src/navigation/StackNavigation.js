@@ -27,7 +27,7 @@ import UpdatePassword from "../screens/settings/UpdatePassword";
 import CreatePassword from "../screens/settings/CreatePassword";
 import CloseAccount from "../screens/settings/CloseAccount";
 import SimpleEventsPreview from "../screens/organizer/SimpleEventsPreview";
-import VerifyPhoneOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
+import NewOrganizerOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
 import NewOrganizerSteps from "../screens/organizer/SignIn/NewOrganizerSteps";
 import CreateEvent from "../screens/organizer/CreateEvent";
 import CreateProfile from "../screens/organizer/CreateProfile";
@@ -255,9 +255,9 @@ const StackNavigation = () => {
         options={{ presentation: "modal", headerShown: false }}
       />
       <Stack.Screen
-        name="VerifyPhoneOtp"
-        component={VerifyPhoneOtp}
-        options={{ presentation: "modal", headerShown: false }}
+        name="NewOrganizerOtp"
+        component={NewOrganizerOtp}
+        // options={{ headerShown: false }}
       />
       <Stack.Screen
         name="NewOrganizerSteps"

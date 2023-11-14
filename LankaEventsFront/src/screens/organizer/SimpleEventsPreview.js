@@ -29,6 +29,7 @@ import { AntDesign } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 import { storeOrganizerToken } from "../../utils/functions/storage";
 import JWT from "expo-jwt";
+import { getOrganizerToken, getToken } from "../../utils/functions/storage";
 
 const NoEventsScreen = ({ title }) => {
   const { themeColor, isDarkMode } = useTheme();
@@ -61,7 +62,7 @@ const NoEventsScreen = ({ title }) => {
             return null;
           } else {
             // Store the token in async storage
-            await storeOrganizerToken(token);
+            await storeOrganizerToken("organizerToken", token);
             return token;
           }
           // Update auth state in the context
@@ -95,7 +96,8 @@ const NoEventsScreen = ({ title }) => {
       // Go page send number phone
       if (!organizerId) {
         console.log("user has no organizer account");
-        navigation.navigate("VerifyPhoneOtp");
+        navigation.goBack();
+        navigation.navigate("NewOrganizerOtp");
       } else {
         // If Organizer id:
         // Go create event page
@@ -157,14 +159,22 @@ const SimpleEventsPreview = () => {
   const insets = useSafeAreaInsets();
   const { setAuthenticatedU } = useOrganizer();
   const navigation = useNavigation();
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    const getEvents = async () => {
-      const events = await organizerApi.getEvents();
-      console.log("events", events);
-    };
+    const getToken = async () => {
+      // Decode token organizer
+      const token = await getOrganizerToken("organizerToken");
+      const { organizerId } = JWT.decode(token, "YOUR_JWT_SECRET");
+      console.log("organizerId", organizerId);
 
-    getEvents();
+      if (organizerId) {
+        console.log("here");
+        const events = await organizerApi.getEvents();
+        setEvents(events);
+      }
+    };
+    getToken();
   }, []);
 
   return (

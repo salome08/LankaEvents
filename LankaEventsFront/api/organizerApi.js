@@ -16,7 +16,7 @@ module.exports = {
   getEvents: async () => {
     try {
       console.log("get Events");
-      const token = await getOrganizerToken();
+      const token = await getOrganizerToken("organizerToken");
       const { data } = await api.get("/organizer/events", {
         headers: {
           Authorization: `Bearer ${token}`,
