@@ -46,13 +46,16 @@ const Subitle = ({ children }) => {
     </Text>
   );
 };
-const InputText = ({ label, value }) => {
+const InputText = ({ label, value, onChangeText, error }) => {
   return (
     <TextInput
       label={label}
       value={value}
       underlineStyle={{ width: 0 }}
       style={{ borderRadius: 4, flex: 1 }}
+      onChangeText={onChangeText}
+      error={error}
+      maxLength={60}
     />
   );
 };
@@ -116,13 +119,13 @@ const DropdownDate = ({ label, date, dateString, setDate, setDateString }) => {
   );
 };
 
-const LocationFrom = () => {
+const LocationFrom = ({ location, setLocation, errors, setErrors }) => {
   const { themeColor, isDarkMode } = useTheme();
   const [isOnline, setIsOnline] = useState(false);
 
   return (
     <View style={{ rowGap: 10 }}>
-      <View style={{ flexDirection: "row", columnGap: 15 }}>
+      {/* <View style={{ flexDirection: "row", columnGap: 15 }}>
         <Button
           mode={isOnline ? "outlined" : "contained"}
           theme={{
@@ -147,7 +150,7 @@ const LocationFrom = () => {
         >
           Online event
         </Button>
-      </View>
+      </View> */}
       {isOnline ? (
         <Subitle>
           Online events have unique pages where you can add links to livestreams
@@ -155,20 +158,33 @@ const LocationFrom = () => {
         </Subitle>
       ) : (
         <>
-          <InputText label="Venue name *" />
-          <InputText label="Address 1 *" />
-          <InputText label="Address 2" />
-          <InputText label="City *" />
+          <InputText
+            label="Venue name *"
+            value={location.venueName}
+            error={errors.venueName}
+            onChangeText={(text) => setLocation({ ...location })}
+          />
+          <InputText
+            label="Address 1 *"
+            value={location.address1}
+            error={errors.address1}
+          />
+          <InputText label="Address 2" value={location.address2} />
+          <InputText label="City *" value={location.city} error={errors.city} />
           <View
             style={{
               flexDirection: "row",
               columnGap: 8,
             }}
           >
-            <InputText label="State/Province" />
-            <InputText label="Postal Code *" />
+            <InputText label="State/Province" value={location.state} />
+            <InputText
+              label="Postal Code *"
+              value={location.postalCode}
+              error={errors.postalCode}
+            />
           </View>
-          <InputText label="Country *" value="Sri Lanka" editable={false} />
+          <InputText label="Country" value="Sri Lanka" editable={false} />
         </>
       )}
     </View>
@@ -216,14 +232,48 @@ const BasicInfoForm = ({ validInfo }) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
+  // About
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
+  const [category, setCategory] = useState("");
+  const [errorTitle, setErrorTitle] = useState(false);
+
+  // Location
+  const [isOnline, setIsOnline] = useState(false);
+  const [venueName, setVenueName] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [errorVenueName, setErrorVenueName] = useState(false);
+  const [errorAddress1, setErrorAddress1] = useState(false);
+  const [errorCity, setErrorCity] = useState(false);
+  const [errorPostalCode, setErrorPostalCode] = useState(false);
+
+  // Date & Time
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+
+  const onSave = () => {
+    console.log("title", title);
+    if (!title) setErrorTitle(true);
+    if (!venueName) setErrorVenueName(true);
+    if (!address1) setErrorAddress1(true);
+    if (!city) setErrorCity(true);
+    if (!postalCode) setErrorPostalCode(true);
+    validInfo();
+  };
+
   return (
     <>
       <ScrollView
-        contentContainerStyle={{
-          padding: 16,
-          rowGap: 20,
-          paddingBottom: insets.bottom * 1.2,
-        }}
+        contentContainerStyle={[
+          { paddingBottom: insets.bottom * 1.2 },
+          styles.contentContainer,
+        ]}
       >
         <TouchableOpacity onPress={validInfo}>
           <Text style={{ color: themeColor.blue }}>{"<"} Events</Text>
@@ -232,23 +282,124 @@ const BasicInfoForm = ({ validInfo }) => {
           Name your event and tell event-goers why they should come. Add details
           that highlight what makes it unique.
         </Subitle>
-        <InputText label="Event Title *" />
-        <InputSelect label="Organizer" />
-        <Subitle>
+        <InputText
+          label="Event Title *"
+          value={title}
+          onChangeText={(text) => {
+            setErrorTitle(false);
+            setTitle(text);
+          }}
+          error={errorTitle}
+        />
+        {/* <InputSelect label="Organizer" /> */}
+        {/* <Subitle>
           This profile describes a unique organizer and shows all of the events
           on one page.
-        </Subitle>
+        </Subitle> */}
         {/* <DropdownMenu /> */}
         <InputSelect label="Type" />
         <InputSelect label="Category" />
 
+        {/* Location */}
         <Title>Location</Title>
         <Subitle>
           Help people in the area discover your event and let attendees know
           where to show up.
         </Subitle>
-        <LocationFrom />
+        {/* select button online events */}
+        <View style={{ rowGap: 10 }}>
+          {/* <View style={{ flexDirection: "row", columnGap: 15 }}>
+      <Button
+        mode={isOnline ? "outlined" : "contained"}
+        theme={{
+          colors: {
+            primary: themeColor.primaryText,
+          },
+        }}
+        style={{ borderRadius: 4 }}
+        onPress={() => setIsOnline(false)}
+      >
+        Venue
+      </Button>
+      <Button
+        mode={isOnline ? "contained" : "outlined"}
+        theme={{
+          colors: {
+            primary: themeColor.primaryText,
+          },
+        }}
+        style={{ borderRadius: 4 }}
+        onPress={() => setIsOnline(true)}
+      >
+        Online event
+      </Button>
+    </View> */}
+          {isOnline ? (
+            <Subitle>
+              Online events have unique pages where you can add links to
+              livestreams and more
+            </Subitle>
+          ) : (
+            <>
+              <InputText
+                label="Venue name *"
+                value={venueName}
+                error={errorVenueName}
+                onChangeText={(text) => {
+                  setErrorVenueName(false);
+                  setVenueName(text);
+                }}
+              />
+              <InputText
+                label="Address 1 *"
+                value={address1}
+                error={errorAddress1}
+                onChangeText={(text) => {
+                  setErrorAddress1(false);
+                  setAddress1(text);
+                }}
+              />
+              <InputText
+                label="Address 2"
+                value={address2}
+                onChangeText={(text) => setAddress2(text)}
+              />
+              <InputText
+                label="City *"
+                value={city}
+                error={errorCity}
+                onChangeText={(text) => {
+                  setErrorCity(false);
+                  setCity(text);
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  columnGap: 8,
+                }}
+              >
+                <InputText
+                  label="State/Province"
+                  value={state}
+                  onChangeText={(text) => setState(text)}
+                />
+                <InputText
+                  label="Postal Code *"
+                  value={postalCode}
+                  error={errorPostalCode}
+                  onChangeText={(text) => {
+                    setErrorPostalCode(false);
+                    setPostalCode(text);
+                  }}
+                />
+              </View>
+              <InputText label="Country" value="Sri Lanka" editable={false} />
+            </>
+          )}
+        </View>
 
+        {/* Date & Time  */}
         <Title>Date and time</Title>
         <Subitle>
           Tell event-goers when your event starts and ends so they can make
@@ -257,14 +408,13 @@ const BasicInfoForm = ({ validInfo }) => {
         <DateAndTimeForm />
       </ScrollView>
       <View
-        style={{
-          paddingVertical: 20,
-          paddingBottom: insets.bottom * 1.2,
-          paddingHorizontal: 16,
-          rowGap: 10,
-          borderTopWidth: 0.2,
-          borderTopColor: themeColor.primaryText,
-        }}
+        style={[
+          {
+            paddingBottom: insets.bottom * 1.2,
+            borderTopColor: themeColor.primaryText,
+          },
+          styles.buttonContainer,
+        ]}
       >
         <Button
           mode="contained"
@@ -274,7 +424,7 @@ const BasicInfoForm = ({ validInfo }) => {
             },
           }}
           style={{ borderRadius: 4 }}
-          onPress={validInfo}
+          onPress={onSave}
         >
           Save
         </Button>
@@ -297,4 +447,15 @@ const BasicInfoForm = ({ validInfo }) => {
 
 export default BasicInfoForm;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  contentContainer: {
+    padding: 16,
+    rowGap: 20,
+  },
+  buttonContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    rowGap: 10,
+    borderTopWidth: 0.2,
+  },
+});

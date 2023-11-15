@@ -9,7 +9,9 @@ import {
 } from "react-native";
 import { Button, ActivityIndicator, PaperProvider } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import organizerApi from "../../../api/organizerApi";
 import { useTheme } from "../../contexts/ThemContext";
+import { useOrganizer } from "../../contexts/OrganizerContext";
 import VerifyPhoneOtp from "./SignIn/NewOrganizerOtp";
 import NewOrganizerSteps from "./SignIn/NewOrganizerSteps";
 import CreateEvent from "./CreateEvent";
@@ -21,8 +23,10 @@ const RootOrganizer = () => {
   console.log("-----------------RootOrganizer----------------");
   const navigation = useNavigation();
   const route = useRoute();
+  const { organizerId } = useOrganizer();
   const { themeColor, isDarkMode } = useTheme();
   const [currentPage, setCurrentPage] = useState("Home");
+  const [organizer, setOrganizer] = useState(null);
 
   useEffect(() => {
     console.log("In useeffect RootOrganizer");
@@ -38,13 +42,17 @@ const RootOrganizer = () => {
   useEffect(() => {
     const getOrganizer = async () => {
       // Call api to get organizer
+      const organizer = await organizerApi.getOrganizer(organizerId);
+      setOrganizer(organizer);
+      console.log("organizer", organizer);
       // Set currentPage to steps if not validated
-      // Set events
-      // Set profile
     };
 
     getOrganizer();
   }, []);
+
+  if (!organizer) return <Text>Loading...</Text>;
+
   return (
     <View
       style={[{ backgroundColor: themeColor.background }, styles.container]}
@@ -55,8 +63,10 @@ const RootOrganizer = () => {
         <NewOrganizerSteps setCurrentPage={setCurrentPage} />
       ) : (
         <View style={styles.contentContainer}>
-          {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
-          {currentPage === "Events" && <Events />}
+          {currentPage === "Home" && (
+            <Home setCurrentPage={setCurrentPage} organizer={organizer} />
+          )}
+          {currentPage === "Events" && <Events organizer={organizer} />}
         </View>
       )}
     </View>

@@ -34,82 +34,18 @@ import { getOrganizerToken, getToken } from "../../utils/functions/storage";
 const NoEventsScreen = ({ title }) => {
   const { themeColor, isDarkMode } = useTheme();
   const navigation = useNavigation();
-  const { setAuthenticatedO } = useOrganizer();
+  const { logOrganizer } = useOrganizer();
 
-  const handleGoogleSignIn = async () => {
-    const response = await WebBrowser.openAuthSessionAsync(
-      "http://localhost:3000/auth/login/federated/google-organizer",
-      "exp://192.168.1.112:19000/Home"
-    );
-    if (response?.type === "success") {
-      if (response.url) {
-        // Check if the URL contains the token or other relevant data
-        if (response.url.includes("organizerToken")) {
-          console.log(response.url);
-          // Extract the token from the URL
-          const urlParts = response.url.split("#");
-          const tokenPart = urlParts[0];
-          const tokenKeyValuePairs = tokenPart.split("&");
-          const token = tokenKeyValuePairs
-            .find((pair) => pair.includes("organizerToken"))
-            .split("=")[1];
-
-          console.log("token", token);
-          // Token === false if user was not found in db
-          if (token === "false") {
-            console.log("user not found in db");
-            // Display notif error
-            return null;
-          } else {
-            // Store the token in async storage
-            await storeOrganizerToken("organizerToken", token);
-            return token;
-          }
-          // Update auth state in the context
-          // logIn(token);
-        }
-      }
-      console.log("Success google connection");
-    } else {
-      // Error google account
-      console.log("Fail connection");
-      return null;
-    }
-
-    // navigation.goBack();
-  };
   const handleCreateEvent = async () => {
-    // const { setAuthenticatedO } = useOrganizer();
-    // const navigation = useNavigation();
-
-    // Sign Organizer Account
-    // Google Organizer signIn
-    const token = await handleGoogleSignIn();
-    // get token into storage
-    // if signIn success:
-
-    if (token) {
-      // decode token from storage
-      const decodedToken = JWT.decode(token, "YOUR_JWT_SECRET");
-      const { organizerId } = decodedToken;
-      // If no organizer Id:
-      // Go page send number phone
-      if (!organizerId) {
-        console.log("user has no organizer account");
-        navigation.goBack();
-        navigation.navigate("NewOrganizerOtp");
-      } else {
-        // If Organizer id:
-        // Go create event page
-        console.log("user organizer Id: ", organizerId);
-        setAuthenticatedO(true);
-        navigation.navigate("Organizer", { screen: "CreateEvent" });
-      }
+    const organizerId = await logOrganizer();
+    if (!organizerId) {
+      console.log("user has no organizer account");
+      navigation.goBack();
+      navigation.navigate("NewOrganizerOtp");
     } else {
-      console.log("Error connection");
+      // If Organizer id: Go create event page
+      navigation.navigate("Organizer", { screen: "CreateEvent" });
     }
-
-    // If sign In fail error notification
   };
 
   return (

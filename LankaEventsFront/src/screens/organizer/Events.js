@@ -117,44 +117,44 @@ const EventActionMenu = ({ event }) => {
   );
 };
 
-const EventActionMenu2 = ({ event }) => {
-  const { themeColor, isDarkMode } = useTheme();
-  const { showActionSheetWithOptions } = useActionSheet();
+// const EventActionMenu2 = ({ event }) => {
+//   const { themeColor, isDarkMode } = useTheme();
+//   const { showActionSheetWithOptions } = useActionSheet();
 
-  const [visible, setVisible] = React.useState(false);
+//   const [visible, setVisible] = React.useState(false);
 
-  const openMenu = () => {
-    const options = ["View", "Edit", "Cancel"];
-    // const destructiveButtonIndex = 0;
-    const cancelButtonIndex = 2;
+//   const openMenu = () => {
+//     const options = ["View", "Edit", "Cancel"];
+//     // const destructiveButtonIndex = 0;
+//     const cancelButtonIndex = 2;
 
-    showActionSheetWithOptions(
-      {
-        options,
-        cancelButtonIndex,
-        // destructiveButtonIndex,
-      },
-      (selectedIndex) => {
-        switch (selectedIndex) {
-          case 0:
-            // Save
-            pickImage();
-            break;
+//     showActionSheetWithOptions(
+//       {
+//         options,
+//         cancelButtonIndex,
+//         // destructiveButtonIndex,
+//       },
+//       (selectedIndex) => {
+//         switch (selectedIndex) {
+//           case 0:
+//             // Save
+//             pickImage();
+//             break;
 
-          case 1:
-            // Delete
-            takePhoto();
-            break;
+//           case 1:
+//             // Delete
+//             takePhoto();
+//             break;
 
-          case cancelButtonIndex:
-          // Canceled
-        }
-      }
-    );
-  };
+//           case cancelButtonIndex:
+//           // Canceled
+//         }
+//       }
+//     );
+//   };
 
-  return <IconButton icon="dots-vertical" onPress={openMenu} />;
-};
+//   return <IconButton icon="dots-vertical" onPress={openMenu} />;
+// };
 
 const EventCard = ({ event }) => {
   const { themeColor, isDarkMode } = useTheme();
@@ -205,7 +205,7 @@ const NoEventView = () => {
   );
 };
 
-const Events = () => {
+const Events = ({ organizer }) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { themeColor, isDarkMode } = useTheme();
@@ -217,38 +217,15 @@ const Events = () => {
     { label: "All events", value: "all" },
   ];
 
-  const events = [
-    {
-      name: "Hello",
-      date: "December 6, 2023 at 7:00 PM",
-      location: "Online event",
-      status: "Draft",
-    },
-    {
-      name: "Party in L.A",
-      date: "February 12, 2023 at 16:00 PM",
-      location: "California, L.A",
-      status: "Ongoing",
-    },
-    {
-      name: "Yoga class",
-      date: "December 16, 2023 at 18:00 PM",
-      location: "Weligama, Hangtime hostel",
-      status: "Past",
-    },
-    {
-      name: "Yoga class",
-      date: "December 16, 2023 at 18:00 PM",
-      location: "Weligama, Hangtime hostel",
-      status: "Past",
-    },
-    {
-      name: "Yoga class",
-      date: "December 16, 2023 at 18:00 PM",
-      location: "Weligama, Hangtime hostel",
-      status: "Past",
-    },
-  ];
+  const { events } = organizer;
+  // const events = [
+  //   {
+  //     name: "Hello",
+  //     date: "December 6, 2023 at 7:00 PM",
+  //     location: "Online event",
+  //     status: "Draft",
+  //   },
+  // ];
 
   return (
     <View style={[{ paddingBottom: insets.bottom * 2 }, styles.container]}>

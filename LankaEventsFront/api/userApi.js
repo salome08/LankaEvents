@@ -3,7 +3,7 @@ import config from "../config";
 import {
   getToken,
   storeToken,
-  storeEmail,
+  storeOrganizerToken,
 } from "../src/utils/functions/storage";
 
 const API_URL = config.API_BASE_URL;
@@ -204,6 +204,8 @@ module.exports = {
         },
       });
       console.log("organizer account created", data);
+      await storeOrganizerToken("authOrganizerToken", data.token);
+      await storeOrganizerToken("organizerToken", data.token);
 
       // error code
       // error create account

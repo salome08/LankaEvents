@@ -62,4 +62,12 @@ module.exports = {
       return null;
     }
   },
+  removeOrganizerToken: async (name) => {
+    try {
+      await AsyncStorage.removeItem(name);
+      console.log("Token removed successfully from AsyncStorage.");
+    } catch (error) {
+      console.error("Error removing token from AsyncStorage:", error);
+    }
+  },
 };

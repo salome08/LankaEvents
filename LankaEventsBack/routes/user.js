@@ -8,6 +8,8 @@ const PasswordLengthError = require("../errors/PasswordLengthError");
 const OTPexpiredError = require("../errors/OTPexpiredError");
 const WrongPasswordError = require("../errors/WrongPasswordError");
 
+const JWT_SECRET = "YOUR_JWT_SECRET";
+
 // const User = require("../"); // Assuming your model is in a separate file
 
 // API to login and register new user, dont required any auth in headers (check auth middleware)
@@ -299,21 +301,16 @@ router.get(
 
       const organizer = await UserService.createOrganizer(user._id);
 
-      // const token = jwt.sign(
-      //   {
-      //     id: user._id,
-      //     // email: user.email,
-      //     // name: user.name,
-      //     // firstname: user.firstname,
-      //     // lastname: user.lastname,
-      //     // pictureUrl: user.profilePictureUrl,
-      //     organizerId: organizerId,
-      //   },
-      //   JWT_SECRET,
-      //   { expiresIn: "1h" }
-      // );
+      const token = jwt.sign(
+        {
+          id: organizer.userId,
+          organizerId: organizer._id,
+        },
+        JWT_SECRET,
+        { expiresIn: "3h" }
+      );
 
-      console.log("code", code);
+      console.log("token", token);
       console.log("organizer", organizer);
       // await .getVerificationCode(user._id);
 
@@ -323,7 +320,7 @@ router.get(
       // If not:
       // - Send error
 
-      res.status(200).json(organizer);
+      res.status(200).json({ token });
     } catch (error) {
       console.error(error.stack);
       if (error instanceof OTPexpiredError) {

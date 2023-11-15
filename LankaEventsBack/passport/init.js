@@ -92,21 +92,16 @@ module.exports = (app) => {
           // Return null if user not found
           if (!user) return done(null, null);
 
-          const organizerId = await Organizer.findOne({ userId: user._id });
-          console.log(organizerId);
+          const organizer = await Organizer.findOne({ userId: user._id });
+          console.log(organizer);
           // Create a JWT token with the user data + organizerId
           const token = jwt.sign(
             {
               id: user._id,
-              // email: user.email,
-              // name: user.name,
-              // firstname: user.firstname,
-              // lastname: user.lastname,
-              // pictureUrl: user.profilePictureUrl,
-              organizerId: organizerId,
+              organizerId: organizer?._id || null,
             },
             JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "3h" }
           );
 
           // Return null if user not found, user token with organizerId if user

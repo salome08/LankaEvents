@@ -13,6 +13,20 @@ const api = axios.create({
 });
 
 module.exports = {
+  getOrganizer: async (organizerId) => {
+    try {
+      console.log("getOrganizer");
+      const token = await getOrganizerToken("organizerToken");
+      const { data } = await api.get(`/organizer/${organizerId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  },
   getEvents: async () => {
     try {
       console.log("get Events");

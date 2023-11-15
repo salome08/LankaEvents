@@ -84,4 +84,29 @@ router.get(
   }
 );
 
+router.get(
+  "/:organizerId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      // Find the user by ID
+      console.log("in get Organizer");
+      const { user } = req;
+      const { organizerId } = req.params;
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const organizer = await UserService.getOrganizer(user._id);
+      // await UserService.getVerificationCode(user._id);
+
+      res.status(200).json(organizer);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
 module.exports = { path: "/organizer", router };

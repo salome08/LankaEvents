@@ -17,12 +17,11 @@ import Navbar from "../../components/Organizer/Navbar";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const OrganizerCard = () => {
+const OrganizerCard = ({ organizer }) => {
   const { themeColor, isDarkMode } = useTheme();
   const navigation = useNavigation();
   const nbEvents = 2;
   const nbFollowers = 0;
-  const profileCreated = true;
 
   const StartProfile = () => {
     return (
@@ -31,7 +30,6 @@ const OrganizerCard = () => {
           First, create your profile:
         </Text>
         <Button
-          // mode="outlined"
           labelStyle={{ color: themeColor.primaryText, fontSize: 15 }}
           style={[{ backgroundColor: themeColor.primary }, styles.button]}
           onPress={() => navigation.navigate("CreateEvent")}
@@ -50,11 +48,11 @@ const OrganizerCard = () => {
         </View>
         <View style={{ rowGap: 20 }}>
           <Text style={[{ color: themeColor.primaryText }, styles.title]}>
-            Salome hazan
+            {organizer.name}
           </Text>
           <View style={{ flexDirection: "row", columnGap: 8 }}>
             <Text style={[{ color: themeColor.primaryText }, styles.subtitle2]}>
-              {nbEvents || "--"} Total events
+              {organizer.events.length || "--"} Total events
             </Text>
             <Text style={[{ color: themeColor.primaryText }, styles.subtitle2]}>
               {nbFollowers || "--"} Total followers
@@ -74,11 +72,11 @@ const OrganizerCard = () => {
 
   return (
     <View style={styles.cardContainerOrganizer}>
-      {profileCreated ? <ExistingProfile /> : <StartProfile />}
+      {organizer.name ? <ExistingProfile /> : <StartProfile />}
     </View>
   );
 };
-const EventsCard = ({ setCurrentPage }) => {
+const EventsCard = ({ setCurrentPage, organizer }) => {
   const { themeColor, isDarkMode } = useTheme();
   const navigation = useNavigation();
   const nextEventExist = true;
@@ -170,17 +168,17 @@ const EventsCard = ({ setCurrentPage }) => {
           Go to Events
         </Text>
       </TouchableOpacity>
-      {nextEventExist ? <NextEvent /> : <StartEvent />}
+      {organizer.events[0] ? <NextEvent /> : <StartEvent />}
     </View>
   );
 };
 
-const Home = ({ setCurrentPage }) => {
+const Home = ({ setCurrentPage, organizer }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <OrganizerCard />
-      <EventsCard setCurrentPage={setCurrentPage} />
+      <OrganizerCard organizer={organizer} />
+      <EventsCard setCurrentPage={setCurrentPage} organizer={organizer} />
       {/* Organizer Profile */}
       {/* Events */}
     </View>

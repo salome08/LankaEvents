@@ -22,6 +22,7 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { removeOrganizerToken } from "../../utils/functions/storage";
 
 const AccountMenu = () => {
   const { themeColor, isDarkMode } = useTheme();
@@ -45,6 +46,7 @@ const AccountMenu = () => {
           trailingIcon="logout"
           onPress={() => {
             setAuthenticatedO(false);
+            removeOrganizerToken("authOrganizerToken");
           }}
           title="Log out"
         />
