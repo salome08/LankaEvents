@@ -16,9 +16,11 @@ import CreateEvent from "./CreateEvent";
 import Navbar from "../../components/Organizer/Navbar";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useOrganizer } from "../../contexts/OrganizerContext";
 
-const OrganizerCard = ({ organizer }) => {
+const OrganizerCard = () => {
   const { themeColor, isDarkMode } = useTheme();
+  const { profile, events } = useOrganizer();
   const navigation = useNavigation();
   const nbEvents = 2;
   const nbFollowers = 0;
@@ -48,11 +50,11 @@ const OrganizerCard = ({ organizer }) => {
         </View>
         <View style={{ rowGap: 20 }}>
           <Text style={[{ color: themeColor.primaryText }, styles.title]}>
-            {organizer.name}
+            {profile.name}
           </Text>
           <View style={{ flexDirection: "row", columnGap: 8 }}>
             <Text style={[{ color: themeColor.primaryText }, styles.subtitle2]}>
-              {organizer.events.length || "--"} Total events
+              {events.length || "--"} Total events
             </Text>
             <Text style={[{ color: themeColor.primaryText }, styles.subtitle2]}>
               {nbFollowers || "--"} Total followers
@@ -72,14 +74,16 @@ const OrganizerCard = ({ organizer }) => {
 
   return (
     <View style={styles.cardContainerOrganizer}>
-      {organizer.name ? <ExistingProfile /> : <StartProfile />}
+      {profile.name ? <ExistingProfile /> : <StartProfile />}
     </View>
   );
 };
-const EventsCard = ({ setCurrentPage, organizer }) => {
+const EventsCard = ({ setCurrentPage }) => {
   const { themeColor, isDarkMode } = useTheme();
   const navigation = useNavigation();
-  const nextEventExist = true;
+  const { events } = useOrganizer();
+  const nextEvent =
+    events.filter((event) => event.status === "draft")[0] || null;
 
   const StartEvent = () => {
     return (
@@ -126,18 +130,14 @@ const EventsCard = ({ setCurrentPage, organizer }) => {
   };
 
   const NextEvent = () => {
-    const event = {
-      name: "Party in L.A",
-      type: "Draft",
-      date: "Dec 06, 2023 07:00 PM",
-    };
     return (
       <Card style={{ padding: 10, elevation: 0 }} elevation={1}>
         <Card.Title
-          title={event.name}
+          title={nextEvent.title}
           subtitle={
             <>
-              <Text style={{ fontWeight: 700 }}>{event.type}</Text> {event.date}
+              <Text style={{ fontWeight: 700 }}>{nextEvent.status}</Text>{" "}
+              {nextEvent.date}
             </>
           }
         />
@@ -168,19 +168,19 @@ const EventsCard = ({ setCurrentPage, organizer }) => {
           Go to Events
         </Text>
       </TouchableOpacity>
-      {organizer.events[0] ? <NextEvent /> : <StartEvent />}
+      {nextEvent ? <NextEvent /> : <StartEvent />}
     </View>
   );
 };
 
-const Home = ({ setCurrentPage, organizer }) => {
+const Home = ({ setCurrentPage }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <OrganizerCard organizer={organizer} />
-      <EventsCard setCurrentPage={setCurrentPage} organizer={organizer} />
       {/* Organizer Profile */}
+      <OrganizerCard />
       {/* Events */}
+      <EventsCard setCurrentPage={setCurrentPage} />
     </View>
   );
 };

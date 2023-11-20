@@ -117,7 +117,7 @@ const EventCardHome = ({ event, onOptionsPress }) => {
           {moment(date).format("dddd DD MMMM [at] HH:mm")}
         </Text>
         <Text style={[{ color: themeColor.secondaryText }, styles.location]}>
-          {location.town}
+          {location.venueName}
         </Text>
         {priceValue !== 0 && (
           <Text style={[{ color: themeColor.secondaryText }, styles.location]}>

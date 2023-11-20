@@ -92,8 +92,8 @@ export const BottomTabNavigation = () => {
         >
           <Tab.Screen
             name="HomeScreen"
-            // component={TestScreen}
-            component={HomeScreen}
+            component={TestScreen}
+            // component={HomeScreen}
             options={{
               tabBarIcon: ({ color, size }) => {
                 return <Icon name="home-outline" size={size} color={color} />;

@@ -133,6 +133,7 @@ module.exports = {
     const organizer = await Organizer.findOne({ userId });
     return organizer;
   },
+
   registerUser: async (req, res) => {
     let { emailId, password, name } = req.body;
     if (!emailId) return res.apiError("Email Id is required");

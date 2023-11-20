@@ -28,6 +28,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import { useOrganizer } from "../../contexts/OrganizerContext";
 
 const EventStatussMenu = ({ menu, selected, setSelected }) => {
   const { themeColor, isDarkMode } = useTheme();
@@ -87,6 +88,8 @@ const EventStatussMenu = ({ menu, selected, setSelected }) => {
 
 const EventActionMenu = ({ event }) => {
   const { themeColor, isDarkMode } = useTheme();
+  const navigation = useNavigation();
+
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
@@ -105,7 +108,10 @@ const EventActionMenu = ({ event }) => {
         <Menu.Item leadingIcon="eye" onPress={() => {}} title="View" />
         <Menu.Item
           leadingIcon="square-edit-outline"
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate("CreateEvent", { event });
+            closeMenu();
+          }}
           title="Edit"
         />
         {/* <Divider />
@@ -117,58 +123,19 @@ const EventActionMenu = ({ event }) => {
   );
 };
 
-// const EventActionMenu2 = ({ event }) => {
-//   const { themeColor, isDarkMode } = useTheme();
-//   const { showActionSheetWithOptions } = useActionSheet();
-
-//   const [visible, setVisible] = React.useState(false);
-
-//   const openMenu = () => {
-//     const options = ["View", "Edit", "Cancel"];
-//     // const destructiveButtonIndex = 0;
-//     const cancelButtonIndex = 2;
-
-//     showActionSheetWithOptions(
-//       {
-//         options,
-//         cancelButtonIndex,
-//         // destructiveButtonIndex,
-//       },
-//       (selectedIndex) => {
-//         switch (selectedIndex) {
-//           case 0:
-//             // Save
-//             pickImage();
-//             break;
-
-//           case 1:
-//             // Delete
-//             takePhoto();
-//             break;
-
-//           case cancelButtonIndex:
-//           // Canceled
-//         }
-//       }
-//     );
-//   };
-
-//   return <IconButton icon="dots-vertical" onPress={openMenu} />;
-// };
-
 const EventCard = ({ event }) => {
   const { themeColor, isDarkMode } = useTheme();
 
   return (
     <Card style={{ elevation: 0 }} elevation={1}>
       <Card.Title
-        title={event.name}
-        subtitle={event.date}
-        right={(props) => <EventActionMenu />}
+        title={event.title}
+        subtitle={event.dateStart}
+        right={(props) => <EventActionMenu event={event} />}
       />
       <Card.Content>
         <Text style={{ color: themeColor.primaryText, fontSize: 13 }}>
-          {event.location}
+          {event.location.venueName}
         </Text>
         <Text
           style={{ color: themeColor.primaryText, fontSize: 13, marginTop: 8 }}
@@ -205,27 +172,36 @@ const NoEventView = () => {
   );
 };
 
-const Events = ({ organizer }) => {
+const Events = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { themeColor, isDarkMode } = useTheme();
+  const { events } = useOrganizer();
   const [selectedStatus, setSelectedStatus] = useState(1);
   const eventStatusMenu = [
-    { label: "Upcoming events", value: "upcoming" },
+    { label: "Upcoming events", value: "ongoing" },
     { label: "Draft", value: "draft" },
     { label: "Past events", value: "past" },
     { label: "All events", value: "all" },
   ];
 
-  const { events } = organizer;
-  // const events = [
-  //   {
-  //     name: "Hello",
-  //     date: "December 6, 2023 at 7:00 PM",
-  //     location: "Online event",
-  //     status: "Draft",
-  //   },
-  // ];
+  const sortedEvents = {
+    ongoing: [],
+    draft: [],
+    past: [],
+    all: [],
+  };
+
+  if (events) {
+    events.forEach((event) => {
+      console.log(event.status);
+      console.log(sortedEvents[event.status]);
+      sortedEvents[event.status].push(event);
+    });
+    sortedEvents.all = events;
+  }
+
+  console.log("sortedEvents", sortedEvents);
 
   return (
     <View style={[{ paddingBottom: insets.bottom * 2 }, styles.container]}>
@@ -248,13 +224,16 @@ const Events = ({ organizer }) => {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {events.length ? (
+        {events &&
+        sortedEvents[eventStatusMenu[selectedStatus].value].length ? (
           <View
             style={{ rowGap: 10, paddingHorizontal: 10, paddingBottom: 20 }}
           >
-            {events.map((event, index) => (
-              <EventCard key={index} event={event} />
-            ))}
+            {sortedEvents[eventStatusMenu[selectedStatus].value].map(
+              (event, index) => (
+                <EventCard key={index} event={event} />
+              )
+            )}
           </View>
         ) : (
           <NoEventView />

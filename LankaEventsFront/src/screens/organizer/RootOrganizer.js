@@ -23,7 +23,7 @@ const RootOrganizer = () => {
   console.log("-----------------RootOrganizer----------------");
   const navigation = useNavigation();
   const route = useRoute();
-  const { organizerId } = useOrganizer();
+  const { profile, setProfile, events, setEvents } = useOrganizer();
   const { themeColor, isDarkMode } = useTheme();
   const [currentPage, setCurrentPage] = useState("Home");
   const [organizer, setOrganizer] = useState(null);
@@ -42,16 +42,19 @@ const RootOrganizer = () => {
   useEffect(() => {
     const getOrganizer = async () => {
       // Call api to get organizer
-      const organizer = await organizerApi.getOrganizer(organizerId);
-      setOrganizer(organizer);
-      console.log("organizer", organizer);
+      const profile = await organizerApi.getOrganizer();
+      setProfile(profile);
+      if (!events) {
+        const events = await organizerApi.getEvents();
+        setEvents(events);
+      }
       // Set currentPage to steps if not validated
     };
 
     getOrganizer();
   }, []);
 
-  if (!organizer) return <Text>Loading...</Text>;
+  if (!profile || !events) return <Text>Loading...</Text>;
 
   return (
     <View
@@ -63,9 +66,7 @@ const RootOrganizer = () => {
         <NewOrganizerSteps setCurrentPage={setCurrentPage} />
       ) : (
         <View style={styles.contentContainer}>
-          {currentPage === "Home" && (
-            <Home setCurrentPage={setCurrentPage} organizer={organizer} />
-          )}
+          {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
           {currentPage === "Events" && <Events organizer={organizer} />}
         </View>
       )}

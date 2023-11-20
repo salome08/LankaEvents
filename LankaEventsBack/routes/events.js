@@ -32,6 +32,78 @@ const momentDate = new moment("2023-08-18T18:00:00.000Z");
 const readyToInsert = momentDate.format("YYYY-MM-DD HH:mm:ss");
 
 router.post(
+  "/create-event",
+  passport.authenticate("jwt-organizer", { session: false }),
+  async (req, res) => {
+    try {
+      console.log("in events/createEvents");
+      const { user: organizer } = req;
+      const { event } = req.body;
+
+      console.log("req", req.body);
+
+      if (!organizer) {
+        return res.status(404).json({ message: "organizer not found" });
+      }
+
+      // const event = {
+      //   title: "Event 09",
+      //   description: "My 9th event",
+      //   date: readyToInsert,
+      //   location: { town: "Weligama" },
+      //   online: false,
+      //   categories: ["Health", "Community"],
+      //   types: ["Expo"],
+      //   price: 30,
+      // };
+      const createdEvent = await EventsService.create(organizer._id, event);
+      // res.status(200).json("OK");
+      res.status(200).json(createdEvent);
+    } catch (error) {
+      const { name, code, errmsg, message } = error;
+      res.status(400).json({
+        name,
+        code,
+        message: errmsg || message,
+        // message: getMongoError(code, "Event", errmsg || message),
+      });
+    }
+  }
+);
+
+router.post(
+  "/update-event/:eventId",
+  passport.authenticate("jwt-organizer", { session: false }),
+  async (req, res) => {
+    try {
+      console.log("in events/update-event");
+      const { user: organizer } = req;
+      const { eventData } = req.body;
+      const { eventId } = req.params;
+
+      if (!organizer) {
+        return res.status(404).json({ message: "organizer not found" });
+      }
+
+      console.log("eventId", eventId);
+      console.log("eventData", eventData);
+
+      const updatedEvent = await EventsService.update(eventId, eventData);
+      // res.status(200).json("OK");
+      res.status(200).json(updatedEvent);
+    } catch (error) {
+      const { name, code, errmsg, message } = error;
+      res.status(400).json({
+        name,
+        code,
+        message: errmsg || message,
+        // message: getMongoError(code, "Event", errmsg || message),
+      });
+    }
+  }
+);
+
+router.post(
   "/",
   asyncHandler(async (req, res, next) => {
     // const event = req.body;
@@ -146,6 +218,7 @@ router.post(
         return res.status(404).json({ message: "Event not found" });
       }
 
+      console.log("like event user", req.user);
       // Check if the user has already liked the event
       const userId = req.user._id; // Assuming you have the authenticated user's ID in the request object
       const userLikedIndex = event.likes.indexOf(userId);

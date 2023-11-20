@@ -18,7 +18,7 @@ import {
   TextInput,
   Chip,
 } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTheme } from "../../contexts/ThemContext";
 import VerifyPhoneOtp from "./SignIn/NewOrganizerOtp";
 import NewOrganizerSteps from "./SignIn/NewOrganizerSteps";
@@ -27,25 +27,15 @@ import BasicInfo from "./BasicInfoForm";
 import Details from "./DetailsForm";
 import Publish from "./PublishForm";
 
-// const Details = () => {
-//   return (
-//     <View>
-//       <Text>Details</Text>
-//     </View>
-//   );
-// };
-
-// const Publish = () => {
-//   return (
-//     <View>
-//       <Text>Publish</Text>
-//     </View>
-//   );
-// };
-
 const CreateEvent = () => {
   const { themeColor, isDarkMode } = useTheme();
+  const route = useRoute();
   const insets = useSafeAreaInsets();
+  let event = null;
+
+  if (route.params && route.params.event) {
+    event = route.params.event;
+  }
 
   const tabs = [
     [{ title: "Basic Info", component: BasicInfo }],
@@ -59,7 +49,9 @@ const CreateEvent = () => {
     START: 0,
     FULL: 1,
   };
-  const [config, setConfig] = useState(tabsConfig.START);
+  const [config, setConfig] = useState(
+    event ? tabsConfig.FULL : tabsConfig.START
+  );
 
   const validInfo = () => setConfig(tabsConfig.FULL);
 
@@ -72,7 +64,12 @@ const CreateEvent = () => {
           {tabs[config].map((tab, idx) => {
             const Component = tab.component;
             return (
-              <Component key={idx} title={tab.title} validInfo={validInfo} />
+              <Component
+                key={idx}
+                title={tab.title}
+                validInfo={validInfo}
+                event={event}
+              />
             );
           })}
         </TabBarView>

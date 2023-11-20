@@ -8,13 +8,27 @@ module.exports = thisService = {
     res.apiSuccess(u);
   },
   signIn: async () => {},
-  create: (eventInfos) => {
-    console.log(eventInfos);
-    const event = new Event({
-      _id: new mongoose.Types.ObjectId(),
-      ...eventInfos,
-    });
-    return event.save();
+  create: (organizerId, eventInfos) => {
+    try {
+      console.log(eventInfos);
+      const event = new Event({
+        _id: new mongoose.Types.ObjectId(),
+        ...eventInfos,
+        organizerId,
+      });
+      return event.save();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  update: async (eventId, data) => {
+    console.log(data);
+    const updatedEvent = await Event.findOneAndUpdate(
+      { _id: eventId }, // Query condition to find the document
+      data,
+      { new: true }
+    );
+    return updatedEvent.save();
   },
   findById: (id) => {
     const event = Event.findById(id);
@@ -34,6 +48,10 @@ module.exports = thisService = {
     } catch (error) {
       console.error(error);
     }
+  },
+  findOrganizer: async (organizerId) => {
+    const events = await Event.find({ organizerId });
+    return events;
   },
   findHome: async (town) => {
     try {
@@ -230,13 +248,13 @@ module.exports = thisService = {
     const updatedContents = Contents.updateMany(filter, update, options);
     return updatedContents;
   },
-  update: (id, contentInfos) => {
-    const updateState = Contents.findByIdAndUpdate(id, contentInfos, {
-      runValidators: true,
-      new: true,
-    });
-    return updateState;
-  },
+  // update: (id, contentInfos) => {
+  //   const updateState = Contents.findByIdAndUpdate(id, contentInfos, {
+  //     runValidators: true,
+  //     new: true,
+  //   });
+  //   return updateState;
+  // },
   delete: (_id) => {
     const deleteState = Contents.deleteOne({
       _id,

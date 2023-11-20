@@ -2,26 +2,30 @@ const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
   title: { type: String, default: "" },
+  summary: { type: String, default: "" },
   description: { type: String, default: "" },
-  date: { type: Date, required: true },
-  dateEnd: { type: Date, default: "" },
   location: {
-    town: { type: String, required: true }, // The town/city where the event occurs
+    venueName: { type: String }, // The town/city where the event occurs
+    address1: { type: String }, // The town/city where the event occurs
+    address2: { type: String }, // The town/city where the event occurs
+    city: { type: String }, // The town/city where the event occurs
+    state: { type: String }, // The town/city where the event occurs
+    postalCode: { type: String }, // The town/city where the event occurs
     country: { type: String }, // The country where the event occurs
-    coordinates: {
-      // Optional: Latitude and Longitude coordinates of the event location
-      latitude: { type: Number },
-      longitude: { type: Number },
-    },
   },
   online: { type: Boolean, default: false },
   categories: { type: Array, default: [] },
   types: { type: Array, default: [] },
-  address: { type: String, default: "" },
+  startDate: { type: Date },
+  dateEnd: { type: Date, default: "" },
+  timeStart: { type: Date },
+  timeEnd: { type: Date, default: "" },
   pictures: [{ type: String, default: "" }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   price: { type: mongoose.Schema.Types.Decimal128, default: 0 },
-  organizer: [{ type: mongoose.Schema.Types.ObjectId, ref: "Organizer" }],
+  organizerId: { type: mongoose.Schema.Types.ObjectId, ref: "Organizer" },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "Organizer" },
+  status: { type: String, default: "draft" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

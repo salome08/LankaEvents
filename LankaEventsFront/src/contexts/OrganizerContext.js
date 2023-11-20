@@ -6,6 +6,7 @@ import {
   getOrganizerToken,
   storeOrganizerToken,
 } from "../utils/functions/storage";
+import organizerApi from "../../api/organizerApi";
 
 const OrganizerContext = createContext();
 
@@ -36,6 +37,7 @@ const handleGoogleSignIn = async () => {
         } else {
           // Store the token in async storage
           await storeOrganizerToken("authOrganizerToken", token);
+          console.log(token);
           return token;
         }
         // Update auth state in the context
@@ -55,7 +57,42 @@ const handleGoogleSignIn = async () => {
 const OrganizerProvider = ({ children }) => {
   const [authenticatedO, setAuthenticatedO] = useState(false);
   const [authenticatedU, setAuthenticatedU] = useState(false);
+  const [profile, setProfile] = useState(null);
   const [organizerId, setOrganizerId] = useState(null);
+  const [events, setEvents] = useState(null);
+
+  const logOrganizer = async () => {
+    const token =
+      // (await getOrganizerToken("authOrganizerToken")) ||
+      await handleGoogleSignIn();
+    if (token) {
+      // decode token from storage
+      const decodedToken = JWT.decode(token, "YOUR_JWT_SECRET");
+      // There is an error here when token is
+      const { id } = decodedToken;
+      console.log("la", id);
+      setOrganizerId(id);
+      if (id) {
+        setAuthenticatedO(true);
+        const events = organizerApi.getEvents();
+        setEvents(events);
+      }
+      return id;
+    } else {
+      console.log("Error log Organizer");
+    }
+  };
+
+  const addEvent = (newEvent) => {
+    setEvents([...events, newEvent]);
+  };
+
+  const updateEvent = (updatedEvent) => {
+    setEvents([
+      ...events.filter((event) => event._id !== updatedEvent._id),
+      updatedEvent,
+    ]);
+  };
 
   useEffect(() => {
     // check initial state with tokens
@@ -64,28 +101,12 @@ const OrganizerProvider = ({ children }) => {
       const authOrganizerToken = await getOrganizerToken("authOrganizerToken");
       setAuthenticatedU(!!organizerToken);
       setAuthenticatedO(!!authOrganizerToken);
+      // console.log("organizerToken", organizerToken);
+      console.log("authOrganizerToken", authOrganizerToken);
     };
 
     getTokens();
   }, []);
-
-  const logOrganizer = async () => {
-    const token =
-      (await getOrganizerToken("authOrganizerToken")) ||
-      (await handleGoogleSignIn());
-    if (token) {
-      // decode token from storage
-      const decodedToken = JWT.decode(token, "YOUR_JWT_SECRET");
-      // There is an error here when token is
-      const { organizerId } = decodedToken;
-      console.log("la", organizerId);
-      setOrganizerId(organizerId);
-      if (organizerId) setAuthenticatedO(true);
-      return organizerId;
-    } else {
-      console.log("Error log Organizer");
-    }
-  };
 
   return (
     <OrganizerContext.Provider
@@ -97,6 +118,12 @@ const OrganizerProvider = ({ children }) => {
         logOrganizer,
         organizerId,
         setOrganizerId,
+        events,
+        setEvents,
+        profile,
+        setProfile,
+        addEvent,
+        updateEvent,
       }}
     >
       {children}

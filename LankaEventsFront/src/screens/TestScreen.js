@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import InformationPopup from "../components/InformationPopup";
 import ErrorDialog from "../components/ErrorDialog";
 import NewOrganizerOtp from "../screens/organizer/SignIn/NewOrganizerOtp";
+import { removeOrganizerToken } from "../utils/functions/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   View,
@@ -68,9 +70,20 @@ const TestNav = () => {
         mode="contained"
         onPress={() => {
           setAuthenticatedO(false);
+          removeOrganizerToken("authOrganizerToken");
         }}
       >
         Log out Organizer
+      </Button>
+      <Button
+        style={[{ backgroundColor: themeColor.primary }, styles.button]}
+        mode="contained"
+        onPress={() => {
+          setAuthenticatedU(false);
+          removeOrganizerToken("organizerToken");
+        }}
+      >
+        Log out User
       </Button>
       <Button
         style={[{ backgroundColor: themeColor.primary }, styles.button]}
@@ -98,6 +111,17 @@ const TestNav = () => {
         }}
       >
         Go to CreateEvent
+      </Button>
+      <Button
+        style={[{ backgroundColor: themeColor.primary }, styles.button]}
+        mode="contained"
+        onPress={() => {
+          AsyncStorage.getAllKeys().then((keys) => {
+            console.log(keys);
+          });
+        }}
+      >
+        Get all async storage keys
       </Button>
     </View>
   );
@@ -244,7 +268,7 @@ const TestScreen = () => {
     //   </View>
     //   <View style={{ backgroundColor: "red", height: 50 }} />
     // </>
-    <NewOrganizerOtp />
+    <TestNav />
     // {/* <TestZindex /> */}
     // </View>
   );

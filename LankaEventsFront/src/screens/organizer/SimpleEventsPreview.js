@@ -93,19 +93,17 @@ const EventsList = ({ title, events }) => {
 const SimpleEventsPreview = () => {
   const { themeColor, isDarkMode } = useTheme();
   const insets = useSafeAreaInsets();
-  const { setAuthenticatedU } = useOrganizer();
+  const { setAuthenticatedU, events, setEvents } = useOrganizer();
   const navigation = useNavigation();
-  const [events, setEvents] = useState([]);
+  // const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const getToken = async () => {
       // Decode token organizer
       const token = await getOrganizerToken("organizerToken");
-      const { organizerId } = JWT.decode(token, "YOUR_JWT_SECRET");
-      console.log("organizerId", organizerId);
+      const { id } = JWT.decode(token, "YOUR_JWT_SECRET");
 
-      if (organizerId) {
-        console.log("here");
+      if (id) {
         const events = await organizerApi.getEvents();
         setEvents(events);
       }
@@ -132,8 +130,18 @@ const SimpleEventsPreview = () => {
         <Text style={[{ color: themeColor.blue }, styles.logOut]}>Log out</Text>
       </TouchableOpacity>
       <TabBarView>
-        <EventsList title="ongoing" events={[]} />
-        <EventsList title="past" events={[]} />
+        <EventsList
+          title="ongoing"
+          events={
+            events ? events.filter((event) => event.status === "ongoing") : []
+          }
+        />
+        <EventsList
+          title="past"
+          events={
+            events ? events.filter((event) => event.status === "past") : []
+          }
+        />
       </TabBarView>
       <View>
         <TouchableOpacity

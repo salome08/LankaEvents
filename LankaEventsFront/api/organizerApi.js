@@ -13,11 +13,11 @@ const api = axios.create({
 });
 
 module.exports = {
-  getOrganizer: async (organizerId) => {
+  getOrganizer: async () => {
     try {
       console.log("getOrganizer");
       const token = await getOrganizerToken("organizerToken");
-      const { data } = await api.get(`/organizer/${organizerId}`, {
+      const { data } = await api.get("/organizer/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,9 +36,54 @@ module.exports = {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      console.log("events", data);
+      return data;
     } catch (error) {
-      console.error(err);
+      console.error(error);
       return null;
+    }
+  },
+  createEvent: async (event) => {
+    try {
+      console.log("createEvent", event);
+      const token = await getOrganizerToken("organizerToken");
+      // console.log(token);
+      const { data } = await api.post(
+        `/events/create-event`,
+        {
+          event,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  updateEvent: async (eventId, eventData) => {
+    try {
+      console.log("createEvent", eventData);
+      const token = await getOrganizerToken("authOrganizerToken");
+      // console.log(token);
+      const { data } = await api.post(
+        `/events/update-event/${eventId}`,
+        {
+          eventData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      console.error(error);
     }
   },
 };

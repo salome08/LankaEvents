@@ -306,12 +306,12 @@ router.get(
           id: organizer.userId,
           organizerId: organizer._id,
         },
-        JWT_SECRET,
-        { expiresIn: "3h" }
+        JWT_SECRET
+        // { expiresIn: "3h" }
       );
 
-      console.log("token", token);
-      console.log("organizer", organizer);
+      // console.log("token", token);
+      // console.log("organizer", organizer);
       // await .getVerificationCode(user._id);
 
       // Verify OTP

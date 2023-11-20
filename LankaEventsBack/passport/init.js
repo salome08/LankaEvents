@@ -58,8 +58,8 @@ module.exports = (app) => {
               lastname: user.lastname,
               pictureUrl: user.profilePictureUrl,
             },
-            JWT_SECRET,
-            { expiresIn: "1h" }
+            JWT_SECRET
+            // { expiresIn: "3h" }
           );
 
           // Return the token to be used by the client
@@ -97,11 +97,11 @@ module.exports = (app) => {
           // Create a JWT token with the user data + organizerId
           const token = jwt.sign(
             {
-              id: user._id,
-              organizerId: organizer?._id || null,
+              id: organizer?._id || null,
+              userId: user._id,
             },
-            JWT_SECRET,
-            { expiresIn: "3h" }
+            JWT_SECRET
+            // { expiresIn: "3h" }
           );
 
           // Return null if user not found, user token with organizerId if user
@@ -115,6 +115,7 @@ module.exports = (app) => {
   );
 
   passport.use(
+    "jwt",
     new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
       try {
         console.log("in jwt strategy", jwt_payload);
@@ -123,6 +124,27 @@ module.exports = (app) => {
         console.log("user", user);
         if (user) {
           return done(null, user);
+        } else {
+          return done(null, false);
+          // or you could create a new account
+        }
+      } catch (error) {
+        console.error("JWT Strategy error", error);
+        return done(err, false);
+      }
+    })
+  );
+
+  passport.use(
+    "jwt-organizer",
+    new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
+      try {
+        console.log("in jwt organizer strategy", jwt_payload);
+
+        const organizer = await Organizer.findOne({ _id: jwt_payload.id });
+        console.log("organizer", organizer);
+        if (organizer) {
+          return done(null, organizer);
         } else {
           return done(null, false);
           // or you could create a new account
